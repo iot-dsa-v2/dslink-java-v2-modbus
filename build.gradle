@@ -1,0 +1,38 @@
+import groovy.json.JsonSlurper
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+group 'org.iot.dsa'
+mainClassName = 'org.iot.dsa.dslink.DSLink'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+build {
+    def inputFile = file('dslink.json')
+    def json = new JsonSlurper().parseText(inputFile.text)
+    version = json.version
+}
+
+repositories {
+    jcenter()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+    flatDir { dirs 'dsa' }
+}
+
+dependencies {
+    compile 'org.iot.dsa:dslink-core:+'
+    compile 'org.iot.dsa:dslink-websocket-standalone:+'
+    compile ':driver-framework-java-v2-prototype:+'
+    testCompile 'junit:junit:+'
+}
+
+applicationDistribution.from(new File(project.projectDir, "/dslink.json"))
+
+run {
+    args System.getProperty("exec.args", "").split()
+    workingDir project.buildDir
+}
+
