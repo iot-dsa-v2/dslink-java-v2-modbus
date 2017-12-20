@@ -10,20 +10,19 @@ import org.iot.dsa.node.DSIObject;
 import org.iot.dsa.node.DSInfo;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
-import org.iot.dsa.node.DSString;
+import org.iot.dsa.node.DSNode;
 import org.iot.dsa.node.DSValueType;
 import org.iot.dsa.node.action.ActionInvocation;
 import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
 
 public class ModbusDeviceNode extends DFDeviceNode {
-
-    public static final String PING_RATE = "Ping Rate";
     
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
         //TODO add Modbus Device parameters here
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParam(Constants.SLAVE_ID, DSValueType.NUMBER, null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
         //parameterDefinitions.add(ParameterDefinition.makeParam(name, type, description, placeholder))
     }
     
@@ -44,7 +43,9 @@ public class ModbusDeviceNode extends DFDeviceNode {
             if (o instanceof DSMap) {
                 this.parameters = (DSMap) o;
             }
+            Util.verifyParameters(parameters, parameterDefinitions);
         } else {
+            Util.verifyParameters(parameters, parameterDefinitions);
             put("parameters", parameters.copy());
         }
     }
@@ -74,6 +75,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     }
     
     private void edit(DSMap newParameters) {
+        Util.verifyParameters(newParameters, parameterDefinitions);
         this.parameters = newParameters;
         put("parameters", parameters.copy());
         put("Edit", makeEditAction());
@@ -99,23 +101,23 @@ public class ModbusDeviceNode extends DFDeviceNode {
     }
     
     /* ================================================================== */
+    
 
     @Override
     public boolean createConnection() {
-        // TODO Auto-generated method stub
-        return false;
+        int slaveId = parameters.getInt(Constants.SLAVE_ID);
+        return getParentNode().master.testSlaveNode(slaveId);
     }
 
     @Override
     public boolean ping() {
-        // TODO Auto-generated method stub
-        return false;
+        int slaveId = parameters.getInt(Constants.SLAVE_ID);
+        return getParentNode().master.testSlaveNode(slaveId);
     }
 
     @Override
     public void closeConnection() {
         // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -126,11 +128,20 @@ public class ModbusDeviceNode extends DFDeviceNode {
     
     @Override
     public long getPingRate() {
-        DSElement rate = parameters.get(PING_RATE);
+        DSElement rate = parameters.get(Constants.PING_RATE);
         if (rate != null && rate.isNumber()) {
             return rate.toLong();
         }
         return super.getPingRate();
+    }
+    
+    ModbusConnectionNode getParentNode() {
+        DSNode parent = getParent();
+        if (parent instanceof ModbusConnectionNode) {
+            return (ModbusConnectionNode) parent;
+        } else {
+            throw new RuntimeException("Wrong parent class");
+        }
     }
 
 }

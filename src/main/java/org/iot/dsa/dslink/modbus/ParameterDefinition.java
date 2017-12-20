@@ -1,5 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
+import org.iot.dsa.node.DSIEnum;
 import org.iot.dsa.node.DSIValue;
 import org.iot.dsa.node.DSMetadata;
 import org.iot.dsa.node.DSValueType;
@@ -9,13 +10,13 @@ public class ParameterDefinition {
     
     public final String name;
     public final DSValueType type;
-    public final DSIValue enumtype;
+    public final DSIEnum enumtype;
     public final DSIValue def;
     public final String description;
     public final String placeholder;
     
     
-    private ParameterDefinition(String name, DSValueType type, DSIValue enumtype, DSIValue def,
+    private ParameterDefinition(String name, DSValueType type, DSIEnum enumtype, DSIValue def,
             String description, String placeholder) {
         super();
         this.name = name;
@@ -30,7 +31,7 @@ public class ParameterDefinition {
         return new ParameterDefinition(name, type, null, null, description, placeholder);
     }
     
-    public static ParameterDefinition makeEnumParam(String name, DSIValue enumtype, String description, String placeholder) {
+    public static ParameterDefinition makeEnumParam(String name, DSIEnum enumtype, String description, String placeholder) {
         return new ParameterDefinition(name, null, enumtype, null, description, placeholder);
     }
     
@@ -45,7 +46,7 @@ public class ParameterDefinition {
         } else if (def != null) {
             metadata = action.addDefaultParameter(name, def, description);
         } else if (enumtype != null) {
-            metadata = action.addParameter(name, enumtype, description);
+            metadata = action.addParameter(name, (DSIValue) enumtype, description);
         } else {
             metadata = action.addParameter(name, type, description);
         }

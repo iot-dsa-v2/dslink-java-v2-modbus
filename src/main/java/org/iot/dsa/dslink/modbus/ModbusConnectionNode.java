@@ -11,14 +11,15 @@ import org.iot.dsa.node.DSMap;
 import org.iot.dsa.node.action.ActionInvocation;
 import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
+import com.serotonin.modbus4j.ModbusFactory;
+import com.serotonin.modbus4j.ModbusMaster;
+import com.serotonin.modbus4j.exception.ModbusInitException;
 
 public abstract class ModbusConnectionNode extends DFConnectionNode {
     
-    public static final String PING_RATE = "Ping Rate";
-    
     protected static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
     }
     
     DSMap parameters;
@@ -38,7 +39,9 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
             if (o instanceof DSMap) {
                 this.parameters = (DSMap) o;
             }
+            Util.verifyParameters(parameters, parameterDefinitions);
         } else {
+            Util.verifyParameters(parameters, parameterDefinitions);
             put("parameters", parameters.copy());
         }
     }
@@ -68,6 +71,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     }
     
     private void edit(DSMap newParameters) {
+        Util.verifyParameters(newParameters, parameterDefinitions);
         this.parameters = newParameters;
         put("parameters", parameters.copy());
         put("Edit", makeEditAction());
@@ -93,29 +97,42 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         device.startCarObject();
     }
     
-    /* ================================================================== */
-
+    /* ==================================================================== */
+    ModbusMaster master;
+    ModbusFactory modbusFactory = new ModbusFactory();
+    
     @Override
     public boolean createConnection() {
-        // TODO Auto-generated method stub
-        return false;
+        
+        //master.setTimeout(timeout);
+        //master.setRetries(retries);
+        // TODO etc.
+        
+        try {
+            master.init();
+            return master.isInitialized();
+        } catch (ModbusInitException e) {
+            warn(e);
+            return false;
+        }
     }
+
+    
 
     @Override
     public boolean ping() {
-        // TODO Auto-generated method stub
-        return false;
+        return master.isInitialized();
     }
 
     @Override
     public void closeConnection() {
-        // TODO Auto-generated method stub
-
+        master.destroy();
+        master = null;
     }
     
     @Override
     public long getPingRate() {
-        DSElement rate = parameters.get(PING_RATE);
+        DSElement rate = parameters.get(Constants.PING_RATE);
         if (rate != null && rate.isNumber()) {
             return rate.toLong();
         }

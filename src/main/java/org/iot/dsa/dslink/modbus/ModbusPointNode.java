@@ -43,7 +43,9 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
             if (o instanceof DSMap) {
                 this.parameters = (DSMap) o;
             }
+            Util.verifyParameters(parameters, parameterDefinitions);
         } else {
+            Util.verifyParameters(parameters, parameterDefinitions);
             put("parameters", parameters.copy());
         }
     }
@@ -73,6 +75,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     }
     
     private void edit(DSMap newParameters) {
+        Util.verifyParameters(newParameters, parameterDefinitions);
         this.parameters = newParameters;
         put("parameters", parameters.copy());
         put("Edit", makeEditAction());
