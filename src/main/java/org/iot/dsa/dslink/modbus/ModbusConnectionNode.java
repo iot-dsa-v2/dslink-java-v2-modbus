@@ -1,6 +1,5 @@
 package org.iot.dsa.dslink.modbus;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.iot.dsa.dslink.dframework.DFConnectionNode;
 import org.iot.dsa.node.DSElement;
@@ -17,10 +16,11 @@ import com.serotonin.modbus4j.exception.ModbusInitException;
 
 public abstract class ModbusConnectionNode extends DFConnectionNode {
     
-    protected static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
-    static {
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
+    protected static void addCommonParameterDefinitions(List<ParameterDefinition> definitions) {
+        definitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
     }
+    
+    public abstract List<ParameterDefinition> getParameterDefinitions();
     
     DSMap parameters;
     
@@ -39,9 +39,9 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
             if (o instanceof DSMap) {
                 this.parameters = (DSMap) o;
             }
-            Util.verifyParameters(parameters, parameterDefinitions);
+            Util.verifyParameters(parameters, getParameterDefinitions());
         } else {
-            Util.verifyParameters(parameters, parameterDefinitions);
+            Util.verifyParameters(parameters, getParameterDefinitions());
             put("parameters", parameters.copy());
         }
     }
@@ -66,12 +66,12 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
                 return null;
             }
         };
-        Util.makeEditParameters(act, parameterDefinitions, parameters);
+        Util.makeEditParameters(act, getParameterDefinitions(), parameters);
         return act;
     }
     
     private void edit(DSMap newParameters) {
-        Util.verifyParameters(newParameters, parameterDefinitions);
+        Util.verifyParameters(newParameters, getParameterDefinitions());
         this.parameters = newParameters;
         put("parameters", parameters.copy());
         put("Edit", makeEditAction());

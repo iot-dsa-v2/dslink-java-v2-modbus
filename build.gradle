@@ -32,6 +32,8 @@ dependencies {
     compile ':driver-framework-java-v2-prototype:+'
     compile 'org.glassfish.tyrus.bundles:tyrus-standalone-client:1.13'
     compile 'com.infiniteautomation:modbus4j:+'
+    compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'commons-logging:commons-logging:+'
     testCompile 'junit:junit:+'
 }
 

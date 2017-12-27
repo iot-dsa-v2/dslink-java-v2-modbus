@@ -3,10 +3,13 @@ package org.iot.dsa.dslink.modbus;
 import java.util.ArrayList;
 import java.util.List;
 import org.iot.dsa.dslink.dframework.DFPointNode;
+import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
+import org.iot.dsa.dslink.modbus.Constants.ObjectType;
 import org.iot.dsa.node.DSElement;
 import org.iot.dsa.node.DSIObject;
 import org.iot.dsa.node.DSIValue;
 import org.iot.dsa.node.DSInfo;
+import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
 import org.iot.dsa.node.DSString;
@@ -16,13 +19,14 @@ import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
 
 public class ModbusPointNode extends DFPointNode implements DSIValue {
-
-    public static final String POLL_RATE = "Poll Rate";
-    
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
-        //TODO add Modbus Point parameters here
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(POLL_RATE, DSLong.valueOf(ModbusDeviceNode.DEFAULT_PING_RATE), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(ObjectType.COIL), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
+        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POLL_RATE, DSLong.valueOf(ModbusDeviceNode.DEFAULT_PING_RATE), null, null));
     }
     
     DSMap parameters;
@@ -108,7 +112,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     
     @Override
     public long getPollRate() {
-        DSElement rate = parameters.get(POLL_RATE);
+        DSElement rate = parameters.get(Constants.POLL_RATE);
         if (rate != null && rate.isNumber()) {
             return rate.toLong();
         }
