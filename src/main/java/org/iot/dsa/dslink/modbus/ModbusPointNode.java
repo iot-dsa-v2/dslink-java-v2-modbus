@@ -89,8 +89,16 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     @Override
     public DSValueType getValueType() {
-        // TODO Auto-generated method stub
-        return null;
+        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+        switch(dataType) {
+            case BINARY:
+                return DSValueType.BOOL;
+            case CHAR:
+            case VARCHAR:
+                return DSValueType.STRING;
+            default:
+                return DSValueType.NUMBER;
+        }
     }
 
     @Override
