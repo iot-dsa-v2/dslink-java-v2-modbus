@@ -128,6 +128,20 @@ public class ModbusDeviceNode extends DFDeviceNode {
         // TODO Auto-generated method stub
     }
 
+    BaseLocator<?> createPointLocator(ModbusPointNode point) {
+        int slaveId = parameters.getInt(Constants.SLAVE_ID);
+        return createPointLocator(slaveId, point);
+    }
+
+    BaseLocator<?> createPointLocator(int slaveId, ModbusPointNode point) {
+        ObjectType objType = ObjectType.valueOf(point.parameters.getString(Constants.POINT_OBJECT_TYPE));
+        int offset = point.parameters.getInt(Constants.POINT_OFFSET);
+        DataTypeEnum dataType = DataTypeEnum.valueOf(point.parameters.getString(Constants.POINT_DATA_TYPE));
+        int bit = point.parameters.getInt(Constants.POINT_BIT);
+        int registerCount = point.parameters.getInt(Constants.POINT_REGISTER_COUNT);
+        return BaseLocator.createLocator(slaveId, objType.toRange(), offset, dataType.toId(), bit, registerCount);
+    }
+
     @Override
     public boolean batchPoll(Set<DFPointNode> points) {
         int slaveId = parameters.getInt(Constants.SLAVE_ID);
@@ -138,12 +152,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
         
         for (DFPointNode point: points) {
             ModbusPointNode mpoint = (ModbusPointNode) point;
-            ObjectType objType = ObjectType.valueOf(mpoint.parameters.getString(Constants.POINT_OBJECT_TYPE));
-            int offset = mpoint.parameters.getInt(Constants.POINT_OFFSET);
-            DataTypeEnum dataType = DataTypeEnum.valueOf(mpoint.parameters.getString(Constants.POINT_DATA_TYPE));
-            int bit = mpoint.parameters.getInt(Constants.POINT_BIT);
-            int registerCount = mpoint.parameters.getInt(Constants.POINT_REGISTER_COUNT);
-            BaseLocator<?> locator = BaseLocator.createLocator(slaveId, objType.toRange(), offset, dataType.toId(), bit, registerCount);
+            BaseLocator<?> locator = createPointLocator(slaveId, mpoint);
             batch.addLocator(mpoint, locator);
         }
         

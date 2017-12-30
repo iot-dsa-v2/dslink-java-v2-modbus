@@ -2,18 +2,14 @@ package org.iot.dsa.dslink.modbus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.serotonin.modbus4j.exception.ErrorResponseException;
+import com.serotonin.modbus4j.exception.ModbusTransportException;
+import com.serotonin.modbus4j.locator.BaseLocator;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.Constants.ObjectType;
-import org.iot.dsa.node.DSElement;
-import org.iot.dsa.node.DSIObject;
-import org.iot.dsa.node.DSIValue;
-import org.iot.dsa.node.DSInfo;
-import org.iot.dsa.node.DSJavaEnum;
-import org.iot.dsa.node.DSLong;
-import org.iot.dsa.node.DSMap;
-import org.iot.dsa.node.DSString;
-import org.iot.dsa.node.DSValueType;
+import org.iot.dsa.node.*;
 import org.iot.dsa.node.action.ActionInvocation;
 import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
@@ -59,7 +55,31 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         super.declareDefaults();
         declareDefault("Value", DSString.EMPTY);
     }
-    
+
+    @Override
+    public void onSet(DSIValue value) {
+        System.out.println("Setting: " + value.toElement().toInt());
+        //TODO: handle other types of values
+        //TODO: move implementation to Device?
+        BaseLocator<?> locator = getParentNode().createPointLocator(this);
+        try {
+            getParentNode().getParentNode().master.setValue(locator, value.toElement().toInt());
+        } catch (ModbusTransportException e) {
+            e.printStackTrace();
+        } catch (ErrorResponseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onSet(DSInfo info, DSIValue value) {
+        String name = info.getName();
+        //TODO make "Value" a final constant
+        if (name != null && name.equals("Value")) {
+            onSet(value);
+        }
+    }
+
     @Override
     protected void onStable() {
         put("Edit", makeEditAction());
@@ -114,6 +134,15 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     void updateValue(DSElement val) {
         put(value, val);
         getParent().childChanged(getInfo());
+    }
+
+    ModbusDeviceNode getParentNode() {
+        DSNode parent = getParent();
+        if (parent instanceof ModbusDeviceNode) {
+            return (ModbusDeviceNode) parent;
+        } else {
+            throw new RuntimeException("Wrong parent class");
+        }
     }
     
     /* ================================================================== */
