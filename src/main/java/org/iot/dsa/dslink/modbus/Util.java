@@ -1,11 +1,15 @@
 package org.iot.dsa.dslink.modbus;
 
+import java.math.BigInteger;
 import java.util.List;
+import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.node.DSElement;
 import org.iot.dsa.node.DSIEnum;
+import org.iot.dsa.node.DSIValue;
 import org.iot.dsa.node.DSMap;
 import org.iot.dsa.node.DSValueType;
 import org.iot.dsa.node.action.DSAction;
+import com.serotonin.modbus4j.code.DataType;
 
 public class Util {
     
@@ -53,6 +57,29 @@ public class Util {
             }
                 
         }
+    }
+    
+    public static Object valueToObject(DSIValue value, DataTypeEnum type) {
+        Class<?> javaType = DataType.getJavaType(type.toId());
+        if (Boolean.class.equals(javaType)) {
+            return value.toElement().toBoolean();
+        } else if (Short.class.equals(javaType)) {
+            return (short) value.toElement().toInt();
+        } else if (Integer.class.equals(javaType)) {
+            return value.toElement().toInt();
+        } else if (Long.class.equals(javaType)) {
+            return value.toElement().toLong();
+        } else if (Float.class.equals(javaType)) {
+            return value.toElement().toFloat();
+        } else if (BigInteger.class.equals(javaType)) {
+            return value.toElement().toLong();
+        } else if (Double.class.equals(javaType)) {
+            return value.toElement().toDouble();
+        } else if (String.class.equals(javaType)) {
+            return value.toElement().toString();
+        }
+        //TODO scaling?
+        return null;
     }
 
 }

@@ -58,24 +58,24 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     @Override
     public void onSet(DSIValue value) {
-        System.out.println("Setting: " + value.toElement().toInt());
-        //TODO: handle other types of values
+        info("Setting: " + value.toElement().toInt());
         //TODO: move implementation to Device?
         BaseLocator<?> locator = getParentNode().createPointLocator(this);
         try {
-            getParentNode().getParentNode().master.setValue(locator, value.toElement().toInt());
+            DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+            getParentNode().getParentNode().master.setValue(locator, Util.valueToObject(value, dataType));
         } catch (ModbusTransportException e) {
-            e.printStackTrace();
+            warn(e);
         } catch (ErrorResponseException e) {
-            e.printStackTrace();
+            warn(e);
         }
     }
 
     @Override
     public void onSet(DSInfo info, DSIValue value) {
-        String name = info.getName();
+        //String name = info.getName();
         //TODO make "Value" a final constant
-        if (name != null && name.equals("Value")) {
+        if (this.value.equals(info)) {
             onSet(value);
         }
     }
