@@ -5,6 +5,8 @@ import com.serotonin.modbus4j.code.RegisterRange;
 
 public class Constants {
     public static final String PING_RATE = "Ping Rate";
+    public static final String TIMEOUT = "Timeout";
+    public static final String RETRIES = "Retries";
     public static final String IP_TRANSPORT_TYPE = "Transport Type";
     public static final String IP_HOST = "Host";
     public static final String IP_PORT = "Port";

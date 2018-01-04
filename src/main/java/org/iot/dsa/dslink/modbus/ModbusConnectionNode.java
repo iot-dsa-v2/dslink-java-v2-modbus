@@ -2,11 +2,7 @@ package org.iot.dsa.dslink.modbus;
 
 import java.util.List;
 import org.iot.dsa.dslink.dframework.DFConnectionNode;
-import org.iot.dsa.node.DSElement;
-import org.iot.dsa.node.DSIObject;
-import org.iot.dsa.node.DSInfo;
-import org.iot.dsa.node.DSLong;
-import org.iot.dsa.node.DSMap;
+import org.iot.dsa.node.*;
 import org.iot.dsa.node.action.ActionInvocation;
 import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
@@ -17,7 +13,24 @@ import com.serotonin.modbus4j.exception.ModbusInitException;
 public abstract class ModbusConnectionNode extends DFConnectionNode {
     
     protected static void addCommonParameterDefinitions(List<ParameterDefinition> definitions) {
-        definitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
+        definitions.add(ParameterDefinition.makeParamWithDefault(
+                        Constants.PING_RATE,
+                        DSLong.valueOf(DEFAULT_PING_RATE),
+                        null,
+                        null)
+        );
+        definitions.add(ParameterDefinition.makeParamWithDefault(
+                Constants.TIMEOUT,
+                DSInt.valueOf(DEFAULT_TIMEOUT),
+                null,
+                null)
+        );
+        definitions.add(ParameterDefinition.makeParamWithDefault(
+                Constants.RETRIES,
+                DSInt.valueOf(DEFAULT_RETRIES),
+                null,
+                null)
+        );
     }
     
     public abstract List<ParameterDefinition> getParameterDefinitions();
@@ -100,12 +113,19 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     /* ==================================================================== */
     ModbusMaster master;
     ModbusFactory modbusFactory = new ModbusFactory();
+
+    //TODO: move to a better location?
+    final static private int DEFAULT_TIMEOUT = 500;
+    final static private int DEFAULT_RETRIES = 2;
     
     @Override
     public boolean createConnection() {
-        
-        //master.setTimeout(timeout);
-        //master.setRetries(retries);
+
+        int timeout = parameters.get(Constants.TIMEOUT).toInt();
+        int retries = parameters.get(Constants.RETRIES).toInt();
+
+        master.setTimeout(timeout);
+        master.setRetries(retries);
         // TODO etc.
         
         try {

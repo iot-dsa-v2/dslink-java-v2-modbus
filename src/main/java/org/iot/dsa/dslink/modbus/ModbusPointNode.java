@@ -15,6 +15,7 @@ import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
 
 public class ModbusPointNode extends DFPointNode implements DSIValue {
+
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(ObjectType.COIL), null, null));
@@ -107,7 +108,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         put("Edit", makeEditAction());
         restartNode();
     }
-    
 
     @Override
     public DSValueType getValueType() {
