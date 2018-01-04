@@ -22,6 +22,7 @@ import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
+import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.locator.BaseLocator;
@@ -32,6 +33,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     static {
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.SLAVE_ID, DSValueType.NUMBER, null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.CONTIGUOUS_READS, DSBool.FALSE, null, null));
     }
     
     DSMap parameters;
@@ -145,9 +147,10 @@ public class ModbusDeviceNode extends DFDeviceNode {
     @Override
     public boolean batchPoll(Set<DFPointNode> points) {
         int slaveId = parameters.getInt(Constants.SLAVE_ID);
+        boolean contig = parameters.getBoolean(Constants.CONTIGUOUS_READS);
         BatchRead<ModbusPointNode> batch = new BatchRead<ModbusPointNode>();
-//        batch.setContiguousRequests(contiguousRequests); TODO use these
-//        batch.setErrorsInResults(errorsInResults);
+        batch.setContiguousRequests(contig);
+        batch.setErrorsInResults(true);
 //        batch.setExceptionsInResults(exceptionsInResults);
         
         for (DFPointNode point: points) {
@@ -163,21 +166,25 @@ public class ModbusDeviceNode extends DFDeviceNode {
                 DataTypeEnum dataType = DataTypeEnum.valueOf(mpoint.parameters.getString(Constants.POINT_DATA_TYPE));
                 DSElement val;
                 Object result = results.getValue(mpoint);
-                switch(dataType) {
-                    case BINARY:
-                        val = DSBool.valueOf((Boolean) result);
-                        break;
-                    case CHAR:
-                    case VARCHAR:
-                        val = DSString.valueOf((String) result);
-                        break;
-                    default:
-                        val = DSDouble.valueOf(((Number) result).doubleValue());
-                        //TODO add scaling
-                        break;
+                if (result instanceof ExceptionResult) {
+                    mpoint.updateError((ExceptionResult) result);
+                } else {
+                    switch(dataType) {
+                        case BINARY:
+                            val = DSBool.valueOf((Boolean) result);
+                            break;
+                        case CHAR:
+                        case VARCHAR:
+                            val = DSString.valueOf((String) result);
+                            break;
+                        default:
+                            val = DSDouble.valueOf(((Number) result).doubleValue());
+                            //TODO add scaling
+                            break;
+                    }
+                    
+                    mpoint.updateValue(val);
                 }
-                
-                mpoint.updateValue(val);
             }
             
             return true;

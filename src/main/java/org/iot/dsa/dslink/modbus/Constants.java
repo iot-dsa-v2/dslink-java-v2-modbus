@@ -15,6 +15,7 @@ public class Constants {
     }
     
     public static final String SLAVE_ID = "Slave ID";
+    public static final String CONTIGUOUS_READS = "Contiguous Batch Reads Only";
     
     public static final String POLL_RATE = "Poll Rate";
     public static final String POINT_OBJECT_TYPE = "Object Type";
@@ -22,6 +23,9 @@ public class Constants {
     public static final String POINT_DATA_TYPE = "Data Type";
     public static final String POINT_BIT = "Bit";
     public static final String POINT_REGISTER_COUNT = "Number of Registers";
+    
+    public static final String POINT_VALUE = "Value";
+    public static final String POINT_ERROR = "Error Result";
     
     public static enum ObjectType {
         COIL("Coil", RegisterRange.COIL_STATUS),

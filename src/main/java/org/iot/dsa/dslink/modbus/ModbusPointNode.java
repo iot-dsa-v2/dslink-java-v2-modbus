@@ -2,7 +2,7 @@ package org.iot.dsa.dslink.modbus;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.locator.BaseLocator;
@@ -26,7 +26,8 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     }
     
     DSMap parameters;
-    private DSInfo value = getInfo("Value");
+    private DSInfo value = getInfo(Constants.POINT_VALUE);
+    private DSInfo error = getInfo(Constants.POINT_ERROR);
     
     public ModbusPointNode() {
         
@@ -53,7 +54,8 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault("Value", DSString.EMPTY);
+        declareDefault(Constants.POINT_VALUE, DSString.EMPTY);
+        declareDefault(Constants.POINT_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
     }
 
     @Override
@@ -132,8 +134,15 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     }
     
     void updateValue(DSElement val) {
+        error.setHidden(true);
+        put(error, DSString.EMPTY);
         put(value, val);
         getParent().childChanged(getInfo());
+    }
+    
+    void updateError(ExceptionResult resp) {
+        error.setHidden(false);
+        put(error, DSString.valueOf(resp.getExceptionMessage()));
     }
 
     ModbusDeviceNode getParentNode() {
