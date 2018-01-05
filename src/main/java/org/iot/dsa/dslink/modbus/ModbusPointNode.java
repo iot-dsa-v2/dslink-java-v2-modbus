@@ -72,10 +72,10 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
             DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
 
             //Check if never, set each value separately
-            if (neverMultiple()) {
+            ObjectType objType = ObjectType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
+            if (objType.equals(ObjectType.HOLDING) && neverMultiple()) {
                 short[] shorts = new VTSHelper<>(locator).valueToShortsHelper(Util.valueToObject(value, dataType));
                 if (shorts.length > 1) {
-                    ObjectType objType = ObjectType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
                     int offset = parameters.getInt(Constants.POINT_OFFSET);
                     for (int i = 0; i < shorts.length; i++) {
                         BaseLocator<?> tempLocator = new NumericLocator(getParentNode().parameters.getInt(Constants.SLAVE_ID), objType.toRange(), offset + i, DataType.TWO_BYTE_INT_SIGNED);
