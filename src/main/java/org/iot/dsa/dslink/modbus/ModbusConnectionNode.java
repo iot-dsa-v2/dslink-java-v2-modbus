@@ -31,7 +31,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
                 null,
                 null)
         );
-        definitions.add(ParameterDefinition.makeEnumParam(
+        definitions.add(ParameterDefinition.makeParamWithDefault(
                 Constants.USE_MULTIPLE_WRITE_COMMAND,
                 DSJavaEnum.valueOf(Constants.MultipleWriteEnum.DEFAULT),
                 null,
