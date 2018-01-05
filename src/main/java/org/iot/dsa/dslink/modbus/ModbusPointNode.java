@@ -1,8 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.code.DataType;
@@ -12,6 +10,7 @@ import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
+import org.iot.dsa.dslink.modbus.Constants.MultipleWriteEnum;
 import org.iot.dsa.dslink.modbus.Constants.ObjectType;
 import org.iot.dsa.node.*;
 import org.iot.dsa.node.action.ActionInvocation;
@@ -81,6 +80,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
                         BaseLocator<?> tempLocator = new NumericLocator(getParentNode().parameters.getInt(Constants.SLAVE_ID), objType.toRange(), offset + i, DataType.TWO_BYTE_INT_SIGNED);
                         getParentNode().getParentNode().master.setValue(tempLocator, shorts[i]);
                     }
+                    return;
                 }
             }
 
@@ -93,7 +93,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     }
 
     private boolean neverMultiple() {
-        return getParentNode().getParentNode().parameters.get(Constants.USE_MULTIPLE_WRITE_COMMAND).toString().equals(Constants.MultipleWriteEnum.NEVER.toString());
+        return MultipleWriteEnum.NEVER.equals(MultipleWriteEnum.valueOf(parameters.getString(Constants.USE_MULTIPLE_WRITE_COMMAND)));
     }
 
     private class VTSHelper <T> {
