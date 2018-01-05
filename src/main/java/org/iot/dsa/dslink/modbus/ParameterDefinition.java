@@ -1,7 +1,9 @@
 package org.iot.dsa.dslink.modbus;
 
+import org.iot.dsa.node.DSFlexEnum;
 import org.iot.dsa.node.DSIEnum;
 import org.iot.dsa.node.DSIValue;
+import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSMetadata;
 import org.iot.dsa.node.DSValueType;
 import org.iot.dsa.node.action.DSAction;
@@ -42,7 +44,26 @@ public class ParameterDefinition {
     public DSMetadata addToAction(DSAction action, DSIValue defOverride) {
         DSMetadata metadata;
         if (defOverride != null) {
-            metadata = action.addDefaultParameter(name, defOverride, description);
+            DSIEnum et = null;
+            if (enumtype != null) {
+                et = enumtype;
+            } else if (def instanceof DSIEnum) {
+                et = (DSIEnum) def;
+            }
+            
+            if (et == null) {
+                metadata = action.addDefaultParameter(name, defOverride, description);
+            } else {
+                DSIEnum def;
+                if (et instanceof DSJavaEnum) {
+                    def = ((DSJavaEnum) et).valueOf(defOverride.toElement().toString());
+                } else if (et instanceof DSFlexEnum) {
+                    def = ((DSFlexEnum) et).valueOf(defOverride.toElement().toString());
+                } else {
+                    throw new RuntimeException("Unexpected runtime class for DSIEnum");
+                }
+                metadata = action.addDefaultParameter(name, (DSIValue) def, description);
+            }
         } else if (def != null) {
             metadata = action.addDefaultParameter(name, def, description);
         } else if (enumtype != null) {

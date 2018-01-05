@@ -101,7 +101,8 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     }
 
     private boolean neverMultiple() {
-        return MultipleWriteEnum.NEVER.equals(MultipleWriteEnum.valueOf(parameters.getString(Constants.USE_MULTIPLE_WRITE_COMMAND)));
+        MultipleWriteEnum option = MultipleWriteEnum.valueOf(getParentNode().getParentNode().parameters.getString(Constants.USE_MULTIPLE_WRITE_COMMAND));
+        return MultipleWriteEnum.NEVER.equals(option);
     }
 
     private class VTSHelper <T> {
