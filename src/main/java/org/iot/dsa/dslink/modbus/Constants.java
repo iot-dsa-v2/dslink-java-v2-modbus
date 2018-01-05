@@ -11,16 +11,44 @@ public class Constants {
     public static final String IP_TRANSPORT_TYPE = "Transport Type";
     public static final String IP_HOST = "Host";
     public static final String IP_PORT = "Port";
+    public static final String SERIAL_TRANSPORT_TYPE = "Transport Type";
+    public static final String SERIAL_PORT = "Serial Port";
+    public static final String SERIAL_BAUD_RATE = "Baud Rate";
+    public static final String SERIAL_DATA_BITS = "Data Bits";
+    public static final String SERIAL_STOP_BITS = "Stop Bits";
+    public static final String SERIAL_PARITY = "Parity";
 
     public static enum IpTransportType {
         TCP,
         UDP
+    }
+    
+    public static enum SerialTransportType {
+        RTU,
+        ASCII
     }
 
     public static enum MultipleWriteEnum {
         DEFAULT,
         ALWAYS,
         NEVER
+    }
+    
+    public static enum SerialParity {
+        NONE(0),
+        ODD(1),
+        EVEN(2),
+        MARK(3),
+        SPACE(4);
+        
+        private final int id;
+        private SerialParity(int id) {
+            this.id = id;
+        }
+        
+        public int toId() {
+            return id;
+        }
     }
     
     public static final String SLAVE_ID = "Slave ID";
