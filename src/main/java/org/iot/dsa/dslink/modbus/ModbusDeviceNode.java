@@ -178,15 +178,14 @@ public class ModbusDeviceNode extends DFDeviceNode {
                             val = DSString.valueOf((String) result);
                             break;
                         default:
-                            val = DSDouble.valueOf(((Number) result).doubleValue());
-                            //TODO add scaling
+                            Double raw = ((Number) result).doubleValue();
+                            Double scaled = mpoint.applyScaling(raw);
+                            val = DSDouble.valueOf(scaled);
                             break;
                     }
-                    
                     mpoint.updateValue(val);
                 }
             }
-            
             return true;
         } catch (ModbusTransportException e) {
             warn(e);

@@ -55,6 +55,8 @@ public class Constants {
     public static final String CONTIGUOUS_READS = "Contiguous Batch Reads Only";
     
     public static final String POLL_RATE = "Poll Rate";
+    public static final String SCALING = "Scaling";
+    public static final String SCALING_OFFSET = "Scaling Offset";
     public static final String POINT_OBJECT_TYPE = "Object Type";
     public static final String POINT_OFFSET = "Offset";
     public static final String POINT_DATA_TYPE = "Data Type";

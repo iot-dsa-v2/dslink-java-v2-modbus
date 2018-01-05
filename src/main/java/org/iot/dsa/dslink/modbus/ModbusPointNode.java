@@ -27,11 +27,20 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POLL_RATE, DSLong.valueOf(ModbusDeviceNode.DEFAULT_PING_RATE), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING, DSLong.valueOf(1), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING_OFFSET, DSLong.valueOf(0), null, null));
     }
     
     DSMap parameters;
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
+
+    public Double applyScaling(Double val) {
+        Long scale = parameters.get(Constants.SCALING).toLong();
+        Long offset = parameters.get(Constants.SCALING_OFFSET).toLong();
+        //System.out.printf("Val:"+val+"Scale:"+scale+"Offset:"+offset); //DEBUG
+        return val * scale + offset;
+    }
     
     public ModbusPointNode() {
         
@@ -64,7 +73,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     @Override
     public void onSet(DSIValue value) {
-        info("Setting: " + value.toElement().toInt());
         //TODO: move implementation to Device?
         BaseLocator<?> locator = getParentNode().createPointLocator(this);
         try {
