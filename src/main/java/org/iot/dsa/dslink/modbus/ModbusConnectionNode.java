@@ -31,6 +31,12 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
                 null,
                 null)
         );
+        definitions.add(ParameterDefinition.makeEnumParam(
+                Constants.USE_MULTIPLE_WRITE_COMMAND,
+                DSJavaEnum.valueOf(Constants.MultipleWriteEnum.DEFAULT),
+                null,
+                null)
+        );
     }
     
     public abstract List<ParameterDefinition> getParameterDefinitions();
@@ -123,6 +129,9 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
 
         int timeout = parameters.get(Constants.TIMEOUT).toInt();
         int retries = parameters.get(Constants.RETRIES).toInt();
+        if (parameters.get(Constants.USE_MULTIPLE_WRITE_COMMAND).toString().equals(Constants.MultipleWriteEnum.ALWAYS.toString())) {
+            master.setMultipleWritesOnly(true);
+        }
 
         master.setTimeout(timeout);
         master.setRetries(retries);

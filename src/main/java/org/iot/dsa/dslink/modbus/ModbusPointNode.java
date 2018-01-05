@@ -1,11 +1,15 @@
 package org.iot.dsa.dslink.modbus;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import com.serotonin.modbus4j.ExceptionResult;
+import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.locator.BaseLocator;
+import com.serotonin.modbus4j.locator.NumericLocator;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.Constants.ObjectType;
@@ -66,11 +70,41 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         BaseLocator<?> locator = getParentNode().createPointLocator(this);
         try {
             DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+
+            //Check if never, set each value separately
+            if (neverMultiple()) {
+                short[] shorts = new VTSHelper<>(locator).valueToShortsHelper(Util.valueToObject(value, dataType));
+                if (shorts.length > 1) {
+                    ObjectType objType = ObjectType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
+                    int offset = parameters.getInt(Constants.POINT_OFFSET);
+                    for (int i = 0; i < shorts.length; i++) {
+                        BaseLocator<?> tempLocator = new NumericLocator(getParentNode().parameters.getInt(Constants.SLAVE_ID), objType.toRange(), offset + i, DataType.TWO_BYTE_INT_SIGNED);
+                        getParentNode().getParentNode().master.setValue(tempLocator, shorts[i]);
+                    }
+                }
+            }
+
             getParentNode().getParentNode().master.setValue(locator, Util.valueToObject(value, dataType));
         } catch (ModbusTransportException e) {
             warn(e);
         } catch (ErrorResponseException e) {
             warn(e);
+        }
+    }
+
+    private boolean neverMultiple() {
+        return getParentNode().getParentNode().parameters.get(Constants.USE_MULTIPLE_WRITE_COMMAND).toString().equals(Constants.MultipleWriteEnum.NEVER.toString());
+    }
+
+    private class VTSHelper <T> {
+        BaseLocator <T> loc;
+
+        VTSHelper (BaseLocator<T> locator) {
+            this.loc = locator;
+        }
+
+        private short[] valueToShortsHelper (Object obj) {
+            return loc.valueToShorts((T) obj);
         }
     }
 

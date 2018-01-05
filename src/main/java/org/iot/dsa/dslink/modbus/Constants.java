@@ -7,6 +7,7 @@ public class Constants {
     public static final String PING_RATE = "Ping Rate";
     public static final String TIMEOUT = "Timeout";
     public static final String RETRIES = "Retries";
+    public static final String USE_MULTIPLE_WRITE_COMMAND = "use multiple write commands";
     public static final String IP_TRANSPORT_TYPE = "Transport Type";
     public static final String IP_HOST = "Host";
     public static final String IP_PORT = "Port";
@@ -14,6 +15,12 @@ public class Constants {
     public static enum IpTransportType {
         TCP,
         UDP
+    }
+
+    public static enum MultipleWriteEnum {
+        DEFAULT,
+        ALWAYS,
+        NEVER
     }
     
     public static final String SLAVE_ID = "Slave ID";
