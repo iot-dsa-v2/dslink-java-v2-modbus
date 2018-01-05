@@ -5,8 +5,8 @@ apply plugin: 'application'
 
 group 'org.iot.dsa'
 mainClassName = 'org.iot.dsa.dslink.DSLink'
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 build {
     def inputFile = file('dslink.json')
