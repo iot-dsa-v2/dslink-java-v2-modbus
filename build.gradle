@@ -35,6 +35,7 @@ dependencies {
     compile 'com.infiniteautomation:modbus4j:+'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-logging:commons-logging:+'
+    compile 'org.scream3r:jssc:+'
     testCompile 'junit:junit:+'
 }
 
