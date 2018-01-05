@@ -78,7 +78,6 @@ public class Util {
         } else if (String.class.equals(javaType)) {
             return value.toElement().toString();
         }
-        //TODO scaling?
         return null;
     }
 

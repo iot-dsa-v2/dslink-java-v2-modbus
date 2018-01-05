@@ -17,13 +17,17 @@ import org.iot.dsa.node.action.ActionInvocation;
 import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
 
+import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
+import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.CHAR;
+import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.VARCHAR;
+
 public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(ObjectType.COIL), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
-        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(BINARY), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POLL_RATE, DSLong.valueOf(ModbusDeviceNode.DEFAULT_PING_RATE), null, null));
@@ -35,11 +39,21 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
-    public Double applyScaling(Double val) {
-        Long scale = parameters.get(Constants.SCALING).toLong();
-        Long offset = parameters.get(Constants.SCALING_OFFSET).toLong();
-        //System.out.printf("Val:"+val+"Scale:"+scale+"Offset:"+offset); //DEBUG
-        return val * scale + offset;
+    private Long getPointScaling() {
+        Long ans = parameters.get(Constants.SCALING).toLong();
+        if (ans == 0) throw new RuntimeException("Zero is not a valid scaling factor.");
+        return ans;
+    }
+
+    private Long getPointOffset() {
+        return parameters.get(Constants.SCALING_OFFSET).toLong();
+    }
+    Double applyScaling(Double val) {
+        return val * getPointScaling() + getPointOffset();
+    }
+
+    Double removeScaling(Double val) {
+        return (val - getPointOffset()) / getPointScaling();
     }
     
     public ModbusPointNode() {
@@ -77,6 +91,12 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         BaseLocator<?> locator = getParentNode().createPointLocator(this);
         try {
             DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+
+            //Scale value if needed
+            if (dataType != BINARY && dataType != CHAR && dataType != VARCHAR) {
+                Double newVal = removeScaling(value.toElement().toDouble());
+                value = DSDouble.valueOf(newVal);
+            }
 
             //Check if never, set each value separately
             ObjectType objType = ObjectType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
