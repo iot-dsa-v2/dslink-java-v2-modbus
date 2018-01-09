@@ -49,26 +49,26 @@ public class ModbusDeviceNode extends DFDeviceNode {
     @Override
     protected void onStarted() {
         if (this.parameters == null) {
-            DSIObject o = get("parameters");
+            DSIObject o = get(Constants.PARAMETERS);
             if (o instanceof DSMap) {
                 this.parameters = (DSMap) o;
             }
             Util.verifyParameters(parameters, parameterDefinitions);
         } else {
             Util.verifyParameters(parameters, parameterDefinitions);
-            put("parameters", parameters.copy());
+            put(Constants.PARAMETERS, parameters.copy());
         }
     }
     
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault("Add Point", makeAddPointAction());
+        declareDefault(Constants.ACTION_ADD_POINT, makeAddPointAction());
     }
     
     @Override
     protected void onStable() {
-        put("Edit", makeEditAction());
+        put(Constants.ACTION_EDIT, makeEditAction());
         super.onStable();
     }
     
@@ -87,8 +87,8 @@ public class ModbusDeviceNode extends DFDeviceNode {
     private void edit(DSMap newParameters) {
         Util.verifyParameters(newParameters, parameterDefinitions);
         this.parameters = newParameters;
-        put("parameters", parameters.copy());
-        put("Edit", makeEditAction());
+        put(Constants.PARAMETERS, parameters.copy());
+        put(Constants.ACTION_EDIT, makeEditAction());
         restartNode();
     }
     
@@ -105,7 +105,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     }
 
     void addPoint(DSMap pointParameters) {
-        String name = pointParameters.getString("Name");
+        String name = pointParameters.getString(Constants.NAME);
         ModbusPointNode point = new ModbusPointNode(pointParameters);
         put(name, point);
     }

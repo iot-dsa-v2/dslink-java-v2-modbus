@@ -15,7 +15,7 @@ public class IPConnectionNode extends ModbusConnectionNode {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.IP_TRANSPORT_TYPE,
                 DSJavaEnum.valueOf(IpTransportType.TCP), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.IP_HOST, DSValueType.STRING, null, "10.0.1.199"));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.IP_PORT, DSLong.valueOf(502), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.IP_PORT, DSLong.valueOf(Constants.DEFAULT_IP_PORT), null, null));
         ModbusConnectionNode.addCommonParameterDefinitions(parameterDefinitions);
     }
     

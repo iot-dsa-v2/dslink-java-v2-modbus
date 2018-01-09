@@ -3,6 +3,7 @@ package org.iot.dsa.dslink.modbus;
 import org.iot.dsa.dslink.DSRootNode;
 import org.iot.dsa.node.DSInfo;
 import org.iot.dsa.node.DSMap;
+import org.iot.dsa.node.DSNode;
 import org.iot.dsa.node.action.ActionInvocation;
 import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
@@ -12,6 +13,13 @@ public class RootNode extends DSRootNode {
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
+        
+        declareDefault(Constants.ACTION_ADD_IP, getAddIpConnectionAction());
+        declareDefault(Constants.ACTION_ADD_SERIAL, getAddSerialConnectionAction());
+        declareDefault(Constants.ACTION_RESCAN_PORTS, getRescanAction());
+    }
+    
+    private DSAction getAddIpConnectionAction() {
         DSAction act = new DSAction() {
             @Override
             public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
@@ -20,9 +28,11 @@ public class RootNode extends DSRootNode {
             }
         };
         Util.makeAddParameters(act, IPConnectionNode.parameterDefinitions);
-        declareDefault("Add IP Connection", act);
-        
-        act = new DSAction() {
+        return act;
+    }
+    
+    private DSAction getAddSerialConnectionAction() {
+        DSAction act = new DSAction() {
             @Override
             public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
                 ((RootNode) info.getParent()).addSerialConnection(invocation.getParameters());
@@ -30,17 +40,41 @@ public class RootNode extends DSRootNode {
             }
         };
         Util.makeAddParameters(act, SerialConnectionNode.parameterDefinitions);
-        declareDefault("Add Serial Connection", act);
+        return act;
+    }
+    
+    private DSAction getRescanAction() {
+        DSAction act = new DSAction() {
+            @Override
+            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
+                ((RootNode) info.getParent()).rescanSerialPorts();
+                return null;
+            }
+        };
+        return act;
     }
     
     private void addIPConnection(DSMap parameters) {
-        String name = parameters.getString("Name");
+        String name = parameters.getString(Constants.NAME);
         put(name, new IPConnectionNode(parameters));
     }
     
     private void addSerialConnection(DSMap parameters) {
-        String name = parameters.getString("Name");
+        String name = parameters.getString(Constants.NAME);
         put(name, new SerialConnectionNode(parameters));
+    }
+    
+    private void rescanSerialPorts() {
+        put(Constants.ACTION_ADD_SERIAL, getAddSerialConnectionAction());
+        for (DSInfo info: this) {
+            if (info.isNode()) {
+                DSNode n = info.getNode();
+                if (n instanceof SerialConnectionNode) {
+                    SerialConnectionNode scn = (SerialConnectionNode) n;
+                    scn.put(Constants.ACTION_EDIT, scn.makeEditAction());
+                }
+            }
+        }
     }
 
 }

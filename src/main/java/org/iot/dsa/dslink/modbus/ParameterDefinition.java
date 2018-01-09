@@ -1,9 +1,11 @@
 package org.iot.dsa.dslink.modbus;
 
+import org.iot.dsa.node.DSElement;
 import org.iot.dsa.node.DSFlexEnum;
 import org.iot.dsa.node.DSIEnum;
 import org.iot.dsa.node.DSIValue;
 import org.iot.dsa.node.DSJavaEnum;
+import org.iot.dsa.node.DSMap;
 import org.iot.dsa.node.DSMetadata;
 import org.iot.dsa.node.DSValueType;
 import org.iot.dsa.node.action.DSAction;
@@ -18,7 +20,7 @@ public class ParameterDefinition {
     public final String placeholder;
     
     
-    private ParameterDefinition(String name, DSValueType type, DSIEnum enumtype, DSIValue def,
+    protected ParameterDefinition(String name, DSValueType type, DSIEnum enumtype, DSIValue def,
             String description, String placeholder) {
         super();
         this.name = name;
@@ -80,6 +82,35 @@ public class ParameterDefinition {
     
     public DSMetadata addToAction(DSAction action) {
         return addToAction(action, null);
+    }
+    
+    public void verify(DSMap parameters) {
+        DSElement paramVal = parameters.get(name);
+        if (paramVal == null) {
+            if (def != null) {
+                paramVal = def.toElement();
+                parameters.put(name, paramVal);
+            } else {
+                throw new RuntimeException("Missing Parameter " + name);
+            }
+        } else {
+            boolean rightType = false;
+            if (def != null) {
+                if (def.getValueType().equals(DSValueType.ENUM)) {
+                    rightType = paramVal.isString() && def instanceof DSIEnum
+                            && ((DSIEnum) def).getEnums(null).contains(paramVal);
+                } else {
+                    rightType = def.getValueType().equals(paramVal.getValueType());
+                }
+            } else if (enumtype != null) {
+                rightType = paramVal.isString() && enumtype.getEnums(null).contains(paramVal);
+            } else if (type != null) {
+                rightType = type.equals(paramVal.getValueType());
+            }
+            if (!rightType) {
+                throw new RuntimeException("Unexpected Type on Parameter " + name);
+            }
+        }
     }
     
 

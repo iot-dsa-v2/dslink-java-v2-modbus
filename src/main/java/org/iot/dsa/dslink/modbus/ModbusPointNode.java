@@ -67,14 +67,14 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     @Override
     protected void onStarted() {
         if (this.parameters == null) {
-            DSIObject o = get("parameters");
+            DSIObject o = get(Constants.PARAMETERS);
             if (o instanceof DSMap) {
                 this.parameters = (DSMap) o;
             }
             Util.verifyParameters(parameters, parameterDefinitions);
         } else {
             Util.verifyParameters(parameters, parameterDefinitions);
-            put("parameters", parameters.copy());
+            put(Constants.PARAMETERS, parameters.copy());
         }
     }
     
@@ -132,6 +132,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
             this.loc = locator;
         }
 
+        @SuppressWarnings("unchecked")
         private short[] valueToShortsHelper (Object obj) {
             return loc.valueToShorts((T) obj);
         }
@@ -140,7 +141,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     @Override
     public void onSet(DSInfo info, DSIValue value) {
         //String name = info.getName();
-        //TODO make "Value" a final constant
         if (this.value.equals(info)) {
             onSet(value);
         }
@@ -148,7 +148,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     @Override
     protected void onStable() {
-        put("Edit", makeEditAction());
+        put(Constants.ACTION_EDIT, makeEditAction());
         super.onStable();
     }
     
@@ -167,8 +167,8 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     private void edit(DSMap newParameters) {
         Util.verifyParameters(newParameters, parameterDefinitions);
         this.parameters = newParameters;
-        put("parameters", parameters.copy());
-        put("Edit", makeEditAction());
+        put(Constants.PARAMETERS, parameters.copy());
+        put(Constants.ACTION_EDIT, makeEditAction());
         restartNode();
     }
 

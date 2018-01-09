@@ -4,6 +4,16 @@ import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.code.RegisterRange;
 
 public class Constants {
+    public static final String PARAMETERS = "parameters";
+    
+    public static final String ACTION_EDIT = "Edit";
+    public static final String ACTION_ADD_IP = "Add IP Connection";
+    public static final String ACTION_ADD_SERIAL = "Add Serial Connection";
+    public static final String ACTION_RESCAN_PORTS = "Rescan For Serial Ports";
+    public static final String ACTION_ADD_DEVICE = "Add Device";
+    public static final String ACTION_ADD_POINT = "Add Point";
+    
+    public static final String NAME = "Name";
     public static final String PING_RATE = "Ping Rate";
     public static final String TIMEOUT = "Timeout";
     public static final String RETRIES = "Retries";
@@ -12,12 +22,22 @@ public class Constants {
     public static final String IP_HOST = "Host";
     public static final String IP_PORT = "Port";
     public static final String SERIAL_TRANSPORT_TYPE = "Transport Type";
-    public static final String SERIAL_PORT = "Serial Port";
+    public static final String SERIAL_PORT_DROPDOWN = "Serial Port";
+    public static final String SERIAL_PORT_MANUAL = "Other Serial Port";
+    public static final String OTHER_SERIAL_PORT = "Other";
     public static final String SERIAL_BAUD_RATE = "Baud Rate";
     public static final String SERIAL_DATA_BITS = "Data Bits";
     public static final String SERIAL_STOP_BITS = "Stop Bits";
     public static final String SERIAL_PARITY = "Parity";
 
+    public static final int DEFAULT_TIMEOUT = 500;
+    public static final int DEFAULT_RETRIES = 2;
+    public static final int DEFAULT_IP_PORT = 502;
+    public static final int DEFAULT_BAUD_RATE = 9600;
+    public static final int DEFAULT_DATA_BITS = 8;
+    public static final int DEFAULT_STOP_BITS = 1;
+    
+    
     public static enum IpTransportType {
         TCP,
         UDP

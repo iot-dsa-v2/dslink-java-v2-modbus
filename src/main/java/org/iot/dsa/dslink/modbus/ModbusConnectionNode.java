@@ -21,13 +21,13 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         );
         definitions.add(ParameterDefinition.makeParamWithDefault(
                 Constants.TIMEOUT,
-                DSInt.valueOf(DEFAULT_TIMEOUT),
+                DSInt.valueOf(Constants.DEFAULT_TIMEOUT),
                 null,
                 null)
         );
         definitions.add(ParameterDefinition.makeParamWithDefault(
                 Constants.RETRIES,
-                DSInt.valueOf(DEFAULT_RETRIES),
+                DSInt.valueOf(Constants.DEFAULT_RETRIES),
                 null,
                 null)
         );
@@ -54,30 +54,30 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     @Override
     protected void onStarted() {
         if (this.parameters == null) {
-            DSIObject o = get("parameters");
+            DSIObject o = get(Constants.PARAMETERS);
             if (o instanceof DSMap) {
                 this.parameters = (DSMap) o;
             }
             Util.verifyParameters(parameters, getParameterDefinitions());
         } else {
             Util.verifyParameters(parameters, getParameterDefinitions());
-            put("parameters", parameters.copy());
+            put(Constants.PARAMETERS, parameters.copy());
         }
     }
     
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault("Add Device", makeAddDeviceAction());
+        declareDefault(Constants.ACTION_ADD_DEVICE, makeAddDeviceAction());
     }
     
     @Override
     protected void onStable() {
-        put("Edit", makeEditAction());
+        put(Constants.ACTION_EDIT, makeEditAction());
         super.onStable();
     }
     
-    private DSAction makeEditAction() {
+    DSAction makeEditAction() {
         DSAction act = new DSAction() {
             @Override
             public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
@@ -92,8 +92,8 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     private void edit(DSMap newParameters) {
         Util.verifyParameters(newParameters, getParameterDefinitions());
         this.parameters = newParameters;
-        put("parameters", parameters.copy());
-        put("Edit", makeEditAction());
+        put(Constants.PARAMETERS, parameters.copy());
+        put(Constants.ACTION_EDIT, makeEditAction());
         restartNode();
     }
     
@@ -110,7 +110,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     }
 
     void addDevice(DSMap deviceParameters) {
-        String name = deviceParameters.getString("Name");
+        String name = deviceParameters.getString(Constants.NAME);
         ModbusDeviceNode device = new ModbusDeviceNode(deviceParameters);
         put(name, device);
         device.startCarObject();
@@ -119,10 +119,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     /* ==================================================================== */
     ModbusMaster master;
     ModbusFactory modbusFactory = new ModbusFactory();
-
-    //TODO: move to a better location?
-    final static private int DEFAULT_TIMEOUT = 500;
-    final static private int DEFAULT_RETRIES = 2;
+    
     
     @Override
     public boolean createConnection() {
