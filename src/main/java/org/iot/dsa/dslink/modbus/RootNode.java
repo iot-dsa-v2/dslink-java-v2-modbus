@@ -13,11 +13,13 @@ public class RootNode extends DSRootNode {
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-
         declareDefault(Constants.ACTION_ADD_IP, getAddIpConnectionAction());
         declareDefault(Constants.ACTION_ADD_SERIAL, getAddSerialConnectionAction());
         declareDefault(Constants.ACTION_RESCAN_PORTS, getRescanAction());
+        declareDefault(Constants.ACTION_ADD_SLAVE, getAddSlaveDeviceAction());
+    }
 
+    private DSAction getAddSlaveDeviceAction() {
         DSAction act = new DSAction() {
             @Override
             public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
@@ -26,7 +28,7 @@ public class RootNode extends DSRootNode {
             }
         };
         Util.makeAddParameters(act, SlaveDeviceNode.parameterDefinitions);
-        declareDefault("Add Slave Device", act);
+        return act;
     }
 
     private DSAction getAddIpConnectionAction() {

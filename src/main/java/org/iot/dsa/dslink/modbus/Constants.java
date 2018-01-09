@@ -12,6 +12,7 @@ public class Constants {
     public static final String ACTION_RESCAN_PORTS = "Rescan For Serial Ports";
     public static final String ACTION_ADD_DEVICE = "Add Device";
     public static final String ACTION_ADD_POINT = "Add Point";
+    public static final String ACTION_ADD_SLAVE = "Add Slave Device";
     
     public static final String NAME = "Name";
     public static final String PING_RATE = "Ping Rate";
