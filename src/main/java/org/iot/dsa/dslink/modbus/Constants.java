@@ -32,7 +32,9 @@ public class Constants {
 
     public static final int DEFAULT_TIMEOUT = 500;
     public static final int DEFAULT_RETRIES = 2;
+    public static final int DEFAULT_SLAVE_ID = 1;
     public static final int DEFAULT_IP_PORT = 502;
+    public static final int DEFAULT_SLAVE_IP_PORT = 1025;
     public static final int DEFAULT_BAUD_RATE = 9600;
     public static final int DEFAULT_DATA_BITS = 8;
     public static final int DEFAULT_STOP_BITS = 1;

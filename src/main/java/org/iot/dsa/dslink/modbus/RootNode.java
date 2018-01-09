@@ -13,12 +13,22 @@ public class RootNode extends DSRootNode {
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        
+
         declareDefault(Constants.ACTION_ADD_IP, getAddIpConnectionAction());
         declareDefault(Constants.ACTION_ADD_SERIAL, getAddSerialConnectionAction());
         declareDefault(Constants.ACTION_RESCAN_PORTS, getRescanAction());
+
+        DSAction act = new DSAction() {
+            @Override
+            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
+                ((RootNode) info.getParent()).addSlaveConnection(invocation.getParameters());
+                return null;
+            }
+        };
+        Util.makeAddParameters(act, SlaveDeviceNode.parameterDefinitions);
+        declareDefault("Add Slave Device", act);
     }
-    
+
     private DSAction getAddIpConnectionAction() {
         DSAction act = new DSAction() {
             @Override
@@ -30,7 +40,7 @@ public class RootNode extends DSRootNode {
         Util.makeAddParameters(act, IPConnectionNode.parameterDefinitions);
         return act;
     }
-    
+
     private DSAction getAddSerialConnectionAction() {
         DSAction act = new DSAction() {
             @Override
@@ -42,7 +52,7 @@ public class RootNode extends DSRootNode {
         Util.makeAddParameters(act, SerialConnectionNode.parameterDefinitions);
         return act;
     }
-    
+
     private DSAction getRescanAction() {
         DSAction act = new DSAction() {
             @Override
@@ -63,7 +73,7 @@ public class RootNode extends DSRootNode {
         String name = parameters.getString(Constants.NAME);
         put(name, new SerialConnectionNode(parameters));
     }
-    
+
     private void rescanSerialPorts() {
         put(Constants.ACTION_ADD_SERIAL, getAddSerialConnectionAction());
         for (DSInfo info: this) {
@@ -75,6 +85,11 @@ public class RootNode extends DSRootNode {
                 }
             }
         }
+    }
+
+    private void addSlaveConnection(DSMap parameters) {
+        String name = parameters.getString("Name");
+        put(name, new SlaveDeviceNode(parameters));
     }
 
 }
