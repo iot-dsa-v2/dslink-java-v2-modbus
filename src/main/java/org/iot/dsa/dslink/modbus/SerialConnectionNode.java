@@ -8,7 +8,6 @@ import org.iot.dsa.dslink.modbus.Constants.SerialTransportType;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
-import org.iot.dsa.node.DSNode;
 import com.serotonin.modbus4j.serial.SerialPortWrapper;
 
 public class SerialConnectionNode extends ModbusConnectionNode {
@@ -26,12 +25,6 @@ public class SerialConnectionNode extends ModbusConnectionNode {
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
-    }
-    
-    @Override
-    public void addNewInstance(DSNode parent, DSMap newParameters) {
-        String name = newParameters.getString(Constants.NAME);
-        parent.put(name, new SerialConnectionNode(newParameters));
     }
     
     public SerialConnectionNode() {

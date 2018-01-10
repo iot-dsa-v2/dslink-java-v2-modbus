@@ -36,16 +36,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
-    }
-
-    @Override
-    public void addNewInstance(DSNode parent, DSMap newParameters) {
-        String name = newParameters.getString(Constants.NAME);
-        ModbusDeviceNode device = new ModbusDeviceNode(newParameters);
-        parent.put(name, device);
-        device.startCarObject();
-    }
-    
+    }    
     
     public ModbusDeviceNode() {
         

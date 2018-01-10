@@ -1,14 +1,10 @@
 package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.ExceptionResult;
-import com.serotonin.modbus4j.ProcessImageListener;
-import com.serotonin.modbus4j.exception.ModbusInitException;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.*;
 
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +27,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
-    }
-    
-    @Override
-    public void addNewInstance(DSNode parent, DSMap newParameters) {
-        // TODO Auto-generated method stub
-        
     }
 
     private DSInfo value = getInfo(Constants.POINT_VALUE);

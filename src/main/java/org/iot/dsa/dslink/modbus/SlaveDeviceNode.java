@@ -4,8 +4,6 @@ import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
-import org.iot.dsa.node.DSNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +24,6 @@ public class SlaveDeviceNode extends EditableNode {
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
     }
-
-    @Override
-    public void addNewInstance(DSNode parent, DSMap newParameters) {
-        String name = newParameters.getString(Constants.NAME);
-        parent.put(name, new SlaveDeviceNode(newParameters)); 
-    }
-
 
     public SlaveDeviceNode() {
 

@@ -36,13 +36,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
     }
-
-    @Override
-    public void addNewInstance(DSNode parent, DSMap newParameters) {
-        String name = newParameters.getString(Constants.NAME);
-        ModbusPointNode point = new ModbusPointNode(newParameters);
-        parent.put(name, point);
-    }
     
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
