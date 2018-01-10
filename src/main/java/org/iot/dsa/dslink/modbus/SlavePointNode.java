@@ -3,6 +3,8 @@ package org.iot.dsa.dslink.modbus;
 import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.ProcessImageListener;
 import com.serotonin.modbus4j.exception.ModbusInitException;
+import org.iot.dsa.dslink.dframework.EditableNode;
+import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.*;
 
 import java.nio.ByteBuffer;
@@ -16,7 +18,7 @@ import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
  * @author James (Juris) Puchin
  * Created on 1/9/2018
  */
-public class SlavePointNode extends DSNode implements DSIValue {
+public class SlavePointNode extends EditableNode implements DSIValue {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
 
@@ -25,8 +27,18 @@ public class SlavePointNode extends DSNode implements DSIValue {
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(BINARY), null, null));
     }
+    
+    @Override
+    public List<ParameterDefinition> getParameterDefinitions() {
+        return parameterDefinitions;
+    }
+    
+    @Override
+    public void addNewInstance(DSNode parent, DSMap newParameters) {
+        // TODO Auto-generated method stub
+        
+    }
 
-    DSMap parameters;
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
@@ -83,19 +95,10 @@ public class SlavePointNode extends DSNode implements DSIValue {
 
     @Override
     protected void onStarted() {
-        if (this.parameters == null) {
-            DSIObject o = get(Constants.PARAMETERS);
-            if (o instanceof DSMap) {
-                this.parameters = (DSMap) o;
-            }
-            Util.verifyParameters(parameters, parameterDefinitions);
-        } else {
-            Util.verifyParameters(parameters, parameterDefinitions);
-            put(Constants.PARAMETERS, parameters.copy());
-        }
         submitToSlaveHandler();
     }
 
+    // oh my god this method name
     private void submitToSlaveHandler() {
         Constants.ObjectType objType = Constants.ObjectType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
 
@@ -145,6 +148,12 @@ public class SlavePointNode extends DSNode implements DSIValue {
         } else {
             throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode");
         }
+    }
+
+    @Override
+    public void onEdit() {
+        // TODO Auto-generated method stub
+        
     }
 
 /*    private class BasicProcessImageListener implements ProcessImageListener {

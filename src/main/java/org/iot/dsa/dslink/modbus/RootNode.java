@@ -17,20 +17,9 @@ public class RootNode extends DSRootNode {
         declareDefault(Constants.ACTION_ADD_IP, DFUtil.getAddAction(IPConnectionNode.class));
         declareDefault(Constants.ACTION_ADD_SERIAL, DFUtil.getAddAction(SerialConnectionNode.class));
         declareDefault(Constants.ACTION_RESCAN_PORTS, getRescanAction());
-        //declareDefault(Constants.ACTION_ADD_SLAVE, getAddSlaveDeviceAction());
+        declareDefault(Constants.ACTION_ADD_SLAVE, DFUtil.getAddAction(SlaveDeviceNode.class));
     }
 
-//    private DSAction getAddSlaveDeviceAction() {
-//        DSAction act = new DSAction() {
-//            @Override
-//            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
-//                ((RootNode) info.getParent()).addSlaveConnection(invocation.getParameters());
-//                return null;
-//            }
-//        };
-//        Util.makeAddParameters(act, SlaveDeviceNode.parameterDefinitions);
-//        return act;
-//    }
 
     private DSAction getRescanAction() {
         DSAction act = new DSAction() {
@@ -55,10 +44,5 @@ public class RootNode extends DSRootNode {
             }
         }
     }
-
-//    private void addSlaveConnection(DSMap parameters) {
-//        String name = parameters.getString("Name");
-//        put(name, new SlaveDeviceNode(parameters));
-//    }
 
 }
