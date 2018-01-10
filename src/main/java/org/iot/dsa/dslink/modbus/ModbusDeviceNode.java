@@ -172,7 +172,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
         if (parent instanceof ModbusConnectionNode) {
             return (ModbusConnectionNode) parent;
         } else {
-            throw new RuntimeException("Wrong parent class");
+            throw new RuntimeException("Wrong parent class, expected ModbusConnectionNode");
         }
     }
 }

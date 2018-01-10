@@ -58,33 +58,10 @@ public class SlaveDeviceNode extends DSNode {
 
     private void startSlave() {
         int port = parameters.get(Constants.IP_PORT).toInt();
-        final ModbusSlaveSet listener = new TcpSlave(port, false);
-        listener.addProcessImage(getModscanProcessImage(1));
-        listener.addProcessImage(getModscanProcessImage(2));
-
-        DSRuntime.run(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    listener.start();
-                }
-                catch (ModbusInitException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        TcpSlaveHandler.getProcessImage(port, 1);
     }
 
+    public void addSlavePoint(SlavePointNode node) {
 
-    static BasicProcessImage getModscanProcessImage(int slaveId) {
-        BasicProcessImage processImage = new BasicProcessImage(slaveId);
-        processImage.setAllowInvalidAddress(true);
-        processImage.setInvalidAddressValue(Short.MIN_VALUE);
-        processImage.setExceptionStatus((byte) 151);
-        processImage.setNumeric(RegisterRange.HOLDING_REGISTER, 0, DataType.TWO_BYTE_INT_UNSIGNED,
-                42);
-
-        return processImage;
     }
 }
