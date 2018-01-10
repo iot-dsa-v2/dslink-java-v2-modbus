@@ -2,10 +2,9 @@ package org.iot.dsa.dslink.modbus;
 
 import java.util.List;
 import org.iot.dsa.dslink.dframework.DFConnectionNode;
+import org.iot.dsa.dslink.dframework.DFUtil;
+import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.*;
-import org.iot.dsa.node.action.ActionInvocation;
-import org.iot.dsa.node.action.ActionResult;
-import org.iot.dsa.node.action.DSAction;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.exception.ModbusInitException;
@@ -39,9 +38,6 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         );
     }
     
-    public abstract List<ParameterDefinition> getParameterDefinitions();
-    
-    DSMap parameters;
     
     public ModbusConnectionNode() {
         
@@ -52,68 +48,14 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     }
     
     @Override
-    protected void onStarted() {
-        if (this.parameters == null) {
-            DSIObject o = get(Constants.PARAMETERS);
-            if (o instanceof DSMap) {
-                this.parameters = (DSMap) o;
-            }
-            Util.verifyParameters(parameters, getParameterDefinitions());
-        } else {
-            Util.verifyParameters(parameters, getParameterDefinitions());
-            put(Constants.PARAMETERS, parameters.copy());
-        }
-    }
-    
-    @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault(Constants.ACTION_ADD_DEVICE, makeAddDeviceAction());
+        declareDefault(Constants.ACTION_ADD_DEVICE, DFUtil.getAddAction(ModbusDeviceNode.class));
     }
     
     @Override
     protected void onStable() {
-        put(Constants.ACTION_EDIT, makeEditAction());
         super.onStable();
-    }
-    
-    DSAction makeEditAction() {
-        DSAction act = new DSAction() {
-            @Override
-            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
-                ((ModbusConnectionNode) info.getParent()).edit(invocation.getParameters());
-                return null;
-            }
-        };
-        Util.makeEditParameters(act, getParameterDefinitions(), parameters);
-        return act;
-    }
-    
-    private void edit(DSMap newParameters) {
-        Util.verifyParameters(newParameters, getParameterDefinitions());
-        this.parameters = newParameters;
-        put(Constants.PARAMETERS, parameters.copy());
-        put(Constants.ACTION_EDIT, makeEditAction());
-        restartNode();
-    }
-    
-    private DSIObject makeAddDeviceAction() {
-        DSAction act = new DSAction() {
-            @Override
-            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
-                ((ModbusConnectionNode) info.getParent()).addDevice(invocation.getParameters());
-                return null;
-            }
-        };
-        Util.makeAddParameters(act, ModbusDeviceNode.parameterDefinitions);
-        return act;
-    }
-
-    void addDevice(DSMap deviceParameters) {
-        String name = deviceParameters.getString(Constants.NAME);
-        ModbusDeviceNode device = new ModbusDeviceNode(deviceParameters);
-        put(name, device);
-        device.startCarObject();
     }
     
     /* ==================================================================== */

@@ -1,5 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
+import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.DSElement;
 import org.iot.dsa.node.DSFlexEnum;
 import org.iot.dsa.node.DSIValue;
@@ -52,7 +53,7 @@ public class SerialPortParameter extends ParameterDefinition {
     @Override
     public void verify(DSMap parameters) {
         String ddPort = parameters.getString(dropdownName);
-        if (Constants.OTHER_SERIAL_PORT.equals(ddPort)) {
+        if (!Constants.OTHER_SERIAL_PORT.equals(ddPort)) {
             parameters.put(manualName, ddPort);
         }
         DSElement port = parameters.get(manualName);

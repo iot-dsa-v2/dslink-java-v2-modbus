@@ -2,10 +2,12 @@ package org.iot.dsa.dslink.modbus;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.modbus.Constants.IpTransportType;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
+import org.iot.dsa.node.DSNode;
 import org.iot.dsa.node.DSValueType;
 import com.serotonin.modbus4j.ip.IpParameters;
 
@@ -22,6 +24,12 @@ public class IPConnectionNode extends ModbusConnectionNode {
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
+    }
+    
+    @Override
+    public void addNewInstance(DSNode parent, DSMap newParameters) {
+        String name = newParameters.getString(Constants.NAME);
+        parent.put(name, new IPConnectionNode(newParameters));
     }
     
     public IPConnectionNode() {

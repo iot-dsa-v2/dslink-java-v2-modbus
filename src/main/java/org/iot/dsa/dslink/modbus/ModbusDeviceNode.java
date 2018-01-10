@@ -5,21 +5,18 @@ import java.util.List;
 import java.util.Set;
 import org.iot.dsa.dslink.dframework.DFDeviceNode;
 import org.iot.dsa.dslink.dframework.DFPointNode;
+import org.iot.dsa.dslink.dframework.DFUtil;
+import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.Constants.ObjectType;
 import org.iot.dsa.node.DSBool;
 import org.iot.dsa.node.DSDouble;
 import org.iot.dsa.node.DSElement;
-import org.iot.dsa.node.DSIObject;
-import org.iot.dsa.node.DSInfo;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
 import org.iot.dsa.node.DSNode;
 import org.iot.dsa.node.DSString;
 import org.iot.dsa.node.DSValueType;
-import org.iot.dsa.node.action.ActionInvocation;
-import org.iot.dsa.node.action.ActionResult;
-import org.iot.dsa.node.action.DSAction;
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
 import com.serotonin.modbus4j.ExceptionResult;
@@ -36,7 +33,19 @@ public class ModbusDeviceNode extends DFDeviceNode {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.CONTIGUOUS_READS, DSBool.FALSE, null, null));
     }
     
-    DSMap parameters;
+    @Override
+    public List<ParameterDefinition> getParameterDefinitions() {
+        return parameterDefinitions;
+    }
+
+    @Override
+    public void addNewInstance(DSNode parent, DSMap newParameters) {
+        String name = newParameters.getString(Constants.NAME);
+        ModbusDeviceNode device = new ModbusDeviceNode(newParameters);
+        parent.put(name, device);
+        device.startCarObject();
+    }
+    
     
     public ModbusDeviceNode() {
         
@@ -47,61 +56,14 @@ public class ModbusDeviceNode extends DFDeviceNode {
     }
     
     @Override
-    protected void onStarted() {
-        if (this.parameters == null) {
-            DSIObject o = get(Constants.PARAMETERS);
-            if (o instanceof DSMap) {
-                this.parameters = (DSMap) o;
-            }
-            Util.verifyParameters(parameters, parameterDefinitions);
-        } else {
-            Util.verifyParameters(parameters, parameterDefinitions);
-            put(Constants.PARAMETERS, parameters.copy());
-        }
-    }
-    
-    @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault(Constants.ACTION_ADD_POINT, makeAddPointAction());
+        declareDefault(Constants.ACTION_ADD_POINT, DFUtil.getAddAction(ModbusPointNode.class));
     }
     
     @Override
     protected void onStable() {
-        put(Constants.ACTION_EDIT, makeEditAction());
         super.onStable();
-    }
-    
-    private DSAction makeEditAction() {
-        DSAction act = new DSAction() {
-            @Override
-            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
-                ((ModbusDeviceNode) info.getParent()).edit(invocation.getParameters());
-                return null;
-            }
-        };
-        Util.makeEditParameters(act, parameterDefinitions, parameters);
-        return act;
-    }
-    
-    private void edit(DSMap newParameters) {
-        Util.verifyParameters(newParameters, parameterDefinitions);
-        this.parameters = newParameters;
-        put(Constants.PARAMETERS, parameters.copy());
-        put(Constants.ACTION_EDIT, makeEditAction());
-        restartNode();
-    }
-    
-    private DSAction makeAddPointAction() {
-        DSAction act = new DSAction() {
-            @Override
-            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
-                ((ModbusDeviceNode) info.getParent()).addPoint(invocation.getParameters());
-                return null;
-            }
-        };
-        Util.makeAddParameters(act, ModbusPointNode.parameterDefinitions);
-        return act;
     }
 
     void addPoint(DSMap pointParameters) {
@@ -213,5 +175,4 @@ public class ModbusDeviceNode extends DFDeviceNode {
             throw new RuntimeException("Wrong parent class");
         }
     }
-
 }

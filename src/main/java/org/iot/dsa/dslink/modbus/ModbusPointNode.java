@@ -9,14 +9,11 @@ import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
 import org.iot.dsa.dslink.dframework.DFPointNode;
+import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.Constants.MultipleWriteEnum;
 import org.iot.dsa.dslink.modbus.Constants.ObjectType;
 import org.iot.dsa.node.*;
-import org.iot.dsa.node.action.ActionInvocation;
-import org.iot.dsa.node.action.ActionResult;
-import org.iot.dsa.node.action.DSAction;
-
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.CHAR;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.VARCHAR;
@@ -35,7 +32,18 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING_OFFSET, DSLong.valueOf(0), null, null));
     }
     
-    DSMap parameters;
+    @Override
+    public List<ParameterDefinition> getParameterDefinitions() {
+        return parameterDefinitions;
+    }
+
+    @Override
+    public void addNewInstance(DSNode parent, DSMap newParameters) {
+        String name = newParameters.getString(Constants.NAME);
+        ModbusPointNode point = new ModbusPointNode(newParameters);
+        parent.put(name, point);
+    }
+    
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
@@ -62,20 +70,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     public ModbusPointNode(DSMap parameters) {
         this.parameters = parameters;
-    }
-    
-    @Override
-    protected void onStarted() {
-        if (this.parameters == null) {
-            DSIObject o = get(Constants.PARAMETERS);
-            if (o instanceof DSMap) {
-                this.parameters = (DSMap) o;
-            }
-            Util.verifyParameters(parameters, parameterDefinitions);
-        } else {
-            Util.verifyParameters(parameters, parameterDefinitions);
-            put(Constants.PARAMETERS, parameters.copy());
-        }
     }
     
     @Override
@@ -148,28 +142,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     @Override
     protected void onStable() {
-        put(Constants.ACTION_EDIT, makeEditAction());
         super.onStable();
-    }
-    
-    private DSAction makeEditAction() {
-        DSAction act = new DSAction() {
-            @Override
-            public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
-                ((ModbusPointNode) info.getParent()).edit(invocation.getParameters());
-                return null;
-            }
-        };
-        Util.makeEditParameters(act, parameterDefinitions, parameters);
-        return act;
-    }
-    
-    private void edit(DSMap newParameters) {
-        Util.verifyParameters(newParameters, parameterDefinitions);
-        this.parameters = newParameters;
-        put(Constants.PARAMETERS, parameters.copy());
-        put(Constants.ACTION_EDIT, makeEditAction());
-        restartNode();
     }
 
     @Override
@@ -227,5 +200,4 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         }
         return super.getPollRate();
     }
-
 }

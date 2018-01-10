@@ -1,39 +1,14 @@
 package org.iot.dsa.dslink.modbus;
 
 import java.math.BigInteger;
-import java.util.List;
 import java.util.regex.Pattern;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
-import org.iot.dsa.node.DSElement;
 import org.iot.dsa.node.DSIValue;
-import org.iot.dsa.node.DSMap;
-import org.iot.dsa.node.DSValueType;
-import org.iot.dsa.node.action.DSAction;
 import com.serotonin.modbus4j.code.DataType;
 import jssc.SerialNativeInterface;
 import jssc.SerialPortList;
 
 public class Util {
-    
-    public static void makeAddParameters(DSAction action, List<ParameterDefinition> parameterDefinitions) {
-        action.addParameter(Constants.NAME, DSValueType.STRING, null);
-        for (ParameterDefinition paramDefn: parameterDefinitions) {
-            paramDefn.addToAction(action);
-        }
-    }
-    
-    public static void makeEditParameters(DSAction action, List<ParameterDefinition> parameterDefinitions, DSMap parameters) {
-        for (ParameterDefinition paramDefn: parameterDefinitions) {
-            DSElement def = parameters.get(paramDefn.name);
-            paramDefn.addToAction(action, def);
-        }
-    }
-    
-    public static void verifyParameters(DSMap parameters, List<ParameterDefinition> parameterDefinitions) {
-        for (ParameterDefinition defn: parameterDefinitions) {
-            defn.verify(parameters);
-        }
-    }
     
     public static Object valueToObject(DSIValue value, DataTypeEnum type) {
         Class<?> javaType = DataType.getJavaType(type.toId());
