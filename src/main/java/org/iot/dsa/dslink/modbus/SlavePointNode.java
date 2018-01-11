@@ -3,6 +3,7 @@ package org.iot.dsa.dslink.modbus;
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.code.DataType;
+import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.*;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
+import org.iot.dsa.util.DSUtil;
+
 import static org.iot.dsa.dslink.modbus.Constants.PointType;
 
 /**
@@ -41,10 +44,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     public SlavePointNode() {
 
-    }
-
-    public SlavePointNode(DSMap params) {
-        this.parameters = params;
     }
 
     @Override
@@ -103,9 +102,15 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     }
 
     @Override
-    public void onSet(DSInfo info, DSIValue value) {
+    public void onSet(DSIValue val) {
+        //updateValue(val.toElement());
+        setValue(val, getParentProcessImage());
+    }
+
+    @Override
+    public void onSet(DSInfo info, DSIValue val) {
         if (this.value.equals(info)) {
-            onSet(value);
+            onSet(val);
         }
     }
 
@@ -122,7 +127,8 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     }
 
     @Override
-    protected void onStarted() {
+    protected void onStable() {
+        super.onStable();
         submitToSlaveHandler();
     }
 

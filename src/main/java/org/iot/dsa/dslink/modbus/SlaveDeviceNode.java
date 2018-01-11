@@ -1,6 +1,7 @@
 package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.BasicProcessImage;
+import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.DSLong;
@@ -31,8 +32,10 @@ public class SlaveDeviceNode extends EditableNode {
 
     }
 
-    public SlaveDeviceNode(DSMap parameters) {
-        this.parameters = parameters;
+    @Override
+    protected void declareDefaults() {
+        super.declareDefaults();
+        declareDefault("Add Slave Point", DFUtil.getAddAction(SlavePointNode.class));
     }
 
     @Override
