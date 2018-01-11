@@ -1,5 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
+import com.serotonin.modbus4j.BasicProcessImage;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.DSLong;
@@ -14,6 +15,7 @@ import java.util.List;
 public class SlaveDeviceNode extends EditableNode {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
+    BasicProcessImage procImg = null;
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SLAVE_ID, DSLong.valueOf(Constants.DEFAULT_SLAVE_ID), null, null));
@@ -40,8 +42,11 @@ public class SlaveDeviceNode extends EditableNode {
     }
 
     private void startSlave() {
-        int port = parameters.get(Constants.IP_PORT).toInt();
-        TcpSlaveHandler.getProcessImage(port, 1);
+        if (procImg == null) {
+            int port = parameters.get(Constants.IP_PORT).toInt();
+            int slaveId = parameters.get(Constants.SLAVE_ID).toInt();
+            procImg = TcpSlaveHandler.getProcessImage(port, slaveId);
+        }
     }
 
     public void addSlavePoint(SlavePointNode node) {

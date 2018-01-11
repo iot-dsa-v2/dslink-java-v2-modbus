@@ -22,6 +22,7 @@ public class TcpSlaveHandler {
         //ModbusMaster master = new ModbusFactory().createTcpMaster(params, false);
     }
 
+    //TODO: make sure error is generated instead of giving the same image twice
     public static BasicProcessImage getProcessImage(int port, int slaveId) {
         ModbusSlaveSet set = getSlaveSet(port);
         ProcessImage img = set.getProcessImage(slaveId);

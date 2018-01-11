@@ -12,7 +12,7 @@ import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.Constants.MultipleWriteEnum;
-import org.iot.dsa.dslink.modbus.Constants.ObjectType;
+import org.iot.dsa.dslink.modbus.Constants.PointType;
 import org.iot.dsa.node.*;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.CHAR;
@@ -22,7 +22,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
-        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(ObjectType.COIL), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(BINARY), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
@@ -86,8 +86,8 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
             }
 
             //Check if never, set each value separately
-            ObjectType objType = ObjectType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
-            if (objType.equals(ObjectType.HOLDING) && neverMultiple()) {
+            PointType objType = PointType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
+            if (objType.equals(PointType.HOLDING) && neverMultiple()) {
                 short[] shorts = new VTSHelper<>(locator).valueToShortsHelper(Util.valueToObject(value, dataType));
                 if (shorts.length > 1) {
                     int offset = parameters.getInt(Constants.POINT_OFFSET);

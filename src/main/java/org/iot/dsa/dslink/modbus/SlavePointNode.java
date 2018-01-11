@@ -1,14 +1,19 @@
 package org.iot.dsa.dslink.modbus;
 
+import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.ExceptionResult;
+import com.serotonin.modbus4j.code.DataType;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.*;
+import org.iot.dsa.dslink.modbus.Constants;
+import org.iot.dsa.util.DSException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
+import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
+import static org.iot.dsa.dslink.modbus.Constants.PointType;
 
 /**
  * @author James (Juris) Puchin
@@ -19,9 +24,10 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
 
     static {
-        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(Constants.ObjectType.COIL), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
-        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(BINARY), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_REGISTER_COUNT, DSValueType.NUMBER, null, null));
     }
     
     @Override
@@ -29,6 +35,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return parameterDefinitions;
     }
 
+    //TODO: handle incorrect setting edge cases (trying to put INT into COIL)
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
@@ -45,6 +52,30 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         super.declareDefaults();
         declareDefault(Constants.POINT_VALUE, DSString.EMPTY);
         declareDefault(Constants.POINT_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
+    }
+
+    private int getPointRange() {
+        return getPointType().toRange();
+    }
+
+    private int getPointRegisterCount() {
+        return parameters.getInt(Constants.POINT_REGISTER_COUNT);
+    }
+
+    private PointType getPointType() {
+        return PointType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
+    }
+
+    private int getPointOffset() {
+        return parameters.getInt(Constants.POINT_OFFSET);
+    }
+
+    private DataTypeEnum getPointDataType() {
+        return DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+    }
+
+    private int getPointDataTypeInt() {
+        return getPointDataType().toId();
     }
 
     @Override
@@ -71,6 +102,13 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return value.getValue().valueOf(element);
     }
 
+    @Override
+    public void onSet(DSInfo info, DSIValue value) {
+        if (this.value.equals(info)) {
+            onSet(value);
+        }
+    }
+
     void updateValue(DSElement val) {
         error.setHidden(true);
         put(error, DSString.EMPTY);
@@ -88,11 +126,87 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         submitToSlaveHandler();
     }
 
+    private BasicProcessImage getParentProcessImage() {
+        return getParentNode().procImg;
+    }
+
+    private static Boolean boolOrNull(DSElement element) {
+        Boolean b;
+        try {
+            b = element.toBoolean();
+        } catch (Exception e) {
+            b = null;
+        }
+        return b;
+    }
+
+    private static Double doubleOrNull(DSElement element) {
+        Double n;
+        try {
+            n = element.toDouble();
+        } catch (Exception e) {
+            n = null;
+        }
+        return n;
+    }
+
+    private static String stringOrNull(DSElement element) {
+        String s;
+        try {
+            s = element.toString();
+        } catch (Exception e) {
+            s = null;
+        }
+        return s;
+    }
+
+    private BasicProcessImage setValue(DSIValue val, BasicProcessImage img) {
+
+        DSElement element = val.toElement();
+
+        DataTypeEnum dataType = getPointDataType();
+
+        Double n = doubleOrNull(element);
+        boolean withinBounds = (n == null || dataType.checkBounds(n));
+
+        if (!withinBounds) {
+            //TODO: Is this how we want to handle it?
+            DSException.throwRuntime(new RuntimeException("Slave node value out of bounds!"));
+            return img;
+        }
+
+        int offset = getPointOffset();
+
+        switch (getPointType()) {
+            case COIL:
+                Boolean b = boolOrNull(element);
+                img.setCoil(offset, b != null ? b : false);
+                break;
+            case DISCRETE:
+                b = boolOrNull(element);
+                img.setInput(offset, b != null ? b : false);
+                break;
+            case HOLDING:
+            case INPUT:
+                int range = getPointRange();
+                if (dataType.isString()) {
+                    int regCnt = getPointRegisterCount();
+                    String s = stringOrNull(element);
+                    img.setString(range, offset, getPointDataTypeInt(), regCnt,
+                            s != null ? s : "");
+                } else {
+                    img.setNumeric(range, offset, getPointDataTypeInt(), n != null ? n : 0);
+                }
+                break;
+        }
+
+        return img;
+    }
+
     // oh my god this method name
+    // I know, right
     private void submitToSlaveHandler() {
-        Constants.ObjectType objType = Constants.ObjectType.valueOf(parameters.getString(Constants.POINT_OBJECT_TYPE));
-
-
+        setValue(value.getValue(), getParentProcessImage());
     }
 
 //    void startListening() {

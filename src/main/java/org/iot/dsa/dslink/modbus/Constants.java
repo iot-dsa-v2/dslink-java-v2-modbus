@@ -89,7 +89,7 @@ public class Constants {
     public static final String POINT_VALUE = "Value";
     public static final String POINT_ERROR = "Error Result";
     
-    public static enum ObjectType {
+    public static enum PointType {
         COIL("Coil", RegisterRange.COIL_STATUS),
         DISCRETE("Discrete Input", RegisterRange.INPUT_STATUS),
         INPUT("Input Register", RegisterRange.INPUT_REGISTER),
@@ -97,7 +97,7 @@ public class Constants {
         
         private final String name;
         private final int range;
-        private ObjectType(String name, int range) {
+        private PointType(String name, int range) {
             this.name = name;
             this.range = range;
         }
@@ -108,46 +108,72 @@ public class Constants {
         public String toString() {
             return name;
         }
-        public static ObjectType parse(String name) {
-            for (ObjectType ot: ObjectType.values()) {
+        public static PointType parse(String name) {
+            for (PointType ot: PointType.values()) {
                 if (ot.toString().equals(name)) {
                     return ot;
                 }
             }
-            return ObjectType.valueOf(name);
+            return PointType.valueOf(name);
         }
     }
     
     public static enum DataTypeEnum {
-        BINARY(DataType.BINARY),
-        TWO_BYTE_INT_UNSIGNED(DataType.TWO_BYTE_INT_UNSIGNED),
-        TWO_BYTE_INT_SIGNED(DataType.TWO_BYTE_INT_SIGNED),
-        TWO_BYTE_INT_UNSIGNED_SWAPPED(DataType.TWO_BYTE_INT_UNSIGNED_SWAPPED),
-        TWO_BYTE_INT_SIGNED_SWAPPED(DataType.TWO_BYTE_INT_SIGNED_SWAPPED),
-        FOUR_BYTE_INT_UNSIGNED(DataType.FOUR_BYTE_INT_UNSIGNED),
-        FOUR_BYTE_INT_SIGNED(DataType.FOUR_BYTE_INT_SIGNED),
-        FOUR_BYTE_INT_UNSIGNED_SWAPPED(DataType.FOUR_BYTE_INT_UNSIGNED_SWAPPED),
-        FOUR_BYTE_INT_SIGNED_SWAPPED(DataType.FOUR_BYTE_INT_SIGNED_SWAPPED),
-        FOUR_BYTE_INT_UNSIGNED_SWAPPED_SWAPPED(DataType.FOUR_BYTE_INT_UNSIGNED_SWAPPED_SWAPPED),
-        FOUR_BYTE_INT_SIGNED_SWAPPED_SWAPPED(DataType.FOUR_BYTE_INT_SIGNED_SWAPPED_SWAPPED),
-        FOUR_BYTE_FLOAT(DataType.FOUR_BYTE_FLOAT),
-        FOUR_BYTE_FLOAT_SWAPPED(DataType.FOUR_BYTE_FLOAT_SWAPPED),
-        FOUR_BYTE_FLOAT_SWAPPED_INVERTED(DataType.FOUR_BYTE_FLOAT_SWAPPED_INVERTED),
-        EIGHT_BYTE_INT_UNSIGNED(DataType.EIGHT_BYTE_INT_UNSIGNED),
-        EIGHT_BYTE_INT_SIGNED(DataType.EIGHT_BYTE_INT_SIGNED),
-        EIGHT_BYTE_INT_UNSIGNED_SWAPPED(DataType.EIGHT_BYTE_INT_UNSIGNED_SWAPPED),
-        EIGHT_BYTE_INT_SIGNED_SWAPPED(DataType.EIGHT_BYTE_INT_SIGNED_SWAPPED),
-        EIGHT_BYTE_FLOAT(DataType.EIGHT_BYTE_FLOAT),
-        EIGHT_BYTE_FLOAT_SWAPPED(DataType.EIGHT_BYTE_FLOAT_SWAPPED),
-        TWO_BYTE_BCD(DataType.TWO_BYTE_BCD),
-        FOUR_BYTE_BCD(DataType.FOUR_BYTE_BCD),
-        FOUR_BYTE_BCD_SWAPPED(DataType.FOUR_BYTE_BCD_SWAPPED),
-        CHAR(DataType.CHAR),
-        VARCHAR(DataType.VARCHAR);
+        BINARY(DataType.BINARY, null, null),
+        TWO_BYTE_INT_UNSIGNED(DataType.TWO_BYTE_INT_UNSIGNED, 0, 65535),
+        TWO_BYTE_INT_SIGNED(DataType.TWO_BYTE_INT_SIGNED, Short.MIN_VALUE, Short.MAX_VALUE),
+        TWO_BYTE_INT_UNSIGNED_SWAPPED(DataType.TWO_BYTE_INT_UNSIGNED_SWAPPED, 0, 65535),
+        TWO_BYTE_INT_SIGNED_SWAPPED(DataType.TWO_BYTE_INT_SIGNED_SWAPPED, Short.MIN_VALUE, Short.MAX_VALUE),
+        FOUR_BYTE_INT_UNSIGNED(DataType.FOUR_BYTE_INT_UNSIGNED, 0L, 4294967295L),
+        FOUR_BYTE_INT_SIGNED(DataType.FOUR_BYTE_INT_SIGNED, Integer.MIN_VALUE, Integer.MAX_VALUE),
+        FOUR_BYTE_INT_UNSIGNED_SWAPPED(DataType.FOUR_BYTE_INT_UNSIGNED_SWAPPED, 0L, 4294967295L),
+        FOUR_BYTE_INT_SIGNED_SWAPPED(DataType.FOUR_BYTE_INT_SIGNED_SWAPPED, Integer.MIN_VALUE, Integer.MAX_VALUE),
+        FOUR_BYTE_INT_UNSIGNED_SWAPPED_SWAPPED(DataType.FOUR_BYTE_INT_UNSIGNED_SWAPPED_SWAPPED, 0L, 4294967295L),
+        FOUR_BYTE_INT_SIGNED_SWAPPED_SWAPPED(DataType.FOUR_BYTE_INT_SIGNED_SWAPPED_SWAPPED, Integer.MIN_VALUE, Integer.MAX_VALUE),
+        FOUR_BYTE_FLOAT(DataType.FOUR_BYTE_FLOAT, null, null),
+        FOUR_BYTE_FLOAT_SWAPPED(DataType.FOUR_BYTE_FLOAT_SWAPPED, null, null),
+        FOUR_BYTE_FLOAT_SWAPPED_INVERTED(DataType.FOUR_BYTE_FLOAT_SWAPPED_INVERTED, null, null),
+        EIGHT_BYTE_INT_UNSIGNED(DataType.EIGHT_BYTE_INT_UNSIGNED, 0L, null),
+        EIGHT_BYTE_INT_SIGNED(DataType.EIGHT_BYTE_INT_SIGNED, Long.MIN_VALUE, Long.MAX_VALUE),
+        EIGHT_BYTE_INT_UNSIGNED_SWAPPED(DataType.EIGHT_BYTE_INT_UNSIGNED_SWAPPED, 0L, null),
+        EIGHT_BYTE_INT_SIGNED_SWAPPED(DataType.EIGHT_BYTE_INT_SIGNED_SWAPPED, Long.MIN_VALUE, Long.MAX_VALUE),
+        EIGHT_BYTE_FLOAT(DataType.EIGHT_BYTE_FLOAT, null, null),
+        EIGHT_BYTE_FLOAT_SWAPPED(DataType.EIGHT_BYTE_FLOAT_SWAPPED, null, null),
+        TWO_BYTE_BCD(DataType.TWO_BYTE_BCD, 0, 9999),
+        FOUR_BYTE_BCD(DataType.FOUR_BYTE_BCD, 0, 99999999),
+        FOUR_BYTE_BCD_SWAPPED(DataType.FOUR_BYTE_BCD_SWAPPED, 0, 99999999),
+        CHAR(DataType.CHAR, null, null),
+        VARCHAR(DataType.VARCHAR, null, null);
+
+        //TODO: Implement if someone complains
+//        INT32M10K(-327680000, 327670000),
+//        UINT32M10K(0, 655350000),
+//        INT32M10KSWAP(-327680000, 327670000),
+//        UINT32M10KSWAP(0, 655350000);
+
         private final int id;
-        private DataTypeEnum(int id) {
+
+        private Long lowerBound;
+        private Long upperBound;
+
+        DataTypeEnum(int id, Long lowerBound, Long upperBound) {
             this.id = id;
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
         }
+
+        public boolean isString() {
+            return (this == CHAR || this == VARCHAR);
+        }
+
+        public boolean checkBounds(Number n) {
+            return (lowerBound == null || n.longValue() >= lowerBound) && (upperBound == null || n.longValue() <= upperBound);
+        }
+
+        DataTypeEnum(int id, int lowerBound, int upperBound) {
+            this(id, (long) lowerBound, (long) upperBound);
+        }
+
         public int toId() {
             return id;
         }

@@ -8,7 +8,7 @@ import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
-import org.iot.dsa.dslink.modbus.Constants.ObjectType;
+import org.iot.dsa.dslink.modbus.Constants.PointType;
 import org.iot.dsa.node.DSBool;
 import org.iot.dsa.node.DSDouble;
 import org.iot.dsa.node.DSElement;
@@ -89,7 +89,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     }
 
     BaseLocator<?> createPointLocator(int slaveId, ModbusPointNode point) {
-        ObjectType objType = ObjectType.valueOf(point.parameters.getString(Constants.POINT_OBJECT_TYPE));
+        PointType objType = PointType.valueOf(point.parameters.getString(Constants.POINT_OBJECT_TYPE));
         int offset = point.parameters.getInt(Constants.POINT_OFFSET);
         DataTypeEnum dataType = DataTypeEnum.valueOf(point.parameters.getString(Constants.POINT_DATA_TYPE));
         int bit = point.parameters.getInt(Constants.POINT_BIT);
