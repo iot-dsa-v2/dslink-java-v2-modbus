@@ -29,8 +29,9 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_REGISTER_COUNT, DSValueType.NUMBER, null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
     }
     
     @Override
@@ -79,7 +80,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     @Override
     public DSValueType getValueType() {
-        Constants.DataTypeEnum dataType = Constants.DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
         switch(dataType) {
             case BINARY:
                 return DSValueType.BOOL;
