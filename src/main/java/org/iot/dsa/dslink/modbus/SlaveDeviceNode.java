@@ -5,7 +5,6 @@ import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.DSLong;
-import org.iot.dsa.node.DSMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +35,7 @@ public class SlaveDeviceNode extends EditableNode {
     protected void declareDefaults() {
         super.declareDefaults();
         declareDefault("Add Slave Point", DFUtil.getAddAction(SlavePointNode.class));
+        declareDefault("Remove", makeRemoveAction());
     }
 
     @Override

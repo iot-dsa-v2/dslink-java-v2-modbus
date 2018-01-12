@@ -2,8 +2,6 @@ package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.ExceptionResult;
-import com.serotonin.modbus4j.code.DataType;
-import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.*;
@@ -14,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
-import org.iot.dsa.util.DSUtil;
-
 import static org.iot.dsa.dslink.modbus.Constants.PointType;
 
 /**
@@ -52,6 +48,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         super.declareDefaults();
         declareDefault(Constants.POINT_VALUE, DSString.EMPTY);
         declareDefault(Constants.POINT_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
+        declareDefault("Remove", makeRemoveAction());
     }
 
     private int getPointRange() {
