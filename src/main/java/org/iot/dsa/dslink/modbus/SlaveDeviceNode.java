@@ -7,6 +7,8 @@ import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.DSLong;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author James (Juris) Puchin
@@ -15,6 +17,7 @@ import java.util.List;
 public class SlaveDeviceNode extends EditableNode {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
+    private Map<Integer, SlavePointNode> offsetToPointNode = new ConcurrentHashMap<>();
     BasicProcessImage procImg = null;
 
     static {
@@ -54,8 +57,12 @@ public class SlaveDeviceNode extends EditableNode {
         }
     }
 
-    public void addSlavePoint(SlavePointNode node) {
+    public void registerSlavePoint(int offset, SlavePointNode node) {
+        offsetToPointNode.put(offset,node);
+    }
 
+    public SlavePointNode getSlavePointFromOffset(int offset) {
+        return offsetToPointNode.get(offset);
     }
 
     @Override

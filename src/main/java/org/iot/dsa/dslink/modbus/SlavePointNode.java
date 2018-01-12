@@ -2,6 +2,7 @@ package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.ExceptionResult;
+import com.serotonin.modbus4j.ProcessImageListener;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.*;
@@ -218,6 +219,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     // oh my god this method name
     // I know, right
     private void submitToSlaveHandler() {
+        getParentNode().registerSlavePoint(getPointOffset(), this);
         setValue(value.getValue(), getParentProcessImage());
     }
 
@@ -276,32 +278,30 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
         @Override
         public void coilWrite(int offset, boolean oldValue, boolean newValue) {
-            //TODO: Update coil value
             if (oldValue != newValue) {
-                Node pointNode = offsetToPoint.get(offset);
-                pointNode.setValue(new Value(newValue));
+                SlavePointNode pointNode = getParentNode().getSlavePointFromOffset(offset);
+                pointNode.updateValue(DSBool.valueOf(newValue));
             }
-
         }
 
         @Override
         public void holdingRegisterWrite(int offset, short oldValue, short newValue) {
             if (oldValue != newValue) {
                 //TODO: Update register value
-                Node pointNode = offsetToPoint.get(offset);
-                DataType dataType = DataType.valueOf(pointNode.getAttribute(ATTRIBUTE_DATA_TYPE).getString());
+                SlavePointNode pointNode = getParentNode().getSlavePointFromOffset(offset);
+                DataTypeEnum dataType = getPointDataType();
+
                 if (dataType.isString()) {
                     ByteBuffer buffer = ByteBuffer.allocate(2);
                     buffer.putShort(newValue);
                     String str = new String(buffer.array(), StandardCharsets.UTF_8);
                     pointNode.setValue(new Value(str));
-
                 } else {
                     pointNode.setValue(new Value(newValue));
                 }
 
+                pointNode.updateValue();
             }
         }
-
     }*/
 }
