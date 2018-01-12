@@ -3,16 +3,17 @@ package org.iot.dsa.dslink.modbus;
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.ProcessImageListener;
+import com.serotonin.modbus4j.code.DataType;
+import com.serotonin.modbus4j.exception.IllegalDataAddressException;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.node.*;
-import org.iot.dsa.dslink.modbus.Constants;
 import org.iot.dsa.util.DSException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import static org.iot.dsa.dslink.modbus.Constants.PointType;
 
 /**
@@ -30,7 +31,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
     }
-    
+
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
@@ -55,13 +56,21 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     private int getPointRange() {
         return getPointType().toRange();
     }
-    
+
     private int getPointBit() {
         return parameters.getInt(Constants.POINT_BIT);
     }
 
-    private int getPointRegisterCount() {
+    private int getStringRegisterCount() {
         return parameters.getInt(Constants.POINT_REGISTER_COUNT);
+    }
+
+    private int getPointRegisterCount() {
+        int num = DataType.getRegisterCount(getPointDataTypeInt());
+        if (num == 0) {
+            num = getStringRegisterCount();
+        }
+        return num;
     }
 
     private PointType getPointType() {
@@ -83,7 +92,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     @Override
     public DSValueType getValueType() {
         DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-        switch(dataType) {
+        switch (dataType) {
             case BINARY:
                 return DSValueType.BOOL;
             case CHAR:
@@ -203,7 +212,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
                     b = boolOrNull(element);
                     img.setBit(range, offset, bit, b != null ? b : false);
                 } else if (dataType.isString()) {
-                    int regCnt = getPointRegisterCount();
+                    int regCnt = getStringRegisterCount();
                     String s = stringOrNull(element);
                     img.setString(range, offset, getPointDataTypeInt(), regCnt,
                             s != null ? s : "");
@@ -216,10 +225,27 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return img;
     }
 
+    @Override
+    public void delete() {
+        super.delete();
+        //TODO: remove point from device maps
+        //TODO: remove image from slaveHandler
+    }
+
     // oh my god this method name
     // I know, right
     private void submitToSlaveHandler() {
-        getParentNode().registerSlavePoint(getPointOffset(), this);
+        //Add to lists for the benefit of the listener
+        if (getPointType().equals(PointType.COIL)) {
+            getParentNode().registerCoilPoint(getPointOffset(), this);
+        } else if (getPointType().equals(PointType.HOLDING)) {
+            int sum = getPointRegisterCount() + getPointOffset();
+            //TODO: make collision safe (i.e. keep user from creating overlapping points)
+            for (int o = getPointOffset(); o < sum; o++) {
+                getParentNode().registerHoldingPoint(o, this);
+            }
+        }
+
         setValue(value.getValue(), getParentProcessImage());
     }
 
@@ -271,37 +297,41 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     @Override
     public void onEdit() {
         // TODO Auto-generated method stub
-        
+
     }
 
-/*    private class BasicProcessImageListener implements ProcessImageListener {
+    void updatePointValue() {
+        PointType pType = getPointType();
+        DataTypeEnum dType = getPointDataType();
+        BasicProcessImage img = getParentProcessImage();
+        DSElement val = null;
 
-        @Override
-        public void coilWrite(int offset, boolean oldValue, boolean newValue) {
-            if (oldValue != newValue) {
-                SlavePointNode pointNode = getParentNode().getSlavePointFromOffset(offset);
-                pointNode.updateValue(DSBool.valueOf(newValue));
+        int offset = getPointOffset();
+        try {
+            switch (pType) {
+                case COIL:
+                    boolean v = img.getCoil(offset);
+                    val = DSBool.valueOf(v);
+                    break;
+                case HOLDING:
+                    switch (dType) {
+                        case BINARY:
+                            v = img.getBit(pType.toRange(), offset, getPointBit());
+                            val = DSBool.valueOf(v);
+                            break;
+                        case CHAR:
+                        case VARCHAR:
+                            String s = img.getString(pType.toRange(), offset, dType.toId(), getStringRegisterCount());
+                            val = DSString.valueOf(s);
+                        default:
+                            Number n = img.getNumeric(pType.toRange(), offset, dType.toId());
+                            val = DSDouble.valueOf(n.doubleValue());
+                    }
             }
+        } catch (IllegalDataAddressException e) {
+            warn("Point not correctly set up, value not found: " + e);
+            DSException.throwRuntime(e);
         }
-
-        @Override
-        public void holdingRegisterWrite(int offset, short oldValue, short newValue) {
-            if (oldValue != newValue) {
-                //TODO: Update register value
-                SlavePointNode pointNode = getParentNode().getSlavePointFromOffset(offset);
-                DataTypeEnum dataType = getPointDataType();
-
-                if (dataType.isString()) {
-                    ByteBuffer buffer = ByteBuffer.allocate(2);
-                    buffer.putShort(newValue);
-                    String str = new String(buffer.array(), StandardCharsets.UTF_8);
-                    pointNode.setValue(new Value(str));
-                } else {
-                    pointNode.setValue(new Value(newValue));
-                }
-
-                pointNode.updateValue();
-            }
-        }
-    }*/
+        updateValue(val);
+    }
 }

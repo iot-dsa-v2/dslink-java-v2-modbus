@@ -1,9 +1,11 @@
 package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.BasicProcessImage;
+import com.serotonin.modbus4j.ProcessImageListener;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.node.DSBool;
 import org.iot.dsa.node.DSLong;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SlaveDeviceNode extends EditableNode {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
-    private Map<Integer, SlavePointNode> offsetToPointNode = new ConcurrentHashMap<>();
+    private Map<Integer, SlavePointNode> offsetToCoilNode = new ConcurrentHashMap<>();
+    private Map<Integer, List<SlavePointNode>> offsetToHoldingList = new ConcurrentHashMap<>();
+
     BasicProcessImage procImg = null;
 
     static {
@@ -53,21 +57,64 @@ public class SlaveDeviceNode extends EditableNode {
         if (procImg == null) {
             int port = parameters.get(Constants.IP_PORT).toInt();
             int slaveId = parameters.get(Constants.SLAVE_ID).toInt();
-            procImg = TcpSlaveHandler.getProcessImage(port, slaveId);
+            procImg = TcpSlaveHandler.getProcessImage(port, slaveId, this);
         }
     }
 
-    public void registerSlavePoint(int offset, SlavePointNode node) {
-        offsetToPointNode.put(offset,node);
+    public void registerCoilPoint(int offset, SlavePointNode node) {
+        offsetToCoilNode.put(offset,node);
     }
 
-    public SlavePointNode getSlavePointFromOffset(int offset) {
-        return offsetToPointNode.get(offset);
+    public SlavePointNode getCoilPoint(int offset) {
+        return offsetToCoilNode.get(offset);
+    }
+
+    public void registerHoldingPoint(int offset, SlavePointNode node) {
+        List<SlavePointNode> lst = offsetToHoldingList.get(offset);
+        if (lst == null) {
+            lst = new ArrayList<>();
+            lst.add(node);
+            offsetToHoldingList.put(offset, lst);
+        } else {
+            if (!lst.contains(node)) {
+                lst.add(node);
+            }
+        }
+    }
+
+    public List<SlavePointNode> getHoldingPoints(int offset) {
+        return offsetToHoldingList.get(offset);
     }
 
     @Override
     public void onEdit() {
         // TODO Auto-generated method stub
         
+    }
+
+    BasicProcessImageListener makeListener() {
+        return new BasicProcessImageListener();
+    }
+
+    private class BasicProcessImageListener implements ProcessImageListener {
+
+        @Override
+        public void coilWrite(int offset, boolean oldValue, boolean newValue) {
+            if (oldValue != newValue) {
+                SlavePointNode pointNode = getCoilPoint(offset);
+                pointNode.updateValue(DSBool.valueOf(newValue));
+            }
+        }
+
+        @Override
+        public void holdingRegisterWrite(int offset, short oldValue, short newValue) {
+            if (oldValue != newValue) {
+                //TODO: Update register value
+                List<SlavePointNode> pointNodes = getHoldingPoints(offset);
+                for (SlavePointNode node : pointNodes) {
+                    node.updatePointValue();
+                }
+            }
+        }
     }
 }

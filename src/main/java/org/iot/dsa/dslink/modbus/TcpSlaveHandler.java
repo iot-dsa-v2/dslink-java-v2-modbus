@@ -17,27 +17,28 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TcpSlaveHandler {
     private static final Map<Integer, ModbusSlaveSet> listeners = new ConcurrentHashMap<>();
 
-    public static void addSlavePoint(int port, int slaveId) {
-        getProcessImage(port, slaveId);
+    public static void addSlavePoint(int port, int slaveId, SlaveDeviceNode devNode) {
+        getProcessImage(port, slaveId, devNode);
         //ModbusMaster master = new ModbusFactory().createTcpMaster(params, false);
     }
 
     //TODO: make sure error is generated instead of giving the same image twice
-    public static BasicProcessImage getProcessImage(int port, int slaveId) {
+    public static BasicProcessImage getProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
         ModbusSlaveSet set = getSlaveSet(port);
         ProcessImage img = set.getProcessImage(slaveId);
         if (img == null) {
-            img = createModscanProcessImage(slaveId);
+            img = createModscanProcessImage(slaveId, devNode);
             set.addProcessImage(img);
         }
         return (BasicProcessImage) img;
     }
 
-    private static BasicProcessImage createModscanProcessImage(int slaveId) {
+    private static BasicProcessImage createModscanProcessImage(int slaveId, SlaveDeviceNode devNode) {
         BasicProcessImage processImage = new BasicProcessImage(slaveId);
         processImage.setAllowInvalidAddress(true);
         processImage.setInvalidAddressValue((short) 0);
         processImage.setExceptionStatus((byte) 151);
+        processImage.addListener(devNode.makeListener());
 
         return processImage;
     }
