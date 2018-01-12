@@ -25,8 +25,8 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
     }
     
@@ -53,6 +53,10 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     private int getPointRange() {
         return getPointType().toRange();
+    }
+    
+    private int getPointBit() {
+        return parameters.getInt(Constants.POINT_BIT);
     }
 
     private int getPointRegisterCount() {
@@ -193,7 +197,11 @@ public class SlavePointNode extends EditableNode implements DSIValue {
             case HOLDING:
             case INPUT:
                 int range = getPointRange();
-                if (dataType.isString()) {
+                if (dataType.equals(DataTypeEnum.BINARY)) {
+                    int bit = getPointBit();
+                    b = boolOrNull(element);
+                    img.setBit(range, offset, bit, b != null ? b : false);
+                } else if (dataType.isString()) {
                     int regCnt = getPointRegisterCount();
                     String s = stringOrNull(element);
                     img.setString(range, offset, getPointDataTypeInt(), regCnt,
