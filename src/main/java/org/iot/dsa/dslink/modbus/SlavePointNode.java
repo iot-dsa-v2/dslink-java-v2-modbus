@@ -104,7 +104,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     @Override
     public void onSet(DSIValue val) {
-        //updateValue(val.toElement());
+        updateValue(val.toElement());
         setValue(val, getParentProcessImage());
     }
 
