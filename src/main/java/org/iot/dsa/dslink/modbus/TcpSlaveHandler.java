@@ -36,10 +36,8 @@ public class TcpSlaveHandler {
     private static BasicProcessImage createModscanProcessImage(int slaveId) {
         BasicProcessImage processImage = new BasicProcessImage(slaveId);
         processImage.setAllowInvalidAddress(true);
-        processImage.setInvalidAddressValue(Short.MIN_VALUE);
+        processImage.setInvalidAddressValue((short) 0);
         processImage.setExceptionStatus((byte) 151);
-        processImage.setNumeric(RegisterRange.HOLDING_REGISTER, 0, DataType.TWO_BYTE_INT_UNSIGNED,
-                42);
 
         return processImage;
     }
