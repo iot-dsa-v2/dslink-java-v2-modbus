@@ -12,7 +12,6 @@ import org.iot.dsa.dslink.modbus.Constants.PointType;
 import org.iot.dsa.node.DSBool;
 import org.iot.dsa.node.DSDouble;
 import org.iot.dsa.node.DSElement;
-import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
 import org.iot.dsa.node.DSNode;
 import org.iot.dsa.node.DSString;
@@ -29,7 +28,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.SLAVE_ID, DSValueType.NUMBER, null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSLong.valueOf(DEFAULT_PING_RATE), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), "interval between pings, in seconds", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.CONTIGUOUS_READS, DSBool.FALSE, null, null));
     }
     
@@ -152,10 +151,11 @@ public class ModbusDeviceNode extends DFDeviceNode {
     @Override
     public long getPingRate() {
         DSElement rate = parameters.get(Constants.PING_RATE);
+        double seconds = Constants.DEFAULT_PING_RATE;
         if (rate != null && rate.isNumber()) {
-            return rate.toLong();
+            seconds = rate.toDouble();
         }
-        return super.getPingRate();
+        return (long) (seconds * 1000);
     }
     
     ModbusConnectionNode getParentNode() {

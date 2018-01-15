@@ -27,7 +27,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_DATA_TYPE, DSJavaEnum.valueOf(BINARY), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POLL_RATE, DSLong.valueOf(ModbusDeviceNode.DEFAULT_PING_RATE), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POLL_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), "polling rate in seconds", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING, DSLong.valueOf(1), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING_OFFSET, DSLong.valueOf(0), null, null));
     }
@@ -188,9 +188,10 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     @Override
     public long getPollRate() {
         DSElement rate = parameters.get(Constants.POLL_RATE);
+        double seconds = Constants.DEFAULT_PING_RATE;
         if (rate != null && rate.isNumber()) {
-            return rate.toLong();
+            seconds = rate.toDouble();
         }
-        return super.getPollRate();
+        return (long) (seconds * 1000);
     }
 }

@@ -31,6 +31,7 @@ public class Constants {
     public static final String SERIAL_STOP_BITS = "Stop Bits";
     public static final String SERIAL_PARITY = "Parity";
 
+    public static final double DEFAULT_PING_RATE = 5;
     public static final int DEFAULT_TIMEOUT = 500;
     public static final int DEFAULT_RETRIES = 2;
     public static final int DEFAULT_SLAVE_ID = 1;

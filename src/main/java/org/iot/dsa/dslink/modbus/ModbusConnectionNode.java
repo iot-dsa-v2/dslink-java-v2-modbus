@@ -14,8 +14,8 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     protected static void addCommonParameterDefinitions(List<ParameterDefinition> definitions) {
         definitions.add(ParameterDefinition.makeParamWithDefault(
                         Constants.PING_RATE,
-                        DSLong.valueOf(DEFAULT_PING_RATE),
-                        null,
+                        DSDouble.valueOf(Constants.DEFAULT_PING_RATE),
+                        "interval between pings, in seconds",
                         null)
         );
         definitions.add(ParameterDefinition.makeParamWithDefault(
@@ -101,10 +101,11 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     @Override
     public long getPingRate() {
         DSElement rate = parameters.get(Constants.PING_RATE);
+        double seconds = Constants.DEFAULT_PING_RATE;
         if (rate != null && rate.isNumber()) {
-            return rate.toLong();
+            seconds = rate.toDouble();
         }
-        return super.getPingRate();
+        return (long) (seconds * 1000);
     }
 
 }
