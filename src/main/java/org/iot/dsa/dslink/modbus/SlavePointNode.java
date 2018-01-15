@@ -1,8 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.BasicProcessImage;
-import com.serotonin.modbus4j.ExceptionResult;
-import com.serotonin.modbus4j.ProcessImageListener;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.IllegalDataAddressException;
 import org.iot.dsa.dslink.dframework.EditableNode;
@@ -39,7 +37,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     //TODO: handle incorrect setting edge cases (trying to put INT into COIL)
     private DSInfo value = getInfo(Constants.POINT_VALUE);
-    private DSInfo error = getInfo(Constants.POINT_ERROR);
 
     public SlavePointNode() {
 
@@ -116,7 +113,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     @Override
     public void onSet(DSIValue val) {
         updateValue(val.toElement());
-        setValue(val, getParentProcessImage());
+        setValueToImage(val, getParentProcessImage());
     }
 
     @Override
@@ -127,15 +124,8 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     }
 
     void updateValue(DSElement val) {
-        error.setHidden(true);
-        put(error, DSString.EMPTY);
         put(value, val);
         getParent().childChanged(getInfo());
-    }
-
-    void updateError(ExceptionResult resp) {
-        error.setHidden(false);
-        put(error, DSString.valueOf(resp.getExceptionMessage()));
     }
 
     @Override
@@ -178,7 +168,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return s;
     }
 
-    private BasicProcessImage setValue(DSIValue val, BasicProcessImage img) {
+    private void setValueToImage(DSIValue val, BasicProcessImage img) {
 
         DSElement element = val.toElement();
 
@@ -190,7 +180,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         if (!withinBounds) {
             //TODO: Is this how we want to handle it?
             DSException.throwRuntime(new RuntimeException("Slave node value out of bounds!"));
-            return img;
+            return;
         }
 
         int offset = getPointOffset();
@@ -221,8 +211,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
                 }
                 break;
         }
-
-        return img;
     }
 
     @Override
@@ -246,9 +234,10 @@ public class SlavePointNode extends EditableNode implements DSIValue {
             }
         }
 
-        setValue(value.getValue(), getParentProcessImage());
+        setValueToImage(value.getValue(), getParentProcessImage());
     }
 
+    //TODO: Is this not deeded?
 //    void startListening() {
 //        if (listenerStpe != null) {
 //
@@ -316,8 +305,8 @@ public class SlavePointNode extends EditableNode implements DSIValue {
                 case HOLDING:
                     switch (dType) {
                         case BINARY:
-                            v = img.getBit(pType.toRange(), offset, getPointBit());
-                            val = DSBool.valueOf(v);
+                            boolean b = img.getBit(pType.toRange(), offset, getPointBit());
+                            val = DSBool.valueOf(b);
                             break;
                         case CHAR:
                         case VARCHAR:
@@ -328,10 +317,10 @@ public class SlavePointNode extends EditableNode implements DSIValue {
                             val = DSDouble.valueOf(n.doubleValue());
                     }
             }
+            updateValue(val);
         } catch (IllegalDataAddressException e) {
             warn("Point not correctly set up, value not found: " + e);
             DSException.throwRuntime(e);
         }
-        updateValue(val);
     }
 }
