@@ -253,43 +253,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         setValueToImage(value.getValue(), getParentProcessImage());
     }
 
-    //TODO: Is this not needed?
-//    void startListening() {
-//        if (listenerStpe != null) {
-//
-//            listenerStpe.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        statusNode.setValue(new Value(STATUS_START_LISTENING));
-//                        activeListener.start();
-//                    } catch (ModbusInitException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//        }
-//    }
-//
-//    void stopListening() {
-//        if (listenerStpe != null) {
-//
-//            listenerStpe.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        statusNode.setValue(new Value(STATUS_STOP_LISTENING));
-//                        activeListener.stop();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//        }
-//    }
-
     SlaveDeviceNode getParentNode() {
         DSNode parent = getParent();
         if (parent instanceof SlaveDeviceNode) {
