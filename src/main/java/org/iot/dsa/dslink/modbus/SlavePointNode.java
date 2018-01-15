@@ -178,7 +178,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         boolean withinBounds = (n == null || dataType.checkBounds(n));
 
         if (!withinBounds) {
-            //TODO: Is this how we want to handle it?
             DSException.throwRuntime(new RuntimeException("Slave node value out of bounds!"));
             return;
         }
@@ -237,7 +236,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         setValueToImage(value.getValue(), getParentProcessImage());
     }
 
-    //TODO: Is this not deeded?
+    //TODO: Is this not needed?
 //    void startListening() {
 //        if (listenerStpe != null) {
 //

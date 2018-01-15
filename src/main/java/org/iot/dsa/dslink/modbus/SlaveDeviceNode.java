@@ -56,8 +56,6 @@ public class SlaveDeviceNode extends EditableNode {
         startSlave();
     }
 
-    //TODO: Check if any errors are thrown by the slave device creation
-
     private void startSlave() {
         if (procImg == null) {
             int port = parameters.get(Constants.IP_PORT).toInt();
@@ -93,7 +91,7 @@ public class SlaveDeviceNode extends EditableNode {
 
     @Override
     public void onEdit() {
-        // TODO Auto-generated method stub
+        // TODO Create on edit action
         
     }
 
