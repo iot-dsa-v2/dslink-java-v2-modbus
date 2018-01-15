@@ -1,7 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.BasicProcessImage;
-import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.ProcessImageListener;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
@@ -27,7 +26,7 @@ public class SlaveDeviceNode extends EditableNode {
     private Map<Integer, List<SlavePointNode>> offsetToHoldingList = new ConcurrentHashMap<>();
 
     BasicProcessImage procImg = null;
-    private DSInfo error = getInfo(Constants.POINT_ERROR);
+    private DSInfo error = getInfo(Constants.SLAVE_ERROR);
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SLAVE_ID, DSLong.valueOf(Constants.DEFAULT_SLAVE_ID), null, null));
@@ -48,6 +47,7 @@ public class SlaveDeviceNode extends EditableNode {
         super.declareDefaults();
         declareDefault("Add Slave Point", DFUtil.getAddAction(SlavePointNode.class));
         declareDefault("Remove", makeRemoveAction());
+        declareDefault(Constants.SLAVE_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
     }
 
     @Override

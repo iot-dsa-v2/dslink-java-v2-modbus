@@ -89,6 +89,7 @@ public class Constants {
     
     public static final String POINT_VALUE = "Value";
     public static final String POINT_ERROR = "Error Result";
+    public static final String SLAVE_ERROR = "Error Status";
     
     public static enum PointType {
         COIL("Coil", RegisterRange.COIL_STATUS),
