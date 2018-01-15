@@ -35,7 +35,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return parameterDefinitions;
     }
 
-    //TODO: handle incorrect setting edge cases (trying to put INT into COIL)
     private DSInfo value = getInfo(Constants.POINT_VALUE);
 
     public SlavePointNode() {
@@ -215,8 +214,26 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     @Override
     public void delete() {
         super.delete();
-        //TODO: remove point from device maps
-        //TODO: remove image from slaveHandler
+        escapeSlaveHandler();
+    }
+
+    private void escapeSlaveHandler() {
+        //Unregister from device node
+        SlaveDeviceNode par = getParentNode();
+        if (getPointType().equals(PointType.COIL)) {
+            par.removeCoilPoint(getPointOffset());
+        } else if (getPointType().equals(PointType.HOLDING)) {
+            int sum = getPointRegisterCount() + getPointOffset();
+            //TODO: make collision safe (i.e. keep user from creating overlapping points)
+            for (int o = getPointOffset(); o < sum; o++) {
+                List<SlavePointNode> lst = par.getHoldingPoints(o);
+                lst.remove(this);
+                if (lst.size() == 0) par.removeHoldingPoints(o);
+            }
+        }
+
+        //Set point value to zero in modbus image
+        setValueToImage(DSLong.valueOf(0), getParentProcessImage());
     }
 
     // oh my god this method name
@@ -283,9 +300,14 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     }
 
     @Override
-    public void onEdit() {
-        // TODO Auto-generated method stub
+    public void preEdit(DSMap newParameters) {
+        super.preEdit(newParameters);
+        escapeSlaveHandler();
+    }
 
+    @Override
+    public void onEdit() {
+        submitToSlaveHandler();
     }
 
     void updatePointValue() {

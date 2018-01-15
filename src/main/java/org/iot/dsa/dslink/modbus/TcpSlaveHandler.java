@@ -15,6 +15,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TcpSlaveHandler {
     private static final Map<Integer, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
 
+    public static void deleteProcessImage(int port, int slaveId) {
+        ModbusSlaveSet set = slaveSets.get(port);
+        if (set != null) {
+            if (set.removeProcessImage(slaveId)) {
+                if (set.getProcessImages().size() == 0)
+                    slaveSets.remove(port);
+            }
+        }
+    }
+
     public static BasicProcessImage getProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
         devNode.clearError();
         ModbusSlaveSet set = getSlaveSet(port, devNode);

@@ -5,10 +5,7 @@ import com.serotonin.modbus4j.ProcessImageListener;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
-import org.iot.dsa.node.DSBool;
-import org.iot.dsa.node.DSInfo;
-import org.iot.dsa.node.DSLong;
-import org.iot.dsa.node.DSString;
+import org.iot.dsa.node.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +53,18 @@ public class SlaveDeviceNode extends EditableNode {
         startSlave();
     }
 
+    private int getDevicePort() {
+        return parameters.get(Constants.IP_PORT).toInt();
+    }
+
+    private int getDeviceSlaveID() {
+        return parameters.get(Constants.SLAVE_ID).toInt();
+    }
+
     private void startSlave() {
         if (procImg == null) {
-            int port = parameters.get(Constants.IP_PORT).toInt();
-            int slaveId = parameters.get(Constants.SLAVE_ID).toInt();
+            int port = getDevicePort();
+            int slaveId = getDeviceSlaveID();
             procImg = TcpSlaveHandler.getProcessImage(port, slaveId, this);
         }
     }
@@ -70,6 +75,10 @@ public class SlaveDeviceNode extends EditableNode {
 
     public SlavePointNode getCoilPoint(int offset) {
         return offsetToCoilNode.get(offset);
+    }
+
+    public SlavePointNode removeCoilPoint(int offset) {
+        return offsetToCoilNode.remove(offset);
     }
 
     public void registerHoldingPoint(int offset, SlavePointNode node) {
@@ -89,10 +98,27 @@ public class SlaveDeviceNode extends EditableNode {
         return offsetToHoldingList.get(offset);
     }
 
+    public List<SlavePointNode> removeHoldingPoints(int offset) {
+        return offsetToHoldingList.remove(offset);
+    }
+
+    @Override
+    public void preEdit(DSMap newParameters) {
+        super.preEdit(newParameters);
+        TcpSlaveHandler.deleteProcessImage(getDevicePort(),getDeviceSlaveID());
+        procImg = null;
+    }
+
     @Override
     public void onEdit() {
-        // TODO Create on edit action
-        
+        super.onEdit();
+        startSlave();
+    }
+
+    @Override
+    public void delete() {
+        super.delete();
+        TcpSlaveHandler.deleteProcessImage(getDevicePort(), getDeviceSlaveID());
     }
 
     BasicProcessImageListener makeListener() {
