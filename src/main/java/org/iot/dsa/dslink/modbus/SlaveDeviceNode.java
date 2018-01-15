@@ -1,12 +1,16 @@
 package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.BasicProcessImage;
+import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.ProcessImageListener;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.node.DSBool;
+import org.iot.dsa.node.DSInfo;
 import org.iot.dsa.node.DSLong;
+import org.iot.dsa.node.DSString;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +27,7 @@ public class SlaveDeviceNode extends EditableNode {
     private Map<Integer, List<SlavePointNode>> offsetToHoldingList = new ConcurrentHashMap<>();
 
     BasicProcessImage procImg = null;
+    private DSInfo error = getInfo(Constants.POINT_ERROR);
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SLAVE_ID, DSLong.valueOf(Constants.DEFAULT_SLAVE_ID), null, null));
@@ -96,6 +101,16 @@ public class SlaveDeviceNode extends EditableNode {
         return new BasicProcessImageListener();
     }
 
+    void setError(String err) {
+        error.setHidden(false);
+        put(error, DSString.valueOf(err));
+    }
+
+    void clearError() {
+        error.setHidden(true);
+        put(error, DSString.EMPTY);
+    }
+
     private class BasicProcessImageListener implements ProcessImageListener {
 
         @Override
@@ -109,7 +124,6 @@ public class SlaveDeviceNode extends EditableNode {
         @Override
         public void holdingRegisterWrite(int offset, short oldValue, short newValue) {
             if (oldValue != newValue) {
-                //TODO: Update register value
                 List<SlavePointNode> pointNodes = getHoldingPoints(offset);
                 for (SlavePointNode node : pointNodes) {
                     node.updatePointValue();

@@ -8,12 +8,16 @@ import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
+import org.iot.dsa.DSRuntime;
+import org.iot.dsa.dslink.DSLink;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.Constants.MultipleWriteEnum;
 import org.iot.dsa.dslink.modbus.Constants.PointType;
 import org.iot.dsa.node.*;
+import org.iot.dsa.util.DSException;
+
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.CHAR;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.VARCHAR;
@@ -74,7 +78,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     @Override
     public void onSet(DSIValue value) {
-        //TODO: move implementation to Device?
         BaseLocator<?> locator = getParentNode().createPointLocator(this);
         try {
             DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
@@ -92,7 +95,8 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
                 if (shorts.length > 1) {
                     int offset = parameters.getInt(Constants.POINT_OFFSET);
                     for (int i = 0; i < shorts.length; i++) {
-                        BaseLocator<?> tempLocator = new NumericLocator(getParentNode().parameters.getInt(Constants.SLAVE_ID), objType.toRange(), offset + i, DataType.TWO_BYTE_INT_SIGNED);
+                        BaseLocator<?> tempLocator = new NumericLocator(getParentNode().parameters.getInt(Constants.SLAVE_ID),
+                                objType.toRange(), offset + i, DataType.TWO_BYTE_INT_SIGNED);
                         getParentNode().getParentNode().master.setValue(tempLocator, shorts[i]);
                     }
                     return;
@@ -102,8 +106,10 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
             getParentNode().getParentNode().master.setValue(locator, Util.valueToObject(value, dataType));
         } catch (ModbusTransportException e) {
             warn(e);
+            DSException.throwRuntime(e);
         } catch (ErrorResponseException e) {
             warn(e);
+            DSException.throwRuntime(e);
         }
     }
 
