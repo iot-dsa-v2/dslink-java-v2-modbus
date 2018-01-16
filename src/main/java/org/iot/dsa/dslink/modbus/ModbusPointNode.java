@@ -20,7 +20,7 @@ import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.CHAR;
 import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.VARCHAR;
 
-public class ModbusPointNode extends DFPointNode implements DSIValue {
+public class ModbusPointNode extends DFPointNode implements DFNodeValue {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
@@ -33,7 +33,17 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING, DSLong.valueOf(1), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING_OFFSET, DSLong.valueOf(0), null, null));
     }
-    
+
+    @Override
+    public DSInfo getNodeValue() {
+        return value;
+    }
+
+    @Override
+    public DSMap getNodeParameters() {
+        return parameters;
+    }
+
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
@@ -140,20 +150,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     @Override
     protected void onStable() {
         super.onStable();
-    }
-
-    @Override
-    public DSValueType getValueType() {
-        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-        switch(dataType) {
-            case BINARY:
-                return DSValueType.BOOL;
-            case CHAR:
-            case VARCHAR:
-                return DSValueType.STRING;
-            default:
-                return DSValueType.NUMBER;
-        }
     }
 
     @Override

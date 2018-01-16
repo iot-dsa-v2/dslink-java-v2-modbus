@@ -7,24 +7,24 @@ import org.iot.dsa.node.*;
  * Created on 1/9/2018
  */
 public interface DFNodeValue extends DSIValue {
-    
-    DSInfo value = null;
-    DSMap parameters = null;
+
+    DSInfo getNodeValue();
+    DSMap getNodeParameters();
     
     @Override
     default DSElement toElement() {
-        return value.getValue().toElement();
+        return getNodeValue().getValue().toElement();
     }
 
     @Override
     default DSIValue valueOf(DSElement element) {
-        return value.getValue().valueOf(element);
+        return getNodeValue().getValue().valueOf(element);
     }
 
     @Override
     default DSValueType getValueType() {
-        Constants.DataTypeEnum dataType = Constants.DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-        switch(dataType) {
+        Constants.DataTypeEnum dataType = Constants.DataTypeEnum.valueOf(getNodeParameters().getString(Constants.POINT_DATA_TYPE));
+        switch (dataType) {
             case BINARY:
                 return DSValueType.BOOL;
             case CHAR:

@@ -18,7 +18,7 @@ import static org.iot.dsa.dslink.modbus.Constants.PointType;
  * @author James (Juris) Puchin
  * Created on 1/9/2018
  */
-public class SlavePointNode extends EditableNode implements DSIValue {
+public class SlavePointNode extends EditableNode implements DFNodeValue {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
 
@@ -28,6 +28,16 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         parameterDefinitions.add(new DataTypeParameter(null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
+    }
+
+    @Override
+    public DSInfo getNodeValue() {
+        return value;
+    }
+
+    @Override
+    public DSMap getNodeParameters() {
+        return parameters;
     }
 
     @Override
@@ -84,20 +94,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     private int getPointDataTypeInt() {
         return getPointDataType().toId();
-    }
-
-    @Override
-    public DSValueType getValueType() {
-        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-        switch (dataType) {
-            case BINARY:
-                return DSValueType.BOOL;
-            case CHAR:
-            case VARCHAR:
-                return DSValueType.STRING;
-            default:
-                return DSValueType.NUMBER;
-        }
     }
 
     @Override
