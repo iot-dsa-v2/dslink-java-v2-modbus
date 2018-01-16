@@ -36,18 +36,18 @@ public class ModbusSlaveHandler {
     }
 
     public static BasicProcessImage getAsciiProcessImage(SerialPortWrapperImpl port, int slaveId, SlaveDeviceNode devNode) {
-        return asciiSlaveSets.getProcessImage(port, slaveId, devNode, udpSlaveSets);
+        return asciiSlaveSets.getProcessImage(port, slaveId, devNode);
     }
 
     public static BasicProcessImage getRtuProcessImage(SerialPortWrapperImpl port, int slaveId, SlaveDeviceNode devNode) {
-        return rtuSlaveSets.getProcessImage(port, slaveId, devNode, udpSlaveSets);
+        return rtuSlaveSets.getProcessImage(port, slaveId, devNode);
     }
 
     public static BasicProcessImage getUdpProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
-        return udpSlaveSets.getProcessImage(port, slaveId, devNode, udpSlaveSets);
+        return udpSlaveSets.getProcessImage(port, slaveId, devNode);
     }
 
     public static BasicProcessImage getTcpProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
-        return tcpSlaveSets.getProcessImage(port, slaveId, devNode, tcpSlaveSets);
+        return tcpSlaveSets.getProcessImage(port, slaveId, devNode);
     }
 }

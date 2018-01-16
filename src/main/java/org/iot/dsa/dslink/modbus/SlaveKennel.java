@@ -30,7 +30,7 @@ abstract class SlaveKennel<P, K> {
         }
     }
 
-    BasicProcessImage getProcessImage(P port, int slaveId, SlaveDeviceNode devNode, SlaveKennel slaveSetMap) {
+    BasicProcessImage getProcessImage(P port, int slaveId, SlaveDeviceNode devNode) {
         devNode.clearError();
         ModbusSlaveSet set = getSlaveSet(port, devNode);
         ProcessImage img = set.getProcessImage(slaveId);
