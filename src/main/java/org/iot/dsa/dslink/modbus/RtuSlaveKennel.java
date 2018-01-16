@@ -7,7 +7,7 @@ import com.serotonin.modbus4j.serial.rtu.RtuSlave;
  * @author James (Juris) Puchin
  * Created on 1/16/2018
  */
-public class RtuSlaveKennel extends SlaveKennel<SerialPortWrapperImpl, String> {
+class RtuSlaveKennel extends SlaveKennel<SerialPortWrapperImpl, String> {
 
     @Override
     String getKeyFromPort(SerialPortWrapperImpl port) {
@@ -15,7 +15,7 @@ public class RtuSlaveKennel extends SlaveKennel<SerialPortWrapperImpl, String> {
     }
 
     @Override
-    public ModbusSlaveSet createSlaveSet(SerialPortWrapperImpl wrapper) {
+    ModbusSlaveSet createSlaveSet(SerialPortWrapperImpl wrapper) {
         return new RtuSlave(wrapper);
     }
 }

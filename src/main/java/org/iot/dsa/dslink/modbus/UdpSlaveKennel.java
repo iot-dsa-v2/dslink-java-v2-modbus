@@ -7,7 +7,7 @@ import com.serotonin.modbus4j.ip.udp.UdpSlave;
  * @author James (Juris) Puchin
  * Created on 1/15/2018
  */
-public class UdpSlaveKennel extends SlaveKennel<Integer, Integer> {
+class UdpSlaveKennel extends SlaveKennel<Integer, Integer> {
 
     @Override
     Integer getKeyFromPort(Integer port) {
@@ -15,7 +15,7 @@ public class UdpSlaveKennel extends SlaveKennel<Integer, Integer> {
     }
 
     @Override
-    public ModbusSlaveSet createSlaveSet(Integer port) {
+    ModbusSlaveSet createSlaveSet(Integer port) {
         return new UdpSlave(port, false);
     }
 }

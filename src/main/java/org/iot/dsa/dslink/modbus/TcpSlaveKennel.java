@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author James (Juris) Puchin
  * Created on 1/15/2018
  */
-public class TcpSlaveKennel extends SlaveKennel<Integer, Integer> {
+class TcpSlaveKennel extends SlaveKennel<Integer, Integer> {
 
     @Override
     Integer getKeyFromPort(Integer port) {
@@ -17,7 +17,7 @@ public class TcpSlaveKennel extends SlaveKennel<Integer, Integer> {
     }
 
     @Override
-    public ModbusSlaveSet createSlaveSet(Integer port) {
+    ModbusSlaveSet createSlaveSet(Integer port) {
         return new TcpSlave(port, false);
     }
 }
