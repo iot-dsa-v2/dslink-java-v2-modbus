@@ -43,7 +43,6 @@ public class IPConnectionNode extends ModbusConnectionNode {
         IpParameters params = new IpParameters();
         params.setHost(host);
         params.setPort(port);
-        //params.setEncapsulated(encapsulated); TODO maybe use this
 
         switch (ipType) {
             case TCP:

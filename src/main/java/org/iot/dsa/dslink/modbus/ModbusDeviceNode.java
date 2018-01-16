@@ -79,7 +79,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
 
     @Override
     public void closeConnection() {
-        // TODO Auto-generated method stub
+        //Do nothing
     }
 
     BaseLocator<?> createPointLocator(ModbusPointNode point) {

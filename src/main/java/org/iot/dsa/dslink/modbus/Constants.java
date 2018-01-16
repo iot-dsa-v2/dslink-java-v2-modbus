@@ -149,11 +149,10 @@ public class Constants {
         CHAR(DataType.CHAR, null, null),
         VARCHAR(DataType.VARCHAR, null, null);
 
-        //TODO: Implement if someone complains
-//        INT32M10K(-327680000, 327670000),
-//        UINT32M10K(0, 655350000),
-//        INT32M10KSWAP(-327680000, 327670000),
-//        UINT32M10KSWAP(0, 655350000);
+        //INT32M10K(-327680000, 327670000),
+        //UINT32M10K(0, 655350000),
+        //INT32M10KSWAP(-327680000, 327670000),
+        //UINT32M10KSWAP(0, 655350000);
 
         private final int id;
 

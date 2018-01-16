@@ -74,7 +74,6 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
 
         master.setTimeout(timeout);
         master.setRetries(retries);
-        // TODO etc.
         
         try {
             master.init();

@@ -72,7 +72,7 @@ abstract class SlaveKennel<P, K> {
                     slaveSet.start();
                 } catch (ModbusInitException e) {
                     devNode.warn(e);
-                    devNode.setError("TCP Slave device failed.");
+                    devNode.setError("Slave device failed.");
                 }
             }
         });
