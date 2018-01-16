@@ -13,10 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 1/9/2018
  */
 public class ModbusSlaveHandler {
-    private static final SlaveKennel<Integer> tcpSlaveSets = new TcpSlaveKennel();
-    private static final SlaveKennel<Integer> udpSlaveSets = new UdpSlaveKennel();
-    private static final SlaveKennel<SerialPortWrapper> asciiSlaveSets = new AsciiSlaveKennel();
-    private static final SlaveKennel<SerialPortWrapper> rtuSlaveSets = new RtuSlaveKennel();
+
+    private static final SlaveKennel<Integer, Integer> tcpSlaveSets = new TcpSlaveKennel();
+    private static final SlaveKennel<Integer, Integer> udpSlaveSets = new UdpSlaveKennel();
+    private static final SlaveKennel<SerialPortWrapperImpl, String> asciiSlaveSets = new AsciiSlaveKennel();
+    private static final SlaveKennel<SerialPortWrapperImpl, String> rtuSlaveSets = new RtuSlaveKennel();
 
     public static void deleteRtuProcessImage(SerialPortWrapperImpl port, int slaveId) {
         rtuSlaveSets.deleteProcessImage(port, slaveId);

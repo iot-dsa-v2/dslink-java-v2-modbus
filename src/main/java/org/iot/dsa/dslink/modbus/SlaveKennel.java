@@ -13,22 +13,24 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author James (Juris) Puchin
  * Created on 1/15/2018
  */
-abstract class SlaveKennel<T> {
-    private final Map<T, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
+abstract class SlaveKennel<P, K> {
+    private final Map<K, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
 
-    abstract ModbusSlaveSet createSlaveSet(T connParameters);
+    abstract ModbusSlaveSet createSlaveSet(P connParameters);
 
-    void deleteProcessImage(T port, int slaveId) {
-        ModbusSlaveSet set = slaveSets.get(port);
+    abstract K getKeyFromPort(P port);
+
+    void deleteProcessImage(P port, int slaveId) {
+        ModbusSlaveSet set = slaveSets.get(getKeyFromPort(port));
         if (set != null) {
             if (set.removeProcessImage(slaveId)) {
                 if (set.getProcessImages().size() == 0)
-                    slaveSets.remove(port);
+                    slaveSets.remove(getKeyFromPort(port));
             }
         }
     }
 
-    BasicProcessImage getProcessImage(T port, int slaveId, SlaveDeviceNode devNode, SlaveKennel slaveSetMap) {
+    BasicProcessImage getProcessImage(P port, int slaveId, SlaveDeviceNode devNode, SlaveKennel slaveSetMap) {
         devNode.clearError();
         ModbusSlaveSet set = getSlaveSet(port, devNode);
         ProcessImage img = set.getProcessImage(slaveId);
@@ -51,17 +53,17 @@ abstract class SlaveKennel<T> {
         return processImage;
     }
 
-    private ModbusSlaveSet getSlaveSet(T port, SlaveDeviceNode devNode) {
-        ModbusSlaveSet set = slaveSets.get(port);
+    private ModbusSlaveSet getSlaveSet(P port, SlaveDeviceNode devNode) {
+        ModbusSlaveSet set = slaveSets.get(getKeyFromPort(port));
         if (set == null) {
             set = createSet(port, devNode);
         }
         return set;
     }
 
-    private ModbusSlaveSet createSet(T port, SlaveDeviceNode devNode) {
+    private ModbusSlaveSet createSet(P port, SlaveDeviceNode devNode) {
         final ModbusSlaveSet slaveSet = createSlaveSet(port);
-        slaveSets.put(port, slaveSet);
+        slaveSets.put(getKeyFromPort(port), slaveSet);
 
         DSRuntime.run(new Runnable() {
             @Override

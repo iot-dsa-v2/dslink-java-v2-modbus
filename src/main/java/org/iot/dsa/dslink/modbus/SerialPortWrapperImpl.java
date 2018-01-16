@@ -23,6 +23,10 @@ public class SerialPortWrapperImpl implements SerialPortWrapper {
 		this.parity = parity;
 	}
 
+	public String getSerialPortName() {
+		return port.getPortName();
+	}
+
 	@Override
 	public void close() throws Exception {
 		port.closePort();
