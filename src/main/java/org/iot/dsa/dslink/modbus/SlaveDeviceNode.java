@@ -27,7 +27,7 @@ public class SlaveDeviceNode extends EditableNode {
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SLAVE_ID, DSLong.valueOf(Constants.DEFAULT_SLAVE_ID), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.IP_PORT, DSLong.valueOf(Constants.DEFAULT_SLAVE_IP_PORT), null, null));
+        
     }
     
     @Override
@@ -53,19 +53,22 @@ public class SlaveDeviceNode extends EditableNode {
         startSlave();
     }
 
-    private int getDevicePort() {
-        return parameters.get(Constants.IP_PORT).toInt();
-    }
-
-    private int getDeviceSlaveID() {
+    int getDeviceSlaveID() {
         return parameters.get(Constants.SLAVE_ID).toInt();
+    }
+    
+    SlaveConnectionNode getParentNode() {
+        DSNode parent = getParent();
+        if (parent instanceof SlaveConnectionNode) {
+            return (SlaveConnectionNode) parent;
+        } else {
+            throw new RuntimeException("Wrong parent class, expected SlaveConnectionNode");
+        }
     }
 
     private void startSlave() {
         if (procImg == null) {
-            int port = getDevicePort();
-            int slaveId = getDeviceSlaveID();
-            procImg = ModbusSlaveHandler.getTcpProcessImage(port, slaveId, this);
+            procImg = getParentNode().getProcessImage(this);
         }
     }
 
@@ -105,7 +108,7 @@ public class SlaveDeviceNode extends EditableNode {
     @Override
     public void preEdit(DSMap newParameters) {
         super.preEdit(newParameters);
-        ModbusSlaveHandler.deleteTcpProcessImage(getDevicePort(),getDeviceSlaveID());
+        getParentNode().deleteProcessImage(this);
         procImg = null;
     }
 
@@ -118,7 +121,7 @@ public class SlaveDeviceNode extends EditableNode {
     @Override
     public void delete() {
         super.delete();
-        ModbusSlaveHandler.deleteTcpProcessImage(getDevicePort(), getDeviceSlaveID());
+        getParentNode().deleteProcessImage(this);  //TODO this needs to be called shen node is removed indirectly as well
     }
 
     BasicProcessImageListener makeListener() {

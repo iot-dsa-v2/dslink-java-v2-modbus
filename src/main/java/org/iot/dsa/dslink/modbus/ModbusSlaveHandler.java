@@ -2,7 +2,6 @@ package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.*;
 import com.serotonin.modbus4j.exception.ModbusInitException;
-import com.serotonin.modbus4j.ip.tcp.TcpSlave;
 import org.iot.dsa.DSRuntime;
 
 import java.util.Map;
