@@ -36,6 +36,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     }
 
     private DSInfo value = getInfo(Constants.POINT_VALUE);
+    private DSInfo error = getInfo(Constants.POINT_ERROR);
 
     public SlavePointNode() {
 
@@ -167,6 +168,16 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return s;
     }
 
+    void setError(String err) {
+        error.setHidden(false);
+        put(error, DSString.valueOf(err));
+    }
+
+    void clearError() {
+        error.setHidden(true);
+        put(error, DSString.EMPTY);
+    }
+
     private void setValueToImage(DSIValue val, BasicProcessImage img) {
 
         DSElement element = val.toElement();
@@ -224,7 +235,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
             par.removeCoilPoint(getPointOffset());
         } else if (getPointType().equals(PointType.HOLDING)) {
             int sum = getPointRegisterCount() + getPointOffset();
-            //TODO: make collision safe (i.e. keep user from creating overlapping points)
             for (int o = getPointOffset(); o < sum; o++) {
                 List<SlavePointNode> lst = par.getHoldingPoints(o);
                 lst.remove(this);
@@ -240,17 +250,44 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     // I know, right
     private void submitToSlaveHandler() {
         //Add to lists for the benefit of the listener
+        SlaveDeviceNode par = getParentNode();
         if (getPointType().equals(PointType.COIL)) {
-            getParentNode().registerCoilPoint(getPointOffset(), this);
+            if (!par.registerCoilPoint(getPointOffset(), this)) {
+                setError("Coil point already exists!");
+                return;
+            }
         } else if (getPointType().equals(PointType.HOLDING)) {
-            int sum = getPointRegisterCount() + getPointOffset();
-            //TODO: make collision safe (i.e. keep user from creating overlapping points)
-            for (int o = getPointOffset(); o < sum; o++) {
-                getParentNode().registerHoldingPoint(o, this);
+            boolean bool = getPointDataType().equals(DataTypeEnum.BINARY);
+            int offset = getPointOffset();
+            int sum = getPointRegisterCount() + offset;
+
+            // Make sure point is safe to register
+            for (int o = offset; o < sum; o++) {
+                List<SlavePointNode> hLst = par.getHoldingPoints(o);
+                if (hLst != null && hLst.size() > 0) {
+                    if (bool) {
+                        for (SlavePointNode n : hLst) {
+                            if (n.getPointBit() == getPointBit()) {
+                                setError("Holding binary point already exists!");
+                                return;
+                            }
+                        }
+                    } else {
+                        setError("Holding point already exists!");
+                        return;
+                    }
+                }
+            }
+
+            // Register point
+            for (int o = offset; o < sum; o++) {
+                par.registerHoldingPoint(o, this);
             }
         }
 
+        //Set point value
         setValueToImage(value.getValue(), getParentProcessImage());
+        clearError();
     }
 
     SlaveDeviceNode getParentNode() {
@@ -264,7 +301,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     @Override
     public void preEdit(DSMap newParameters) {
-        super.preEdit(newParameters);
         escapeSlaveHandler();
     }
 

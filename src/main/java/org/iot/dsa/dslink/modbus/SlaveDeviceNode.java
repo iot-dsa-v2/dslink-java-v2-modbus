@@ -72,8 +72,10 @@ public class SlaveDeviceNode extends EditableNode {
         }
     }
 
-    public void registerCoilPoint(int offset, SlavePointNode node) {
+    public boolean registerCoilPoint(int offset, SlavePointNode node) {
+        if (offsetToCoilNode.get(offset) != null) return false;
         offsetToCoilNode.put(offset,node);
+        return true;
     }
 
     public SlavePointNode getCoilPoint(int offset) {
@@ -114,7 +116,6 @@ public class SlaveDeviceNode extends EditableNode {
 
     @Override
     public void onEdit() {
-        super.onEdit();
         startSlave();
     }
 
