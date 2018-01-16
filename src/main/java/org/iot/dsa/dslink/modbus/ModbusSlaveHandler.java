@@ -12,22 +12,33 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author James (Juris) Puchin
  * Created on 1/9/2018
  */
-public class TcpSlaveHandler {
-    private static final Map<Integer, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
+public class ModbusSlaveHandler {
+    private static final Map<Integer, ModbusSlaveSet> tcpSlaveSets = new ConcurrentHashMap<>();
+    private static final Map<Integer, ModbusSlaveSet> updSlaveSets = new ConcurrentHashMap<>();
+    private static final Map<Integer, ModbusSlaveSet> asciiSlaveSets = new ConcurrentHashMap<>();
+    private static final Map<Integer, ModbusSlaveSet> rtuSlaveSets = new ConcurrentHashMap<>();
 
-    public static void deleteProcessImage(int port, int slaveId) {
-        ModbusSlaveSet set = slaveSets.get(port);
+    public static void deleteTcpProcessImage(int port, int slaveId) {
+        deleteProcessImage(port, slaveId, tcpSlaveSets);
+    }
+
+    private static void deleteProcessImage(int port, int slaveId, Map<Integer,ModbusSlaveSet> slaveSetMap) {
+        ModbusSlaveSet set = slaveSetMap.get(port);
         if (set != null) {
             if (set.removeProcessImage(slaveId)) {
                 if (set.getProcessImages().size() == 0)
-                    slaveSets.remove(port);
+                    slaveSetMap.remove(port);
             }
         }
     }
 
-    public static BasicProcessImage getProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
+    public static BasicProcessImage getTcpProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
+        return getProcessImage(port, slaveId, devNode, tcpSlaveSets);
+    }
+
+    private static BasicProcessImage getProcessImage(int port, int slaveId, SlaveDeviceNode devNode, Map<Integer,ModbusSlaveSet> slaveSetMap) {
         devNode.clearError();
-        ModbusSlaveSet set = getSlaveSet(port, devNode);
+        ModbusSlaveSet set = getSlaveSet(port, devNode, slaveSetMap);
         ProcessImage img = set.getProcessImage(slaveId);
         if (img == null) {
             img = createProcessImage(slaveId, devNode);
@@ -48,17 +59,17 @@ public class TcpSlaveHandler {
         return processImage;
     }
 
-    private static ModbusSlaveSet getSlaveSet(int port, SlaveDeviceNode devNode) {
-        ModbusSlaveSet set = slaveSets.get(port);
+    private static ModbusSlaveSet getSlaveSet(int port, SlaveDeviceNode devNode, Map<Integer,ModbusSlaveSet> slaveSetMap) {
+        ModbusSlaveSet set = slaveSetMap.get(port);
         if (set == null) {
-            set = createSet(port, devNode);
+            set = createSet(port, devNode, slaveSetMap);
         }
         return set;
     }
 
-    private static ModbusSlaveSet createSet(int port, SlaveDeviceNode devNode) {
+    private static ModbusSlaveSet createSet(int port, SlaveDeviceNode devNode, Map<Integer,ModbusSlaveSet> slaveSetMap) {
         final ModbusSlaveSet tcpSlave = new TcpSlave(port, false);
-        slaveSets.put(port, tcpSlave);
+        slaveSetMap.put(port, tcpSlave);
 
         DSRuntime.run(new Runnable() {
             @Override

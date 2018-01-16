@@ -65,7 +65,7 @@ public class SlaveDeviceNode extends EditableNode {
         if (procImg == null) {
             int port = getDevicePort();
             int slaveId = getDeviceSlaveID();
-            procImg = TcpSlaveHandler.getProcessImage(port, slaveId, this);
+            procImg = ModbusSlaveHandler.getTcpProcessImage(port, slaveId, this);
         }
     }
 
@@ -105,7 +105,7 @@ public class SlaveDeviceNode extends EditableNode {
     @Override
     public void preEdit(DSMap newParameters) {
         super.preEdit(newParameters);
-        TcpSlaveHandler.deleteProcessImage(getDevicePort(),getDeviceSlaveID());
+        ModbusSlaveHandler.deleteTcpProcessImage(getDevicePort(),getDeviceSlaveID());
         procImg = null;
     }
 
@@ -118,7 +118,7 @@ public class SlaveDeviceNode extends EditableNode {
     @Override
     public void delete() {
         super.delete();
-        TcpSlaveHandler.deleteProcessImage(getDevicePort(), getDeviceSlaveID());
+        ModbusSlaveHandler.deleteTcpProcessImage(getDevicePort(), getDeviceSlaveID());
     }
 
     BasicProcessImageListener makeListener() {
