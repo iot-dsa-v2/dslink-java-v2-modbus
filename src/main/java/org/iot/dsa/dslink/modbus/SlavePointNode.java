@@ -128,11 +128,11 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         getParent().childChanged(getInfo());
     }
 
-    @Override
-    protected void onStable() {
-        super.onStable();
-        submitToSlaveHandler();
-    }
+//    @Override
+//    protected void onStable() {
+//        super.onStable();
+//        //submitToSlaveHandler();
+//    }
 
     private BasicProcessImage getParentProcessImage() {
         return getParentNode().procImg;
@@ -228,7 +228,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         escapeSlaveHandler();
     }
 
-    private void escapeSlaveHandler() {
+    void escapeSlaveHandler() {
         //Unregister from device node
         SlaveDeviceNode par = getParentNode();
         if (getPointType().equals(PointType.COIL)) {
@@ -248,7 +248,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
 
     // oh my god this method name
     // I know, right
-    private void submitToSlaveHandler() {
+    void submitToSlaveHandler() {
         //Add to lists for the benefit of the listener
         SlaveDeviceNode par = getParentNode();
         if (getPointType().equals(PointType.COIL)) {

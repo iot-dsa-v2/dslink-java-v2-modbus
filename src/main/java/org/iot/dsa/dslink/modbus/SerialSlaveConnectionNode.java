@@ -78,6 +78,8 @@ public class SerialSlaveConnectionNode extends SlaveConnectionNode {
     @Override
     public void onEdit() {
         portWrapper = null;
+        getPortWrapper();
+        super.onEdit();
     }
 
 }

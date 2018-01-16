@@ -48,8 +48,8 @@ public class SlaveDeviceNode extends EditableNode {
     }
 
     @Override
-    protected void onStarted() {
-        super.onStarted();
+    protected void onStable() {
+        super.onStable();
         startSlave();
     }
 
@@ -66,9 +66,15 @@ public class SlaveDeviceNode extends EditableNode {
         }
     }
 
-    private void startSlave() {
+    public void startSlave() {
         if (procImg == null) {
             procImg = getParentNode().getProcessImage(this);
+            for (DSInfo info: this) {
+                if (info.isNode() && info.getNode() instanceof SlavePointNode) {
+                    SlavePointNode point = (SlavePointNode) info.getNode();
+                    point.submitToSlaveHandler();
+                }
+            }
         }
     }
 
@@ -110,7 +116,7 @@ public class SlaveDeviceNode extends EditableNode {
     @Override
     public void preEdit(DSMap newParameters) {
         super.preEdit(newParameters);
-        getParentNode().deleteProcessImage(this);
+        stopSlave();
         procImg = null;
     }
 
@@ -122,7 +128,23 @@ public class SlaveDeviceNode extends EditableNode {
     @Override
     public void delete() {
         super.delete();
-        getParentNode().deleteProcessImage(this);  //TODO this needs to be called shen node is removed indirectly as well
+        stopSlave();
+    }
+    
+    public void stopSlave() {
+        List<SlavePointNode> toStop = new ArrayList<SlavePointNode>();
+        for (SlavePointNode point : offsetToCoilNode.values()) {
+            toStop.add(point);
+        }
+        for (List<SlavePointNode> pointList : offsetToHoldingList.values()) {
+            for (SlavePointNode point : pointList) {
+                toStop.add(point);
+            }
+        }
+        for (SlavePointNode point: toStop) {
+            point.escapeSlaveHandler();
+        }
+        getParentNode().deleteProcessImage(this);
     }
 
     BasicProcessImageListener makeListener() {
