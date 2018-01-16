@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 1/9/2018
  */
 public class ModbusSlaveHandler {
-    private static final Map<Integer, ModbusSlaveSet> tcpSlaveSets = new ConcurrentHashMap<>();
-    private static final Map<Integer, ModbusSlaveSet> udpSlaveSets = new ConcurrentHashMap<>();
+    private static final SlaveKennel tcpSlaveSets = new TcpSlaveKennel();
+    private static final SlaveKennel udpSlaveSets = new UdpSlaveKennel();
     private static final Map<Integer, ModbusSlaveSet> asciiSlaveSets = new ConcurrentHashMap<>();
     private static final Map<Integer, ModbusSlaveSet> rtuSlaveSets = new ConcurrentHashMap<>();
 
@@ -26,7 +26,7 @@ public class ModbusSlaveHandler {
         deleteProcessImage(port, slaveId, tcpSlaveSets);
     }
 
-    private static void deleteProcessImage(int port, int slaveId, Map<Integer,ModbusSlaveSet> slaveSetMap) {
+    private static void deleteProcessImage(int port, int slaveId, SlaveKennel slaveSetMap) {
         ModbusSlaveSet set = slaveSetMap.get(port);
         if (set != null) {
             if (set.removeProcessImage(slaveId)) {
@@ -44,7 +44,7 @@ public class ModbusSlaveHandler {
         return getProcessImage(port, slaveId, devNode, tcpSlaveSets);
     }
 
-    private static BasicProcessImage getProcessImage(int port, int slaveId, SlaveDeviceNode devNode, Map<Integer,ModbusSlaveSet> slaveSetMap) {
+    private static BasicProcessImage getProcessImage(int port, int slaveId, SlaveDeviceNode devNode, SlaveKennel slaveSetMap) {
         devNode.clearError();
         ModbusSlaveSet set = getSlaveSet(port, devNode, slaveSetMap);
         ProcessImage img = set.getProcessImage(slaveId);
@@ -67,7 +67,7 @@ public class ModbusSlaveHandler {
         return processImage;
     }
 
-    private static ModbusSlaveSet getSlaveSet(int port, SlaveDeviceNode devNode, Map<Integer,ModbusSlaveSet> slaveSetMap) {
+    private static ModbusSlaveSet getSlaveSet(int port, SlaveDeviceNode devNode, SlaveKennel slaveSetMap) {
         ModbusSlaveSet set = slaveSetMap.get(port);
         if (set == null) {
             set = createSet(port, devNode, slaveSetMap);
@@ -75,8 +75,8 @@ public class ModbusSlaveHandler {
         return set;
     }
 
-    private static ModbusSlaveSet createSet(int port, SlaveDeviceNode devNode, Map<Integer,ModbusSlaveSet> slaveSetMap) {
-        final ModbusSlaveSet tcpSlave = new TcpSlave(port, false);
+    private static ModbusSlaveSet createSet(int port, SlaveDeviceNode devNode, SlaveKennel slaveSetMap) {
+        final ModbusSlaveSet tcpSlave = slaveSetMap.createSlaveSet(port, false);
         slaveSetMap.put(port, tcpSlave);
 
         DSRuntime.run(new Runnable() {
