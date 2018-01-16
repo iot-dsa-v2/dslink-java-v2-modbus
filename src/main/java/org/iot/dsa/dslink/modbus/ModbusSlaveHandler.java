@@ -14,9 +14,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ModbusSlaveHandler {
     private static final Map<Integer, ModbusSlaveSet> tcpSlaveSets = new ConcurrentHashMap<>();
-    private static final Map<Integer, ModbusSlaveSet> updSlaveSets = new ConcurrentHashMap<>();
+    private static final Map<Integer, ModbusSlaveSet> udpSlaveSets = new ConcurrentHashMap<>();
     private static final Map<Integer, ModbusSlaveSet> asciiSlaveSets = new ConcurrentHashMap<>();
     private static final Map<Integer, ModbusSlaveSet> rtuSlaveSets = new ConcurrentHashMap<>();
+
+    public static void deleteUdpProcessImage(int port, int slaveId) {
+        deleteProcessImage(port, slaveId, udpSlaveSets);
+    }
 
     public static void deleteTcpProcessImage(int port, int slaveId) {
         deleteProcessImage(port, slaveId, tcpSlaveSets);
@@ -30,6 +34,10 @@ public class ModbusSlaveHandler {
                     slaveSetMap.remove(port);
             }
         }
+    }
+
+    public static BasicProcessImage getUdpProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
+        return getProcessImage(port, slaveId, devNode, udpSlaveSets);
     }
 
     public static BasicProcessImage getTcpProcessImage(int port, int slaveId, SlaveDeviceNode devNode) {
