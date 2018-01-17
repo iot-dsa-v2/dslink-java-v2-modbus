@@ -1,5 +1,8 @@
 package org.iot.dsa.dslink.modbus;
 
+import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.BINARY;
+import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.CHAR;
+import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.VARCHAR;
 import java.util.ArrayList;
 import java.util.List;
 import com.serotonin.modbus4j.ExceptionResult;
@@ -10,15 +13,14 @@ import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
-import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
-import org.iot.dsa.dslink.modbus.Constants.MultipleWriteEnum;
-import org.iot.dsa.dslink.modbus.Constants.PointType;
+import org.iot.dsa.dslink.modbus.utils.Constants;
+import org.iot.dsa.dslink.modbus.utils.DataTypeParameter;
+import org.iot.dsa.dslink.modbus.utils.Util;
+import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
+import org.iot.dsa.dslink.modbus.utils.Constants.MultipleWriteEnum;
+import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
 import org.iot.dsa.node.*;
 import org.iot.dsa.util.DSException;
-
-import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.BINARY;
-import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.CHAR;
-import static org.iot.dsa.dslink.modbus.Constants.DataTypeEnum.VARCHAR;
 
 public class ModbusPointNode extends DFPointNode implements DSIValue {
 

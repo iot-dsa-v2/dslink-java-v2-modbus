@@ -1,9 +1,10 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.slave;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
-import org.iot.dsa.dslink.modbus.Constants.IpTransportType;
+import org.iot.dsa.dslink.modbus.utils.Constants;
+import org.iot.dsa.dslink.modbus.utils.Constants.IpTransportType;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
 import com.serotonin.modbus4j.BasicProcessImage;

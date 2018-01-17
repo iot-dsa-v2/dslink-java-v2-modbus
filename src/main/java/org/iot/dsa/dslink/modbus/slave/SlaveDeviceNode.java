@@ -1,10 +1,11 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.slave;
 
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.ProcessImageListener;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.node.*;
 
 import java.util.ArrayList;

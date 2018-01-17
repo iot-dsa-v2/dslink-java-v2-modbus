@@ -1,14 +1,14 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.utils;
 
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
-import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
-import org.iot.dsa.dslink.modbus.Constants.PointType;
+import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
+import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSMap;
 
-class DataTypeParameter extends ParameterDefinition {
+public class DataTypeParameter extends ParameterDefinition {
 
-    protected DataTypeParameter(String description, String placeholder) {
+    public DataTypeParameter(String description, String placeholder) {
         super(Constants.POINT_DATA_TYPE, null, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, description, placeholder);
     }
     

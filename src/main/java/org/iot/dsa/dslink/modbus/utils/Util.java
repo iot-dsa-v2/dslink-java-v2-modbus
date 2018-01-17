@@ -1,8 +1,8 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.utils;
 
 import java.math.BigInteger;
 import java.util.regex.Pattern;
-import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
+import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.node.DSIValue;
 import com.serotonin.modbus4j.code.DataType;
 import jssc.SerialNativeInterface;
