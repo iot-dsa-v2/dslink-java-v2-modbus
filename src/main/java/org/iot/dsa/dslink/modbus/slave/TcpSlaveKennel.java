@@ -1,4 +1,4 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.slave;
 
 import com.serotonin.modbus4j.ModbusSlaveSet;
 import com.serotonin.modbus4j.ip.tcp.TcpSlave;

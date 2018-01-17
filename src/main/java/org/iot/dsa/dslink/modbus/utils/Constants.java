@@ -1,4 +1,4 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.utils;
 
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.code.RegisterRange;

@@ -1,5 +1,6 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.slave;
 
+import org.iot.dsa.dslink.modbus.utils.SerialPortWrapperImpl;
 import com.serotonin.modbus4j.ModbusSlaveSet;
 import com.serotonin.modbus4j.serial.ascii.AsciiSlave;
 

@@ -1,18 +1,19 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.slave;
 
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.IllegalDataAddressException;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
-import org.iot.dsa.dslink.modbus.Constants.DataTypeEnum;
+import org.iot.dsa.dslink.modbus.utils.Constants;
+import org.iot.dsa.dslink.modbus.utils.DataTypeParameter;
+import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
+import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
 import org.iot.dsa.node.*;
 import org.iot.dsa.util.DSException;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.iot.dsa.dslink.modbus.Constants.PointType;
 
 /**
  * @author James (Juris) Puchin

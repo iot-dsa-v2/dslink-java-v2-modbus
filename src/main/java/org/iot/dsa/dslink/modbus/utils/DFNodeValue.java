@@ -1,4 +1,4 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.utils;
 
 import org.iot.dsa.node.*;
 

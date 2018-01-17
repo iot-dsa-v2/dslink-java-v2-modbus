@@ -1,4 +1,4 @@
-package org.iot.dsa.dslink.modbus;
+package org.iot.dsa.dslink.modbus.utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
