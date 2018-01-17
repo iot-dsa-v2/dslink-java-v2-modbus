@@ -148,16 +148,16 @@ public class SlaveDeviceNode extends EditableNode {
         getParentNode().deleteProcessImage(this);
     }
 
-    BasicProcessImageListener makeListener() {
+    public BasicProcessImageListener makeListener() {
         return new BasicProcessImageListener();
     }
 
-    void setError(String err) {
+    public void setError(String err) {
         error.setHidden(false);
         put(error, DSString.valueOf(err));
     }
 
-    void clearError() {
+    public void clearError() {
         error.setHidden(true);
         put(error, DSString.EMPTY);
     }

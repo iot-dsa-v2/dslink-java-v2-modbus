@@ -1,9 +1,7 @@
-package org.iot.dsa.dslink.modbus.slave;
+package org.iot.dsa.dslink.modbus.slave.handler;
 
 import com.serotonin.modbus4j.ModbusSlaveSet;
 import com.serotonin.modbus4j.ip.tcp.TcpSlave;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author James (Juris) Puchin

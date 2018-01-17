@@ -3,6 +3,7 @@ package org.iot.dsa.dslink.modbus.slave;
 import java.util.ArrayList;
 import java.util.List;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.modbus.slave.handler.ModbusSlaveHandler;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.SerialPortParameter;
 import org.iot.dsa.dslink.modbus.utils.SerialPortWrapperImpl;
@@ -10,9 +11,7 @@ import org.iot.dsa.dslink.modbus.utils.Constants.SerialParity;
 import org.iot.dsa.dslink.modbus.utils.Constants.SerialTransportType;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
-import org.iot.dsa.node.DSMap;
 import com.serotonin.modbus4j.BasicProcessImage;
-import com.serotonin.modbus4j.serial.SerialPortWrapper;
 
 public class SerialSlaveConnectionNode extends SlaveConnectionNode {
     protected static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
