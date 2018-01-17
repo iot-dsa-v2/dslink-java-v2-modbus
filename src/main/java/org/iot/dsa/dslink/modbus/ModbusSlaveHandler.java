@@ -1,12 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
-import com.serotonin.modbus4j.*;
-import com.serotonin.modbus4j.exception.ModbusInitException;
-import com.serotonin.modbus4j.serial.SerialPortWrapper;
-import org.iot.dsa.DSRuntime;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.serotonin.modbus4j.BasicProcessImage;
 
 /**
  * @author James (Juris) Puchin
