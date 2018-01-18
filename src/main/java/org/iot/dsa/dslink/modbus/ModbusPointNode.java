@@ -133,7 +133,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     @Override
     public void onSet(DSInfo info, DSIValue value) {
-        //String name = info.getName();
         if (this.value.equals(info)) {
             onSet(value);
         }

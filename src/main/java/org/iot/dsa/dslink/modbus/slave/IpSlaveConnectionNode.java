@@ -3,6 +3,7 @@ package org.iot.dsa.dslink.modbus.slave;
 import java.util.ArrayList;
 import java.util.List;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.modbus.slave.handler.ModbusSlaveHandler;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.Constants.IpTransportType;
 import org.iot.dsa.node.DSJavaEnum;

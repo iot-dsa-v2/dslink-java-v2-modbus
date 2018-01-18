@@ -1,14 +1,14 @@
-package org.iot.dsa.dslink.modbus.slave;
+package org.iot.dsa.dslink.modbus.slave.handler;
 
 import org.iot.dsa.dslink.modbus.utils.SerialPortWrapperImpl;
 import com.serotonin.modbus4j.ModbusSlaveSet;
-import com.serotonin.modbus4j.serial.ascii.AsciiSlave;
+import com.serotonin.modbus4j.serial.rtu.RtuSlave;
 
 /**
  * @author James (Juris) Puchin
- * Created on 1/15/2018
+ * Created on 1/16/2018
  */
-class AsciiSlaveKennel extends SlaveKennel<SerialPortWrapperImpl, String> {
+class RtuSlaveKennel extends SlaveKennel<SerialPortWrapperImpl, String> {
 
     @Override
     String getKeyFromPort(SerialPortWrapperImpl port) {
@@ -17,6 +17,6 @@ class AsciiSlaveKennel extends SlaveKennel<SerialPortWrapperImpl, String> {
 
     @Override
     ModbusSlaveSet createSlaveSet(SerialPortWrapperImpl wrapper) {
-        return new AsciiSlave(wrapper);
+        return new RtuSlave(wrapper);
     }
 }

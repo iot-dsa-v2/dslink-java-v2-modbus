@@ -1,10 +1,11 @@
-package org.iot.dsa.dslink.modbus.slave;
+package org.iot.dsa.dslink.modbus.slave.handler;
 
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.ModbusSlaveSet;
 import com.serotonin.modbus4j.ProcessImage;
 import com.serotonin.modbus4j.exception.ModbusInitException;
 import org.iot.dsa.DSRuntime;
+import org.iot.dsa.dslink.modbus.slave.SlaveDeviceNode;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author James (Juris) Puchin
  * Created on 1/15/2018
  */
-abstract class SlaveKennel<P, K> {
-    private final Map<K, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
+abstract class SlaveKennel <P, K> {
+    private final Map <K, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
 
     abstract ModbusSlaveSet createSlaveSet(P connParameters);
 
