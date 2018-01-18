@@ -10,14 +10,11 @@ import com.serotonin.modbus4j.ModbusSlaveSet;
 
 public abstract class SlaveConnectionNode extends EditableNode {
     
-    ModbusSlaveSet slaveSet = null;
-    
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
         declareDefault(Constants.ACTION_ADD_SLAVE, DFUtil.getAddAction(SlaveDeviceNode.class));
         declareDefault("Remove", makeRemoveAction());
-//        declareDefault(Constants.SLAVE_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
     }
     
     protected abstract BasicProcessImage getProcessImage(SlaveDeviceNode slave);

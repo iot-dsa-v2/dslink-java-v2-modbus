@@ -23,7 +23,7 @@ repositories {
     //maven {
     //	url 'https://maven.mangoautomation.net/repository/ias-release/'
     //}
-    flatDir {dirs 'modbus4j'}
+    flatDir { dirs 'modbus4j' }
     flatDir { dirs 'dsa' }
 }
 

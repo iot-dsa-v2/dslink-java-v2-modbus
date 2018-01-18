@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author James (Juris) Puchin
  * Created on 1/15/2018
  */
-abstract class SlaveKennel<P, K> {
-    private final Map<K, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
+abstract class SlaveKennel <P, K> {
+    private final Map <K, ModbusSlaveSet> slaveSets = new ConcurrentHashMap<>();
 
     abstract ModbusSlaveSet createSlaveSet(P connParameters);
 
