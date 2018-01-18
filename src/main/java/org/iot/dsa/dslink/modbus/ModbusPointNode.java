@@ -44,21 +44,21 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
-    private Long getPointScaling() {
-        Long ans = parameters.get(Constants.SCALING).toLong();
+    private Double getPointScaling() {
+        Double ans = parameters.getDouble(Constants.SCALING);
         if (ans == 0) throw new RuntimeException("Zero is not a valid scaling factor.");
         return ans;
     }
 
-    private Long getPointOffset() {
-        return parameters.get(Constants.SCALING_OFFSET).toLong();
+    private Double getPointScalingOffset() {
+        return parameters.getDouble(Constants.SCALING_OFFSET);
     }
-    Double applyScaling(Double val) {
-        return val * getPointScaling() + getPointOffset();
+    public Double applyScaling(Double val) {
+        return val * getPointScaling() + getPointScalingOffset();
     }
 
-    Double removeScaling(Double val) {
-        return (val - getPointOffset()) / getPointScaling();
+    public Double removeScaling(Double val) {
+        return (val - getPointScalingOffset()) / getPointScaling();
     }
     
     public ModbusPointNode() {
