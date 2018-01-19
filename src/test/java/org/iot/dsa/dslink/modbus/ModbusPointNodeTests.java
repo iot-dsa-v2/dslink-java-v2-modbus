@@ -1,4 +1,4 @@
-package org.iot.dslink.modbus;
+package org.iot.dsa.dslink.modbus;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -54,7 +54,7 @@ public class ModbusPointNodeTests {
     
     @Test
     public void removeScalingReversesApplyScaling() {
-        Random rand = new Random();
+        Random rand = new Random(65535);
         ModbusPointNode mpn = new ModbusPointNode();
         for (int i=0; i<100; i++) {
             mpn.parameters = new DSMap().put(Constants.SCALING, randomDouble(rand)).put(Constants.SCALING_OFFSET, randomDouble(rand));
