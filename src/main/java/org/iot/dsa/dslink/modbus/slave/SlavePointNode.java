@@ -179,7 +179,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         put(error, DSString.EMPTY);
     }
 
-    //TODO: why is process image not soted in the SlavePoint? Can more than one exist?
+    //TODO: why is process image not stored in the SlavePoint? Can more than one exist?
     private void setValueToImage(DSIValue val, BasicProcessImage img) {
 
         DSElement element = val.toElement();
