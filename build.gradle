@@ -36,7 +36,9 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-logging:commons-logging:+'
     compile 'org.scream3r:jssc:+'
+    
     testCompile 'junit:junit:+'
+    testCompile 'org.mockito:mockito-all:+'
 }
 
 applicationDistribution.from(new File(project.projectDir, "/dslink.json"))
