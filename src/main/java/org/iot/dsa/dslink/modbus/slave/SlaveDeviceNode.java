@@ -37,7 +37,6 @@ public class SlaveDeviceNode extends EditableNode {
     }
 
     public SlaveDeviceNode() {
-
     }
 
     @Override
