@@ -10,6 +10,8 @@ import jssc.SerialPortList;
 
 public class Util {
     
+    public static SerialPortLister serialPortLister = new SerialPortLister();
+    
     public static Object valueToObject(DSIValue value, DataTypeEnum type) {
         Class<?> javaType = DataType.getJavaType(type.toId());
         if (Boolean.class.equals(javaType)) {
@@ -33,24 +35,29 @@ public class Util {
     }
     
     public static String[] getCommPorts() {
-        String[] portNames;
+        return serialPortLister.listPorts();
+    }
+    
+    public static class SerialPortLister {
+        public String[] listPorts() {
+            String[] portNames;
 
-        switch (SerialNativeInterface.getOsType()) {
-        case SerialNativeInterface.OS_LINUX:
-            portNames = SerialPortList
-                    .getPortNames(Pattern.compile("(cu|ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}"));
-            break;
-        case SerialNativeInterface.OS_MAC_OS_X:
-            portNames = SerialPortList.getPortNames(Pattern.compile("(cu|tty)..*")); // Was
-                                                                                        // "tty.(serial|usbserial|usbmodem).*")
-            break;
-        default:
-            portNames = SerialPortList.getPortNames();
-            break;
+            switch (SerialNativeInterface.getOsType()) {
+            case SerialNativeInterface.OS_LINUX:
+                portNames = SerialPortList
+                        .getPortNames(Pattern.compile("(cu|ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm|ttyO)[0-9]{1,3}"));
+                break;
+            case SerialNativeInterface.OS_MAC_OS_X:
+                portNames = SerialPortList.getPortNames(Pattern.compile("(cu|tty)..*")); // Was
+                                                                                            // "tty.(serial|usbserial|usbmodem).*")
+                break;
+            default:
+                portNames = SerialPortList.getPortNames();
+                break;
+            }
+
+            return portNames;
         }
-
-        return portNames;
-
     }
 
 }

@@ -53,7 +53,7 @@ public class SerialPortParameter extends ParameterDefinition {
     @Override
     public void verify(DSMap parameters) {
         String ddPort = parameters.getString(dropdownName);
-        if (!Constants.OTHER_SERIAL_PORT.equals(ddPort)) {
+        if (ddPort != null && !Constants.OTHER_SERIAL_PORT.equals(ddPort)) {
             parameters.put(manualName, ddPort);
         }
         DSElement port = parameters.get(manualName);
