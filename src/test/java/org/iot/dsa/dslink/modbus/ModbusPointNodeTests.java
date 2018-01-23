@@ -1,5 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
+import org.iot.dsa.dslink.dftest.MockParameters;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import java.util.Random;
@@ -9,7 +10,7 @@ import org.iot.dsa.node.DSMap;
 
 public class ModbusPointNodeTests {
     private static double DELTA = .00001;
-    
+
     @Test
     public void applyScalingNoChange() {
         ModbusPointNode mpn = new ModbusPointNode();

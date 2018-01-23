@@ -10,7 +10,9 @@ import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
 import com.serotonin.modbus4j.BasicProcessImage;
 
+
 public class IpSlaveConnectionNode extends SlaveConnectionNode {
+
     protected static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.IP_TRANSPORT_TYPE,

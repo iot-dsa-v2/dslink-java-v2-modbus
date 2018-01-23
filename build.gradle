@@ -36,7 +36,8 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'commons-logging:commons-logging:+'
     compile 'org.scream3r:jssc:+'
-    
+
+    testCompile ':driver-framework-java-v2-prototype:+:tests'
     testCompile 'junit:junit:+'
     testCompile 'org.mockito:mockito-all:+'
 }

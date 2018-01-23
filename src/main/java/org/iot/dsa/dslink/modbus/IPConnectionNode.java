@@ -12,6 +12,7 @@ import org.iot.dsa.node.DSValueType;
 import com.serotonin.modbus4j.ip.IpParameters;
 
 public class IPConnectionNode extends ModbusConnectionNode {
+
     protected static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.IP_TRANSPORT_TYPE,
