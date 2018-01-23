@@ -1,12 +1,12 @@
 package org.iot.dsa.dslink.modbus;
 
-import org.iot.dsa.dslink.dftest.MockParameters;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import java.util.Random;
-import org.iot.dsa.dslink.modbus.ModbusPointNode;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.node.DSMap;
+import org.junit.Test;
+
+import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 public class ModbusPointNodeTests {
     private static double DELTA = .00001;
@@ -19,7 +19,7 @@ public class ModbusPointNodeTests {
         assertEquals(0.0, mpn.applyScaling(0.0), DELTA);
         assertEquals(-1.0, mpn.applyScaling(-1.0), DELTA);
     }
-    
+
     @Test
     public void applyScalingOnlyAdd() {
         ModbusPointNode mpn = new ModbusPointNode();
@@ -27,7 +27,7 @@ public class ModbusPointNodeTests {
         assertEquals(6.0, mpn.applyScaling(0.0), DELTA);
         assertEquals(4.8, mpn.applyScaling(-1.2), DELTA);
     }
-    
+
     @Test
     public void applyScalingMultAdd() {
         ModbusPointNode mpn = new ModbusPointNode();
@@ -35,7 +35,7 @@ public class ModbusPointNodeTests {
         assertEquals(6.0, mpn.applyScaling(0.0), DELTA);
         assertEquals(2.4, mpn.applyScaling(-1.2), DELTA);
     }
-    
+
     @Test
     public void applyScalingDivAdd() {
         ModbusPointNode mpn = new ModbusPointNode();
@@ -43,7 +43,7 @@ public class ModbusPointNodeTests {
         assertEquals(6.0, mpn.applyScaling(0.0), DELTA);
         assertEquals(-6.0, mpn.applyScaling(-48.0), DELTA);
     }
-    
+
     @Test
     public void removeScalingNoChange() {
         ModbusPointNode mpn = new ModbusPointNode();
@@ -52,19 +52,19 @@ public class ModbusPointNodeTests {
         assertEquals(0.0, mpn.removeScaling(0.0), DELTA);
         assertEquals(-1.0, mpn.removeScaling(-1.0), DELTA);
     }
-    
+
     @Test
     public void removeScalingReversesApplyScaling() {
         Random rand = new Random(65535);
         ModbusPointNode mpn = new ModbusPointNode();
-        for (int i=0; i<100; i++) {
+        for (int i = 0; i < 100; i++) {
             mpn.parameters = new DSMap().put(Constants.SCALING, randomDouble(rand)).put(Constants.SCALING_OFFSET, randomDouble(rand));
             double num = randomDouble(rand);
             assertEquals(num, mpn.removeScaling(mpn.applyScaling(num)), DELTA);
             assertEquals(num, mpn.applyScaling(mpn.removeScaling(num)), DELTA);
         }
     }
-    
+
     private double randomDouble(Random rand) {
         return (rand.nextInt(200) - 100) + rand.nextDouble();
     }
