@@ -27,6 +27,7 @@ import com.serotonin.modbus4j.locator.BaseLocator;
 public class ModbusDeviceNode extends DFDeviceNode {
     
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
+
     static {
         parameterDefinitions.add(ParameterDefinition.makeParam(Constants.SLAVE_ID, DSValueType.NUMBER, null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), "interval between pings, in seconds", null));
