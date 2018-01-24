@@ -1,5 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
+import org.iot.dsa.dslink.dftest.MockParameters;
 import org.iot.dsa.dslink.dftest.TestingPoint;
 
 /**
@@ -7,7 +8,7 @@ import org.iot.dsa.dslink.dftest.TestingPoint;
  * Created on 1/23/2018
  */
 public class ModbusTestingPoint extends TestingPoint {
-    ModbusTestingPoint(String name, String value) {
-        super(name, value);
+    ModbusTestingPoint(String name, String val, MockParameters pars) {
+        super(name, val, pars);
     }
 }
