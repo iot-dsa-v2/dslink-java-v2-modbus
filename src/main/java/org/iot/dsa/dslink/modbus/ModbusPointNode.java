@@ -1,10 +1,5 @@
 package org.iot.dsa.dslink.modbus;
 
-import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.BINARY;
-import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.CHAR;
-import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.VARCHAR;
-import java.util.ArrayList;
-import java.util.List;
 import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.ErrorResponseException;
@@ -13,21 +8,28 @@ import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
-import org.iot.dsa.dslink.modbus.utils.DataTypeParameter;
-import org.iot.dsa.dslink.modbus.utils.Util;
 import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.MultipleWriteEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
+import org.iot.dsa.dslink.modbus.utils.DataTypeParameter;
+import org.iot.dsa.dslink.modbus.utils.Util;
 import org.iot.dsa.node.*;
 import org.iot.dsa.util.DSException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.*;
 
 public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
+
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParam(Constants.POINT_OFFSET, DSValueType.NUMBER, null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new IntegerBounds(), null, null));
         parameterDefinitions.add(new DataTypeParameter(null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
@@ -35,12 +37,12 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING, DSLong.valueOf(1), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING_OFFSET, DSLong.valueOf(0), null, null));
     }
-    
+
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
     }
-    
+
     private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
@@ -53,6 +55,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     private Double getPointScalingOffset() {
         return parameters.getDouble(Constants.SCALING_OFFSET);
     }
+
     public Double applyScaling(Double val) {
         return val * getPointScaling() + getPointScalingOffset();
     }
@@ -60,15 +63,15 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     public Double removeScaling(Double val) {
         return (val - getPointScalingOffset()) / getPointScaling();
     }
-    
+
     public ModbusPointNode() {
-        
+
     }
 
     public ModbusPointNode(DSMap parameters) {
         this.parameters = parameters;
     }
-    
+
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
@@ -118,15 +121,15 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         return MultipleWriteEnum.NEVER.equals(option);
     }
 
-    private class VTSHelper <T> {
-        BaseLocator <T> loc;
+    private class VTSHelper<T> {
+        BaseLocator<T> loc;
 
-        VTSHelper (BaseLocator<T> locator) {
+        VTSHelper(BaseLocator<T> locator) {
             this.loc = locator;
         }
 
         @SuppressWarnings("unchecked")
-        private short[] valueToShortsHelper (Object obj) {
+        private short[] valueToShortsHelper(Object obj) {
             return loc.valueToShorts((T) obj);
         }
     }
@@ -146,7 +149,7 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     @Override
     public DSValueType getValueType() {
         DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-        switch(dataType) {
+        switch (dataType) {
             case BINARY:
                 return DSValueType.BOOL;
             case CHAR:
@@ -166,14 +169,14 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     public DSIValue valueOf(DSElement element) {
         return value.getValue().valueOf(element);
     }
-    
+
     void updateValue(DSElement val) {
         error.setHidden(true);
         put(error, DSString.EMPTY);
         put(value, val);
         getParent().childChanged(getInfo());
     }
-    
+
     void updateError(ExceptionResult resp) {
         error.setHidden(false);
         put(error, DSString.valueOf(resp.getExceptionMessage()));
@@ -187,9 +190,9 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
             throw new RuntimeException("Wrong parent class");
         }
     }
-    
+
     /* ================================================================== */
-    
+
     @Override
     public long getPollRate() {
         DSElement rate = parameters.get(Constants.POLL_RATE);
