@@ -10,10 +10,6 @@ import java.util.Random;
  */
 public class ModbusMockPointParameters extends MockParameters{
 
-    ModbusMockPointParameters() {
-        super();
-    }
-
     ModbusMockPointParameters(Random rand) {
         super(ModbusPointNode.class, rand);
     }

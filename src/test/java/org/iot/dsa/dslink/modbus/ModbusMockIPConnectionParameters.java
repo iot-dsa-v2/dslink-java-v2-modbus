@@ -9,10 +9,6 @@ import java.util.Random;
  */
 public class ModbusMockIPConnectionParameters extends MockParameters {
 
-    ModbusMockIPConnectionParameters() {
-        super();
-    }
-
     ModbusMockIPConnectionParameters(Random rand) {
         super(IPConnectionNode.class, rand);
     }
