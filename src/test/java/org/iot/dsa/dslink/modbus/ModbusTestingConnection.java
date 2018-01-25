@@ -16,7 +16,8 @@ public class ModbusTestingConnection extends TestingConnection {
 
     @Override
     public ModbusTestingConnection addNewConnection(String name) {
-        ModbusMockConnectionParameters pars = new ModbusMockConnectionParameters();
+
+        ModbusMockIPConnectionParameters pars = new ModbusMockIPConnectionParameters();
         ModbusTestingConnection conn = new ModbusTestingConnection(name, pars);
         addConnection(name, conn);
         return conn;

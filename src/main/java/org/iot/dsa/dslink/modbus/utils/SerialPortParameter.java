@@ -18,7 +18,7 @@ public class SerialPortParameter extends ParameterDefinition {
     private String manualDescription;
     
     public SerialPortParameter(String dropdownName, String dropdownDescription, String manualName, String manualDescription) {
-        super(manualName, null, null, null, manualDescription, null);
+        super(manualName, null, null, null, null, manualDescription, null);
         this.dropdownName = dropdownName;
         this.dropdownDescription = dropdownDescription;
         this.manualName = manualName;

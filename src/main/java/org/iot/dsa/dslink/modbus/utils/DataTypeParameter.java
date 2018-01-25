@@ -9,7 +9,7 @@ import org.iot.dsa.node.DSMap;
 public class DataTypeParameter extends ParameterDefinition {
 
     public DataTypeParameter(String description, String placeholder) {
-        super(Constants.POINT_DATA_TYPE, null, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, description, placeholder);
+        super(Constants.POINT_DATA_TYPE, null, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, null, description, placeholder);
     }
     
     @Override

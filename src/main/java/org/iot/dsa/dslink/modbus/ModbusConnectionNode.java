@@ -1,23 +1,24 @@
 package org.iot.dsa.dslink.modbus;
 
-import java.util.List;
+import com.serotonin.modbus4j.ModbusFactory;
+import com.serotonin.modbus4j.ModbusMaster;
+import com.serotonin.modbus4j.exception.ModbusInitException;
 import org.iot.dsa.dslink.dframework.DFConnectionNode;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.node.*;
-import com.serotonin.modbus4j.ModbusFactory;
-import com.serotonin.modbus4j.ModbusMaster;
-import com.serotonin.modbus4j.exception.ModbusInitException;
+
+import java.util.List;
 
 public abstract class ModbusConnectionNode extends DFConnectionNode {
-    
+
     protected static void addCommonParameterDefinitions(List<ParameterDefinition> definitions) {
         definitions.add(ParameterDefinition.makeParamWithDefault(
-                        Constants.PING_RATE,
-                        DSDouble.valueOf(Constants.DEFAULT_PING_RATE),
-                        "interval between pings, in seconds",
-                        null)
+                Constants.PING_RATE,
+                DSDouble.valueOf(Constants.DEFAULT_PING_RATE),
+                "interval between pings, in seconds",
+                null)
         );
         definitions.add(ParameterDefinition.makeParamWithDefault(
                 Constants.TIMEOUT,
@@ -38,32 +39,32 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
                 null)
         );
     }
-    
-    
+
+
     public ModbusConnectionNode() {
-        
+
     }
 
     public ModbusConnectionNode(DSMap parameters) {
         this.parameters = parameters;
     }
-    
+
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
         declareDefault(Constants.ACTION_ADD_DEVICE, DFUtil.getAddAction(ModbusDeviceNode.class));
     }
-    
+
     @Override
     protected void onStable() {
         super.onStable();
     }
-    
+
     /* ==================================================================== */
     ModbusMaster master;
     ModbusFactory modbusFactory = new ModbusFactory();
-    
-    
+
+
     @Override
     public boolean createConnection() {
 
@@ -75,7 +76,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
 
         master.setTimeout(timeout);
         master.setRetries(retries);
-        
+
         try {
             master.init();
             return master.isInitialized();
@@ -85,7 +86,6 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         }
     }
 
-    
 
     @Override
     public boolean ping() {
@@ -97,7 +97,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         master.destroy();
         master = null;
     }
-    
+
     @Override
     public long getPingRate() {
         DSElement rate = parameters.get(Constants.PING_RATE);
