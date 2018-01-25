@@ -2,6 +2,8 @@ package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.ip.IpParameters;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.dframework.bounds.IPBounds;
+import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.Constants.IpTransportType;
 import org.iot.dsa.node.DSJavaEnum;
@@ -17,10 +19,9 @@ public class IPConnectionNode extends ModbusConnectionNode {
     protected static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
 
     static {
-        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.IP_TRANSPORT_TYPE,
-                DSJavaEnum.valueOf(IpTransportType.TCP), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParam(Constants.IP_HOST, DSValueType.STRING, null, "10.0.1.199"));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.IP_PORT, DSLong.valueOf(Constants.DEFAULT_IP_PORT), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.IP_TRANSPORT_TYPE, DSJavaEnum.valueOf(IpTransportType.TCP), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.IP_HOST, DSValueType.STRING, new IPBounds(), null, "10.0.1.199"));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.IP_PORT, DSLong.valueOf(Constants.DEFAULT_IP_PORT), new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), null, null));
         ModbusConnectionNode.addCommonParameterDefinitions(parameterDefinitions);
     }
 

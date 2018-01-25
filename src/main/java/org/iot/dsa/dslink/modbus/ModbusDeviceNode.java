@@ -7,6 +7,10 @@ import org.iot.dsa.dslink.dframework.DFDeviceNode;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.dframework.bounds.BooleanBounds;
+import org.iot.dsa.dslink.dframework.bounds.DoubleBounds;
+import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
+import org.iot.dsa.dslink.dframework.bounds.LongBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
@@ -29,9 +33,9 @@ public class ModbusDeviceNode extends DFDeviceNode {
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
 
     static {
-        parameterDefinitions.add(ParameterDefinition.makeParam(Constants.SLAVE_ID, DSValueType.NUMBER, null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.PING_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), "interval between pings, in seconds", null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.CONTIGUOUS_READS, DSBool.FALSE, null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.SLAVE_ID, DSValueType.NUMBER, new IntegerBounds(1, 247), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.PING_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), new DoubleBounds(1d, Double.MAX_VALUE),"interval between pings, in seconds", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.CONTIGUOUS_READS, DSBool.FALSE, new BooleanBounds(), null, null));
     }
     
     @Override

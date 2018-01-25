@@ -8,7 +8,9 @@ import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.dframework.bounds.DoubleBounds;
 import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
+import org.iot.dsa.dslink.dframework.bounds.LongBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.MultipleWriteEnum;
@@ -29,13 +31,13 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new IntegerBounds(), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new LongBounds(), null, null));
         parameterDefinitions.add(new DataTypeParameter(null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_BIT, DSLong.valueOf(0), "Only applies for Input/Holding Registers with Binary data type", null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), "Only applies for string data types (Char and Varchar)", null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.POLL_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), "polling rate in seconds", null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING, DSLong.valueOf(1), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SCALING_OFFSET, DSLong.valueOf(0), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_BIT, DSLong.valueOf(0), new IntegerBounds(0, 15), "Only applies for Input/Holding Registers with Binary data type", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), "Only applies for string data types (Char and Varchar)", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POLL_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), new DoubleBounds(0.1, Double.MAX_VALUE), "polling rate in seconds", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.SCALING, DSDouble.valueOf(1), new DoubleBounds(), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.SCALING_OFFSET, DSDouble.valueOf(0), new DoubleBounds(), null, null));
     }
 
     @Override

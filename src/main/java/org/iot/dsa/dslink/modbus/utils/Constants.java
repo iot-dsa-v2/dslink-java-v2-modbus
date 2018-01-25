@@ -5,7 +5,7 @@ import com.serotonin.modbus4j.code.RegisterRange;
 
 public class Constants {
     public static final String PARAMETERS = "parameters";
-    
+
     public static final String ACTION_EDIT = "Edit";
     public static final String ACTION_ADD_IP = "Add IP Connection";
     public static final String ACTION_ADD_SERIAL = "Add Serial Connection";
@@ -33,6 +33,7 @@ public class Constants {
     public static final String SERIAL_STOP_BITS = "Stop Bits";
     public static final String SERIAL_PARITY = "Parity";
 
+    public static final int UNSIGED_SHORT_MAX = 65535;
     public static final double DEFAULT_PING_RATE = 5;
     public static final int DEFAULT_TIMEOUT = 500;
     public static final int DEFAULT_RETRIES = 2;

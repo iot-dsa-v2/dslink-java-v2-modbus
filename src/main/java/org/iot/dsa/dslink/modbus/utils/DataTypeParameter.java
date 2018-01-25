@@ -1,6 +1,7 @@
 package org.iot.dsa.dslink.modbus.utils;
 
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.dframework.bounds.EnumBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
 import org.iot.dsa.node.DSJavaEnum;
@@ -9,7 +10,7 @@ import org.iot.dsa.node.DSMap;
 public class DataTypeParameter extends ParameterDefinition {
 
     public DataTypeParameter(String description, String placeholder) {
-        super(Constants.POINT_DATA_TYPE, null, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, null, description, placeholder);
+        super(Constants.POINT_DATA_TYPE, null, DSJavaEnum.valueOf(DataTypeEnum.BINARY), null, new EnumBounds(DSJavaEnum.valueOf(DataTypeEnum.BINARY)), description, placeholder);
     }
     
     @Override
