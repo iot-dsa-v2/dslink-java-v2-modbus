@@ -5,6 +5,7 @@ import com.serotonin.modbus4j.ProcessImageListener;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.node.*;
 
@@ -27,8 +28,7 @@ public class SlaveDeviceNode extends EditableNode {
     private DSInfo error = getInfo(Constants.SLAVE_ERROR);
 
     static {
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.SLAVE_ID, DSLong.valueOf(Constants.DEFAULT_SLAVE_ID), null, null));
-        
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.SLAVE_ID, DSLong.valueOf(Constants.DEFAULT_SLAVE_ID), new IntegerBounds(1, 247), null, null));
     }
     
     @Override
