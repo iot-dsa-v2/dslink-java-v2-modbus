@@ -1,8 +1,7 @@
 package org.iot.dsa.dslink.modbus;
 
 import org.iot.dsa.dslink.dftest.FuzzTest;
-import org.iot.dsa.dslink.dftest.TestingConnection;
-import org.junit.Before;
+import org.iot.dsa.dslink.modbus.slave.ModbusSlaveTestingIPConnection;
 import org.junit.Test;
 
 /**
@@ -13,7 +12,12 @@ public class ModbusFuzzTest {
 
     @Test
     public void buildModbusMockTreeTest() {
-        FuzzTest.buildMockTree(100, new ModbusTestingConnection());
+        FuzzTest.buildMockTree(100, new ModbusTestingIPConnection());
+    }
+
+    @Test
+    public void buildModbusMockSlaveTreeTest() {
+        FuzzTest.buildMockTree(100, new ModbusSlaveTestingIPConnection());
     }
 
 }

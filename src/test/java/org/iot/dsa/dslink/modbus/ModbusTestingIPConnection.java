@@ -10,22 +10,21 @@ import java.util.Random;
  * @author James (Juris) Puchin
  * Created on 1/23/2018
  */
-public class ModbusTestingConnection extends TestingConnection {
+public class ModbusTestingIPConnection extends TestingConnection {
 
-    ModbusTestingConnection() {
+    ModbusTestingIPConnection() {
 
     }
 
-    ModbusTestingConnection(String name, MockParameters pars) {
+    ModbusTestingIPConnection(String name, MockParameters pars) {
         super(name, pars);
         System.out.println(pars.getParamMap());
     }
 
     @Override
-    public ModbusTestingConnection addNewConnection(String name, Random rand) {
-
+    public ModbusTestingIPConnection addNewConnection(String name, Random rand) {
         ModbusMockIPConnectionParameters pars = new ModbusMockIPConnectionParameters(rand);
-        ModbusTestingConnection conn = new ModbusTestingConnection(name, pars);
+        ModbusTestingIPConnection conn = new ModbusTestingIPConnection(name, pars);
         addConnection(name, conn);
         return conn;
     }
