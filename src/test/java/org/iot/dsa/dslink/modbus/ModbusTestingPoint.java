@@ -10,5 +10,6 @@ import org.iot.dsa.dslink.dftest.TestingPoint;
 public class ModbusTestingPoint extends TestingPoint {
     ModbusTestingPoint(String name, String val, MockParameters pars) {
         super(name, val, pars);
+        System.out.println(pars.getParamMap());
     }
 }

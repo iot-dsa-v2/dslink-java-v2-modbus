@@ -12,6 +12,7 @@ import java.util.Random;
 public class ModbusTestingDevice extends TestingDevice {
     ModbusTestingDevice(String name, MockParameters pars) {
         super(name, pars);
+        System.out.println(pars.getParamMap());
     }
 
     @Override

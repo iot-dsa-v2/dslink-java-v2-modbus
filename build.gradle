@@ -37,6 +37,7 @@ dependencies {
     compile 'commons-logging:commons-logging:+'
     compile 'org.scream3r:jssc:+'
 
+    testCompile group: 'org.python', name: 'jython-standalone', version: '2.7.0'
     testCompile ':driver-framework-java-v2-prototype:+:tests'
     testCompile 'junit:junit:+'
     testCompile 'org.mockito:mockito-all:+'

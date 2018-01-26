@@ -12,8 +12,13 @@ import java.util.Random;
  */
 public class ModbusTestingConnection extends TestingConnection {
 
+    ModbusTestingConnection() {
+
+    }
+
     ModbusTestingConnection(String name, MockParameters pars) {
         super(name, pars);
+        System.out.println(pars.getParamMap());
     }
 
     @Override
