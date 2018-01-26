@@ -1,38 +1,42 @@
 package org.iot.dsa.dslink.modbus.slave;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.serotonin.modbus4j.BasicProcessImage;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
+import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.modbus.slave.handler.ModbusSlaveHandler;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.Constants.IpTransportType;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
-import com.serotonin.modbus4j.BasicProcessImage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class IpSlaveConnectionNode extends SlaveConnectionNode {
 
     protected static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
+
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.IP_TRANSPORT_TYPE,
                 DSJavaEnum.valueOf(IpTransportType.TCP), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithDefault(Constants.IP_PORT, DSLong.valueOf(Constants.DEFAULT_SLAVE_IP_PORT), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.IP_PORT,
+                DSLong.valueOf(Constants.DEFAULT_SLAVE_IP_PORT), new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), null, null));
     }
 
     @Override
     public List<ParameterDefinition> getParameterDefinitions() {
         return parameterDefinitions;
     }
-    
+
     public IpSlaveConnectionNode() {
-        
+
     }
-    
+
     private int getConnectionPort() {
         return parameters.get(Constants.IP_PORT).toInt();
     }
-    
+
     private IpTransportType getIpConnectionTransportType() {
         return IpTransportType.valueOf(parameters.getString(Constants.IP_TRANSPORT_TYPE));
     }
