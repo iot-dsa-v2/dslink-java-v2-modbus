@@ -32,14 +32,19 @@ abstract class SlaveKennel <P, K> {
     }
 
     BasicProcessImage getProcessImage(P port, int slaveId, SlaveDeviceNode devNode) {
-        devNode.clearError();
+        if (devNode != null) devNode.clearError();
         ModbusSlaveSet set = getSlaveSet(port, devNode);
         ProcessImage img = set.getProcessImage(slaveId);
         if (img == null) {
             img = createProcessImage(slaveId, devNode);
             set.addProcessImage(img);
         } else {
-            devNode.setError("Duplicate Slave Device!");
+            String error = "Duplicate Slave Device. Port:" + port + ", slave:" + slaveId;
+            if (devNode != null) {
+                devNode.setError(error);
+            } else {
+                System.out.println(error);
+            }
         }
         return (BasicProcessImage) img;
     }
@@ -72,8 +77,12 @@ abstract class SlaveKennel <P, K> {
                 try {
                     slaveSet.start();
                 } catch (ModbusInitException e) {
-                    devNode.warn(e);
-                    devNode.setError("Slave device failed.");
+                    if (devNode != null) {
+                        devNode.warn(e);
+                        devNode.setError("Slave device failed.");
+                    } else {
+                        System.out.println("SlaveDeviceNode not set. ModbusException generated: " + e);
+                    }
                 }
             }
         });
