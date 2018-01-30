@@ -20,7 +20,7 @@ public class RootNode extends DSRootNode {
         declareDefault(Constants.ACTION_ADD_IP, DFUtil.getAddAction(IPConnectionNode.class));
         declareDefault(Constants.ACTION_ADD_SERIAL, DFUtil.getAddAction(SerialConnectionNode.class));
         declareDefault(Constants.ACTION_RESCAN_PORTS, getRescanAction());
-        declareDefault(Constants.ACTION_ADD_IP_SLAVES, DFUtil.getAddAction(IpSlaveConnectionNode.class));
+        declareDefault(Constants.ACTION_ADD_IP_SLAVE, DFUtil.getAddAction(IpSlaveConnectionNode.class));
         declareDefault(Constants.ACTION_ADD_SERIAL_SLAVES, DFUtil.getAddAction(SerialSlaveConnectionNode.class));
     }
 

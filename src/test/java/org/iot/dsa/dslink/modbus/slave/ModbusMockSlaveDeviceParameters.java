@@ -9,7 +9,6 @@ import java.util.Random;
  * Created on 1/26/2018
  */
 public class ModbusMockSlaveDeviceParameters extends MockParameters {
-
     public ModbusMockSlaveDeviceParameters(Random rand) {
         super(SlaveDeviceNode.class, rand);
     }

@@ -42,7 +42,7 @@ public class SlaveDeviceNode extends EditableNode {
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault("Add Slave Point", DFUtil.getAddAction(SlavePointNode.class));
+        declareDefault(Constants.ACTION_ADD_SLAVE_POINT, DFUtil.getAddAction(SlavePointNode.class));
         declareDefault("Remove", makeRemoveAction());
         declareDefault(Constants.SLAVE_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
     }
