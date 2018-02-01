@@ -2,6 +2,9 @@ package org.iot.dsa.dslink.modbus.utils;
 
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.code.RegisterRange;
+import org.iot.dsa.node.DSElement;
+import org.iot.dsa.node.DSLong;
+import org.iot.dsa.node.DSString;
 
 public class Constants {
     public static final String PARAMETERS = "parameters";
@@ -16,7 +19,7 @@ public class Constants {
     public static final String ACTION_ADD_SERIAL_SLAVES = "Add Slave Serial Connection";
     public static final String ACTION_ADD_SLAVE = "Add Slave Device";
     public static final String ACTION_ADD_SLAVE_POINT = "Add Slave Point";
-    
+
     public static final String NAME = "Name";
     public static final String PING_RATE = "Ping Rate";
     public static final String TIMEOUT = "Timeout";
@@ -44,13 +47,13 @@ public class Constants {
     public static final int DEFAULT_BAUD_RATE = 9600;
     public static final int DEFAULT_DATA_BITS = 8;
     public static final int DEFAULT_STOP_BITS = 1;
-    
-    
+
+
     public static enum IpTransportType {
         TCP,
         UDP
     }
-    
+
     public static enum SerialTransportType {
         RTU,
         ASCII
@@ -61,27 +64,28 @@ public class Constants {
         ALWAYS,
         NEVER
     }
-    
+
     public static enum SerialParity {
         NONE(0),
         ODD(1),
         EVEN(2),
         MARK(3),
         SPACE(4);
-        
+
         private final int id;
+
         private SerialParity(int id) {
             this.id = id;
         }
-        
+
         public int toId() {
             return id;
         }
     }
-    
+
     public static final String SLAVE_ID = "Slave ID";
     public static final String CONTIGUOUS_READS = "Contiguous Batch Reads Only";
-    
+
     public static final String POLL_RATE = "Poll Rate";
     public static final String SCALING = "Scaling";
     public static final String SCALING_OFFSET = "Scaling Offset";
@@ -90,32 +94,36 @@ public class Constants {
     public static final String POINT_DATA_TYPE = "Data Type";
     public static final String POINT_BIT = "Bit";
     public static final String POINT_REGISTER_COUNT = "Number of Registers";
-    
+
     public static final String POINT_VALUE = "Value";
     public static final String POINT_ERROR = "Error Result";
     public static final String SLAVE_ERROR = "Error Status";
-    
+
     public static enum PointType {
         COIL("Coil", RegisterRange.COIL_STATUS),
         DISCRETE("Discrete Input", RegisterRange.INPUT_STATUS),
         INPUT("Input Register", RegisterRange.INPUT_REGISTER),
         HOLDING("Holding Register", RegisterRange.HOLDING_REGISTER);
-        
+
         private final String name;
         private final int range;
+
         private PointType(String name, int range) {
             this.name = name;
             this.range = range;
         }
+
         public int toRange() {
             return range;
         }
+
         @Override
         public String toString() {
             return name;
         }
+
         public static PointType parse(String name) {
-            for (PointType ot: PointType.values()) {
+            for (PointType ot : PointType.values()) {
                 if (ot.toString().equals(name)) {
                     return ot;
                 }
@@ -123,7 +131,7 @@ public class Constants {
             return PointType.valueOf(name);
         }
     }
-    
+
     public static enum DataTypeEnum {
         BINARY(DataType.BINARY, null, null),
         TWO_BYTE_INT_UNSIGNED(DataType.TWO_BYTE_INT_UNSIGNED, 0, 65535),
@@ -173,6 +181,17 @@ public class Constants {
 
         public boolean checkBounds(Number n) {
             return (lowerBound == null || n.longValue() >= lowerBound) && (upperBound == null || n.longValue() <= upperBound);
+        }
+
+        public DSElement createValidValue(String str) {
+            switch (this) {
+                case VARCHAR:
+                case CHAR:
+                case BINARY: //TODO: verify that binary can take a str
+                    return DSString.valueOf(str);
+                default:
+                    return DSLong.valueOf(str.length()); //TODO make the range wider for better testing
+            }
         }
 
         DataTypeEnum(int id, int lowerBound, int upperBound) {

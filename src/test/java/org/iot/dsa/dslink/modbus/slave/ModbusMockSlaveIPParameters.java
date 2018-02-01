@@ -9,7 +9,6 @@ import java.util.Random;
  * Created on 1/26/2018
  */
 public class ModbusMockSlaveIPParameters extends MockParameters {
-
     public ModbusMockSlaveIPParameters(Random rand) {
         super(IpSlaveConnectionNode.class, rand);
     }
