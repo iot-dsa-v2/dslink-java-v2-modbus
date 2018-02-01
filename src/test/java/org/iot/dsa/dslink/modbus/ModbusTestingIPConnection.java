@@ -3,6 +3,7 @@ package org.iot.dsa.dslink.modbus;
 import org.iot.dsa.dslink.dftest.MockParameters;
 import org.iot.dsa.dslink.dftest.TestingConnection;
 import org.iot.dsa.dslink.dftest.TestingDevice;
+import org.iot.dsa.dslink.modbus.slave.IpSlaveConnectionNode;
 
 import java.util.Random;
 

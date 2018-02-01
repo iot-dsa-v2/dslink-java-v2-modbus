@@ -11,12 +11,17 @@ import java.util.Random;
  * Created on 1/26/2018
  */
 public class ModbusSlaveTestingIPConnection extends TestingConnection {
+
+    IpSlaveConnectionNode myNode;
+
     public ModbusSlaveTestingIPConnection() {
 
     }
 
     ModbusSlaveTestingIPConnection(String name, MockParameters pars) {
         super(name, pars);
+        myNode = new IpSlaveConnectionNode();
+        myNode.parameters = pars.getParamMap();
         System.out.println(pars.getParamMap()); //DEBUG
     }
 
@@ -31,7 +36,9 @@ public class ModbusSlaveTestingIPConnection extends TestingConnection {
     @Override
     protected TestingDevice addNewDevice(String name, Random rand) {
         ModbusMockSlaveDeviceParameters pars = new ModbusMockSlaveDeviceParameters(rand);
-        TestingDevice dev = new ModbusSlaveTestingDevice(name, pars);
+        ModbusSlaveTestingDevice dev = new ModbusSlaveTestingDevice(name, pars);
+        myNode.add(name, dev.myNode);
+        dev.myNode.startSlave();
         addDevice(name, dev);
         return dev;
     }

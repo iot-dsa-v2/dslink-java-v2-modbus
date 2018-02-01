@@ -10,6 +10,7 @@ import java.util.Random;
  * Created on 1/23/2018
  */
 public class ModbusTestingDevice extends TestingDevice {
+
     ModbusTestingDevice(String name, MockParameters pars) {
         super(name, pars);
         System.out.println(pars.getParamMap());
