@@ -306,7 +306,8 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         if (parent instanceof SlaveDeviceNode) {
             return (SlaveDeviceNode) parent;
         } else {
-            throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode");
+            if (parent == null) throw new RuntimeException("Child SlavePointNode is missing a parent.");
+;            throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode, found " + parent.getClass().getName());
         }
     }
 

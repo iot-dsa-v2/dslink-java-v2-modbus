@@ -2,6 +2,7 @@ package org.iot.dsa.dslink.modbus.utils;
 
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.code.RegisterRange;
+import org.iot.dsa.node.DSBool;
 import org.iot.dsa.node.DSElement;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSString;
@@ -187,8 +188,9 @@ public class Constants {
             switch (this) {
                 case VARCHAR:
                 case CHAR:
-                case BINARY: //TODO: verify that binary can take a str
                     return DSString.valueOf(str);
+                case BINARY: //TODO: verify that binary can take a str
+                    return DSBool.valueOf(str.length() % 2 == 0);
                 default:
                     return DSLong.valueOf(str.length()); //TODO make the range wider for better testing
             }

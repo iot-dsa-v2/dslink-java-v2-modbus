@@ -25,6 +25,10 @@ public class ModbusSlaveTestingIPConnection extends TestingConnection {
         System.out.println(pars.getParamMap()); //DEBUG
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Connection Controls
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
     public ModbusSlaveTestingIPConnection addNewConnection(String name, Random rand) {
         ModbusMockSlaveIPParameters pars = new ModbusMockSlaveIPParameters(rand);
@@ -32,6 +36,28 @@ public class ModbusSlaveTestingIPConnection extends TestingConnection {
         addConnection(name, conn);
         return conn;
     }
+
+    @Override
+    public boolean flipPowerSwitch() {
+        pluggedIn = !pluggedIn;
+        updatePowerState();
+        return pluggedIn;
+    }
+
+    @Override
+    public void setPowerState(boolean newState) {
+        pluggedIn = newState;
+        updatePowerState();
+    }
+
+    private void updatePowerState() {
+        if (pluggedIn) myNode.startSlaves();
+        else myNode.stopSlaves();
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Device Controls
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     protected TestingDevice addNewDevice(String name, Random rand) {

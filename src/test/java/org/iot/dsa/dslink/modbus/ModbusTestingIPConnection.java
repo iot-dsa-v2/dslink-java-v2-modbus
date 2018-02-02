@@ -3,7 +3,6 @@ package org.iot.dsa.dslink.modbus;
 import org.iot.dsa.dslink.dftest.MockParameters;
 import org.iot.dsa.dslink.dftest.TestingConnection;
 import org.iot.dsa.dslink.dftest.TestingDevice;
-import org.iot.dsa.dslink.modbus.slave.IpSlaveConnectionNode;
 
 import java.util.Random;
 
@@ -22,6 +21,10 @@ public class ModbusTestingIPConnection extends TestingConnection {
         System.out.println(pars.getParamMap());
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Connection Controls
+    ///////////////////////////////////////////////////////////////////////////
+
     @Override
     public ModbusTestingIPConnection addNewConnection(String name, Random rand) {
         ModbusMockIPConnectionParameters pars = new ModbusMockIPConnectionParameters(rand);
@@ -29,6 +32,10 @@ public class ModbusTestingIPConnection extends TestingConnection {
         addConnection(name, conn);
         return conn;
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Device Controls
+    ///////////////////////////////////////////////////////////////////////////
 
     @Override
     protected TestingDevice addNewDevice(String name, Random rand) {

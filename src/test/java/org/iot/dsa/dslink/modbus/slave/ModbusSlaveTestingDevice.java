@@ -2,6 +2,7 @@ package org.iot.dsa.dslink.modbus.slave;
 
 import org.iot.dsa.dslink.dftest.MockParameters;
 import org.iot.dsa.dslink.dftest.TestingDevice;
+import org.iot.dsa.dslink.dftest.TestingPoint;
 import org.iot.dsa.dslink.modbus.ModbusMockPointParameters;
 import org.iot.dsa.dslink.modbus.ModbusTestingPoint;
 import org.iot.dsa.dslink.modbus.utils.Constants;
@@ -28,18 +29,34 @@ public class ModbusSlaveTestingDevice extends TestingDevice {
     @Override
     protected void addPoint(String name, String value, Random rand) {
         ModbusMockSlavePointParameters pars = new ModbusMockSlavePointParameters(rand);
-        DSElement val = createPointValue(value, pars.getParamMap());
-        ModbusSlaveTestingPoint pnt = new ModbusSlaveTestingPoint(name, val.toString(), pars);
-        myNode.add(name, pnt.myNode);
-
-        pnt.myNode.onSet(val);
+        ModbusSlaveTestingPoint pnt = new ModbusSlaveTestingPoint(name, value, pars);
+        myNode.put(name, pnt.myNode);
         points.put(name, pnt);
-
+        pnt.setValue(value);
         System.out.println("Making a Point: \n" + myNode.getParentNode().parameters + "\n" + myNode.parameters + "\n" + pars.getParamMap());
     }
 
-    private static DSElement createPointValue(String val, DSMap pars) {
-        String str = pars.get(Constants.POINT_DATA_TYPE).toString();
-        return Constants.DataTypeEnum.valueOf(str).createValidValue(val);
+    @Override
+    protected boolean flipDev() {
+        active = !active;
+        whipTheSlaves();
+        return active;
+    }
+
+    @Override
+    protected void setDevActive(boolean act) {
+        active = act;
+        whipTheSlaves();
+    }
+
+    @Override
+    protected void removePoint(String name) {
+        points.remove(name);
+        myNode.remove(name);
+    }
+
+    private void whipTheSlaves() {
+        if (active) myNode.startSlave();
+        else myNode.stopSlave();
     }
 }
