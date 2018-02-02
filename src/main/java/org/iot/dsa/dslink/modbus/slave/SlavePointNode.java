@@ -28,7 +28,7 @@ public class SlavePointNode extends EditableValueNode {
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new LongBounds(), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), null, null));
         parameterDefinitions.add(new DataTypeParameter(null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_BIT, DSLong.valueOf(0), new IntegerBounds(0, 15), "Only applies for Input/Holding Registers with Binary data type", null));
@@ -197,7 +197,14 @@ public class SlavePointNode extends EditableValueNode {
                     img.setString(range, offset, getPointDataTypeInt(), regCnt,
                             s != null ? s : "");
                 } else {
-                    img.setNumeric(range, offset, getPointDataTypeInt(), n != null ? n : 0);
+                    if (getPointDataTypeInt() == 20)
+                        System.out.println("FOUR BYTE BCD SWAPPED not implemented!!");
+                    else if (getPointDataTypeInt() == 21)
+                        System.out.println("FOUR_BYTE_FLOAT_SWAPPED_INVERTED not implemented!!");
+                    else
+                        img.setNumeric(range, offset, getPointDataTypeInt(), n != null ? n : 0);
+                    //TODO: make four byte BCD work
+                    //TODO: make FOUR_BYTE_FLOAT_SWAPPED_INVERTED work
                 }
                 break;
         }
@@ -276,7 +283,8 @@ public class SlavePointNode extends EditableValueNode {
         if (parent instanceof SlaveDeviceNode) {
             return (SlaveDeviceNode) parent;
         } else {
-            throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode");
+            if (parent == null) throw new RuntimeException("Child SlavePointNode is missing a parent.");
+;            throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode, found " + parent.getClass().getName());
         }
     }
 

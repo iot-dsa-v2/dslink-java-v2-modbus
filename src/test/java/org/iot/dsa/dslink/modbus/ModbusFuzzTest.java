@@ -4,6 +4,8 @@ import org.iot.dsa.dslink.dftest.FuzzTest;
 import org.iot.dsa.dslink.modbus.slave.ModbusSlaveTestingIPConnection;
 import org.junit.Test;
 
+import java.util.Scanner;
+
 /**
  * @author James (Juris) Puchin
  * Created on 1/25/2018
@@ -18,6 +20,9 @@ public class ModbusFuzzTest {
     @Test
     public void buildModbusMockSlaveTreeTest() {
         FuzzTest.buildMockTree(100, new ModbusSlaveTestingIPConnection());
+        Scanner usrIn = new Scanner(System.in);
+        System.out.println("Press Enter to release slaves");
+        usrIn.nextLine();
     }
 
     @Test

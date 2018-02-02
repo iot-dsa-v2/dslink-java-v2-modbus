@@ -31,7 +31,7 @@ public class ModbusPointNode extends DFPointNode {
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new LongBounds(), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), null, null));
         parameterDefinitions.add(new DataTypeParameter(null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_BIT, DSLong.valueOf(0), new IntegerBounds(0, 15), "Only applies for Input/Holding Registers with Binary data type", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), "Only applies for string data types (Char and Varchar)", null));

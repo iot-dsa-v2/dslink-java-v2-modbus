@@ -40,7 +40,7 @@ public abstract class SlaveConnectionNode extends EditableNode {
         startSlaves();
     }
     
-    private void stopSlaves() {
+    protected void stopSlaves() {
         for (DSInfo info: this) {
             if (info.isNode() && info.getNode() instanceof SlaveDeviceNode) {
                 SlaveDeviceNode device = (SlaveDeviceNode) info.getNode();
@@ -49,7 +49,7 @@ public abstract class SlaveConnectionNode extends EditableNode {
         }
     }
     
-    private void startSlaves() {
+    protected void startSlaves() {
         for (DSInfo info: this) {
             if (info.isNode() && info.getNode() instanceof SlaveDeviceNode) {
                 SlaveDeviceNode device = (SlaveDeviceNode) info.getNode();
