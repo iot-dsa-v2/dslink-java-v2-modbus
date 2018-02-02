@@ -10,7 +10,6 @@ import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.dframework.bounds.BooleanBounds;
 import org.iot.dsa.dslink.dframework.bounds.DoubleBounds;
 import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
-import org.iot.dsa.dslink.dframework.bounds.LongBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.PointType;

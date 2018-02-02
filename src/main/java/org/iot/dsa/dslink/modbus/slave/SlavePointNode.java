@@ -4,6 +4,7 @@ import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.IllegalDataAddressException;
 import org.iot.dsa.dslink.dframework.EditableNode;
+import org.iot.dsa.dslink.dframework.EditableValueNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.dframework.bounds.LongBounds;
@@ -21,7 +22,7 @@ import java.util.List;
  * @author James (Juris) Puchin
  * Created on 1/9/2018
  */
-public class SlavePointNode extends EditableNode implements DSIValue {
+public class SlavePointNode extends EditableValueNode {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
 
@@ -38,7 +39,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return parameterDefinitions;
     }
 
-    private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
     public SlavePointNode() {
@@ -48,7 +48,6 @@ public class SlavePointNode extends EditableNode implements DSIValue {
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault(Constants.POINT_VALUE, DSString.EMPTY);
         declareDefault(Constants.POINT_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
         declareDefault("Remove", makeRemoveAction());
     }
@@ -89,46 +88,24 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         return getPointDataType().toId();
     }
 
-    @Override
-    public DSValueType getValueType() {
-        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-        switch (dataType) {
-            case BINARY:
-                return DSValueType.BOOL;
-            case CHAR:
-            case VARCHAR:
-                return DSValueType.STRING;
-            default:
-                return DSValueType.NUMBER;
-        }
-    }
+//    @Override
+//    public DSValueType getValueType() {
+//        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+//        switch (dataType) {
+//            case BINARY:
+//                return DSValueType.BOOL;
+//            case CHAR:
+//            case VARCHAR:
+//                return DSValueType.STRING;
+//            default:
+//                return DSValueType.NUMBER;
+//        }
+//    }
 
+    
     @Override
-    public DSElement toElement() {
-        return value.getValue().toElement();
-    }
-
-    @Override
-    public DSIValue valueOf(DSElement element) {
-        return value.getValue().valueOf(element);
-    }
-
-    @Override
-    public void onSet(DSIValue val) {
-        updateValue(val.toElement());
+    public void onValueSet(DSIValue val) {
         setValueToImage(val, getParentProcessImage());
-    }
-
-    @Override
-    public void onSet(DSInfo info, DSIValue val) {
-        if (this.value.equals(info)) {
-            onSet(val);
-        }
-    }
-
-    void updateValue(DSElement val) {
-        put(value, val);
-        getParent().childChanged(getInfo());
     }
 
 //    @Override
@@ -290,7 +267,7 @@ public class SlavePointNode extends EditableNode implements DSIValue {
         }
 
         //Set point value
-        setValueToImage(value.getValue(), getParentProcessImage());
+        setValueToImage(toElement(), getParentProcessImage());
         clearError();
     }
 

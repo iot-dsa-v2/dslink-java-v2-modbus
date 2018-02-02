@@ -1,6 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
-import org.iot.dsa.dslink.DSRootNode;
+import org.iot.dsa.dslink.DSMainNode;
 import org.iot.dsa.dslink.dframework.DFHelpers;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.modbus.slave.IpSlaveConnectionNode;
@@ -12,7 +12,7 @@ import org.iot.dsa.node.action.ActionInvocation;
 import org.iot.dsa.node.action.ActionResult;
 import org.iot.dsa.node.action.DSAction;
 
-public class RootNode extends DSRootNode {
+public class MainNode extends DSMainNode {
     
     @Override
     protected void declareDefaults() {
@@ -29,7 +29,7 @@ public class RootNode extends DSRootNode {
         DSAction act = new DSAction() {
             @Override
             public ActionResult invoke(DSInfo info, ActionInvocation invocation) {
-                ((RootNode) info.getParent()).rescanSerialPorts();
+                ((MainNode) info.getParent()).rescanSerialPorts();
                 return null;
             }
         };

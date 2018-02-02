@@ -25,7 +25,7 @@ import java.util.List;
 
 import static org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum.*;
 
-public class ModbusPointNode extends DFPointNode implements DSIValue {
+public class ModbusPointNode extends DFPointNode {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
 
@@ -45,7 +45,6 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
         return parameterDefinitions;
     }
 
-    private DSInfo value = getInfo(Constants.POINT_VALUE);
     private DSInfo error = getInfo(Constants.POINT_ERROR);
 
     private Double getPointScaling() {
@@ -77,12 +76,11 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     @Override
     protected void declareDefaults() {
         super.declareDefaults();
-        declareDefault(Constants.POINT_VALUE, DSString.EMPTY);
         declareDefault(Constants.POINT_ERROR, DSString.EMPTY).setHidden(true).setReadOnly(true);
     }
 
     @Override
-    public void onSet(DSIValue value) {
+    public void onValueSet(DSIValue value) {
         BaseLocator<?> locator = getParentNode().createPointLocator(this);
         try {
             DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
@@ -137,46 +135,29 @@ public class ModbusPointNode extends DFPointNode implements DSIValue {
     }
 
     @Override
-    public void onSet(DSInfo info, DSIValue value) {
-        if (this.value.equals(info)) {
-            onSet(value);
-        }
-    }
-
-    @Override
     protected void onStable() {
         super.onStable();
     }
 
-    @Override
-    public DSValueType getValueType() {
-        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-        switch (dataType) {
-            case BINARY:
-                return DSValueType.BOOL;
-            case CHAR:
-            case VARCHAR:
-                return DSValueType.STRING;
-            default:
-                return DSValueType.NUMBER;
-        }
-    }
+//    @Override
+//    public DSValueType getValueType() {
+//        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+//        switch (dataType) {
+//            case BINARY:
+//                return DSValueType.BOOL;
+//            case CHAR:
+//            case VARCHAR:
+//                return DSValueType.STRING;
+//            default:
+//                return DSValueType.NUMBER;
+//        }
+//    }
 
     @Override
-    public DSElement toElement() {
-        return value.getValue().toElement();
-    }
-
-    @Override
-    public DSIValue valueOf(DSElement element) {
-        return value.getValue().valueOf(element);
-    }
-
-    void updateValue(DSElement val) {
+    public void updateValue(DSIValue val) {
         error.setHidden(true);
         put(error, DSString.EMPTY);
-        put(value, val);
-        getParent().childChanged(getInfo());
+        super.updateValue(val);
     }
 
     void updateError(ExceptionResult resp) {
