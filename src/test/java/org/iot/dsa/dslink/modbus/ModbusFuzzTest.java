@@ -19,7 +19,7 @@ public class ModbusFuzzTest {
 
     @Test
     public void buildModbusMockSlaveTreeTest() {
-        FuzzTest.buildMockTree(100, new ModbusSlaveTestingIPConnection());
+        FuzzTest.buildMockTree(500, new ModbusSlaveTestingIPConnection());
         Scanner usrIn = new Scanner(System.in);
         System.out.println("Press Enter to release slaves");
         usrIn.nextLine();
