@@ -32,8 +32,8 @@ public class ModbusSlaveTestingDevice extends TestingDevice {
         ModbusSlaveTestingPoint pnt = new ModbusSlaveTestingPoint(name, value, pars);
         myNode.put(name, pnt.myNode);
         points.put(name, pnt);
+        pnt.myNode.submitToSlaveHandler();
         pnt.setValue(value);
-        System.out.println("Making a Point: \n" + myNode.getParentNode().parameters + "\n" + myNode.parameters + "\n" + pars.getParamMap());
     }
 
     @Override

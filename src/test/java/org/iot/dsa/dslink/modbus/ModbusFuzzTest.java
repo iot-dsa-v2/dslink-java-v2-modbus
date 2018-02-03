@@ -19,7 +19,7 @@ public class ModbusFuzzTest {
 
     @Test
     public void buildModbusMockSlaveTreeTest() {
-        FuzzTest.buildMockTree(500, new ModbusSlaveTestingIPConnection());
+        FuzzTest.buildMockTree(10, new ModbusSlaveTestingIPConnection());
         Scanner usrIn = new Scanner(System.in);
         System.out.println("Press Enter to release slaves");
         usrIn.nextLine();
@@ -27,7 +27,16 @@ public class ModbusFuzzTest {
 
     @Test
     public void buildModbusActionTree() {
+//        FuzzTest.MAX_CON = FuzzTest.MAX_CON * 2;
+//        FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 2;
+//        FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 2;
+
+        FuzzTest.PROB_OFF_CON_STATE = .99;
+        FuzzTest.PROB_OFF_DEV_STATE = .99;
+        FuzzTest.PROB_ON_CON_STATE = .1;
+        FuzzTest.PROB_ON_CON_STATE = .1;
+
         FuzzTest.PING_POLL_RATE = 50;
-        FuzzTest.buildActionTree(1000, new MainNode(), new ModbusTestingIPConnection(), new ModbusFuzzNodeAction());
+        FuzzTest.builFuzzDoubleTree(200, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
     }
 }

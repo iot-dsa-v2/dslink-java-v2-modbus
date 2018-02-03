@@ -27,15 +27,16 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
         DSMap params = new DSMap();
         if (name.equals(Constants.ACTION_ADD_IP)) {
             params = new ModbusMockIPConnectionParameters(rand).getParamMap();
-            String c = addConnectionHelper(parent);
+            String c = addConnectionHelper(parent, params);
+            params.put(Constants.IP_HOST, "localhost");
             params.put(Constants.NAME, c).put(Constants.PING_RATE, getFuzzPingRate());
         } else if (name.equals(Constants.ACTION_ADD_DEVICE)) {
             params = new ModbusMockDeviceParameters(rand).getParamMap();
-            String d = addDeviceHelper(parent);
+            String d = addDeviceHelper(parent, params);
             params.put(Constants.NAME, d).put(Constants.PING_RATE, getFuzzPingRate());
         } else if (name.equals(Constants.ACTION_ADD_POINT)) {
             params = new ModbusMockPointParameters(rand).getParamMap();
-            String p = addPintHelper(parent);
+            String p = addPintHelper(parent, params);
             params.put(Constants.NAME, p).put(Constants.POLL_RATE, getFuzzPingRate());
         } /*TODO: figure implement non DFNode creation actions or do other way.
         else if (name.equals(Constants.ACTION_ADD_SLAVE_POINT)) {

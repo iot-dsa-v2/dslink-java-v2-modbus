@@ -3,15 +3,13 @@ package org.iot.dsa.dslink.modbus.slave;
 import com.serotonin.modbus4j.BasicProcessImage;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.IllegalDataAddressException;
-import org.iot.dsa.dslink.dframework.EditableNode;
 import org.iot.dsa.dslink.dframework.EditableValueNode;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
 import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
-import org.iot.dsa.dslink.dframework.bounds.LongBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
-import org.iot.dsa.dslink.modbus.utils.DataTypeParameter;
 import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
+import org.iot.dsa.dslink.modbus.utils.DataTypeParameter;
 import org.iot.dsa.node.*;
 import org.iot.dsa.util.DSException;
 
@@ -25,6 +23,8 @@ import java.util.List;
 public class SlavePointNode extends EditableValueNode {
 
     public static List<ParameterDefinition> parameterDefinitions = new ArrayList<ParameterDefinition>();
+    //TODO: check whether this is necessary in real nodes, i.e. do we ever call submit/escape twice on the same node. Fix double calls.
+    private boolean noMaster = true;
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeEnumParam(Constants.POINT_OBJECT_TYPE, DSJavaEnum.valueOf(PointType.COIL), null, null));
@@ -102,7 +102,7 @@ public class SlavePointNode extends EditableValueNode {
 //        }
 //    }
 
-    
+
     @Override
     public void onValueSet(DSIValue val) {
         setValueToImage(val, getParentProcessImage());
@@ -217,65 +217,71 @@ public class SlavePointNode extends EditableValueNode {
     }
 
     void escapeSlaveHandler() {
-        //Unregister from device node
-        SlaveDeviceNode par = getParentNode();
-        if (getPointType().equals(PointType.COIL)) {
-            par.removeCoilPoint(getPointOffset());
-        } else if (getPointType().equals(PointType.HOLDING)) {
-            int sum = getPointRegisterCount() + getPointOffset();
-            for (int o = getPointOffset(); o < sum; o++) {
-                List<SlavePointNode> lst = par.getHoldingPoints(o);
-                lst.remove(this);
-                if (lst.size() == 0) par.removeHoldingPoints(o);
+        if (!noMaster) {
+            //Unregister from device node
+            SlaveDeviceNode par = getParentNode();
+            if (getPointType().equals(PointType.COIL)) {
+                par.removeCoilPoint(getPointOffset());
+            } else if (getPointType().equals(PointType.HOLDING)) {
+                int sum = getPointRegisterCount() + getPointOffset();
+                for (int o = getPointOffset(); o < sum; o++) {
+                    List<SlavePointNode> lst = par.getHoldingPoints(o);
+                    lst.remove(this);
+                    if (lst.size() == 0) par.removeHoldingPoints(o);
+                }
             }
-        }
 
-        //Set point value to zero in modbus image
-        setValueToImage(DSLong.valueOf(0), getParentProcessImage());
+            //Set point value to zero in modbus image
+            setValueToImage(DSLong.valueOf(0), getParentProcessImage());
+            noMaster = true;
+        }
     }
 
     // oh my god this method name
     // I know, right
     void submitToSlaveHandler() {
-        //Add to lists for the benefit of the listener
-        SlaveDeviceNode par = getParentNode();
-        if (getPointType().equals(PointType.COIL)) {
-            if (!par.registerCoilPoint(getPointOffset(), this)) {
-                setError("Coil point already exists!");
-                return;
-            }
-        } else if (getPointType().equals(PointType.HOLDING)) {
-            boolean bool = getPointDataType().equals(DataTypeEnum.BINARY);
-            int offset = getPointOffset();
-            int sum = getPointRegisterCount() + offset;
+        if (noMaster) {
+            //Add to lists for the benefit of the listener
+            SlaveDeviceNode par = getParentNode();
+            if (getPointType().equals(PointType.COIL)) {
+                if (!par.registerCoilPoint(getPointOffset(), this)) {
+                    setError("Coil point already exists!");
+                    return;
+                }
+            } else if (getPointType().equals(PointType.HOLDING)) {
+                boolean bool = getPointDataType().equals(DataTypeEnum.BINARY);
+                int offset = getPointOffset();
+                int sum = getPointRegisterCount() + offset;
 
-            // Make sure point is safe to register
-            for (int o = offset; o < sum; o++) {
-                List<SlavePointNode> hLst = par.getHoldingPoints(o);
-                if (hLst != null && hLst.size() > 0) {
-                    if (bool) {
-                        for (SlavePointNode n : hLst) {
-                            if (n.getPointBit() == getPointBit()) {
-                                setError("Holding binary point already exists!");
-                                return;
+                // Make sure point is safe to register
+                for (int o = offset; o < sum; o++) {
+                    List<SlavePointNode> hLst = par.getHoldingPoints(o);
+                    if (hLst != null && hLst.size() > 0) {
+                        if (bool) {
+                            for (SlavePointNode n : hLst) {
+                                if (n.getPointBit() == getPointBit()) {
+                                    setError("Holding binary point already exists!");
+                                    return;
+                                }
                             }
+                        } else {
+                            setError("Holding point already exists!");
+                            return;
                         }
-                    } else {
-                        setError("Holding point already exists!");
-                        return;
                     }
+                }
+
+                // Register point
+                for (int o = offset; o < sum; o++) {
+                    par.registerHoldingPoint(o, this);
                 }
             }
 
-            // Register point
-            for (int o = offset; o < sum; o++) {
-                par.registerHoldingPoint(o, this);
-            }
+            //Set point value
+            setValueToImage(toElement(), getParentProcessImage());
+            clearError();
+            noMaster = false;
         }
-
-        //Set point value
-        setValueToImage(toElement(), getParentProcessImage());
-        clearError();
     }
 
     SlaveDeviceNode getParentNode() {
@@ -284,7 +290,8 @@ public class SlavePointNode extends EditableValueNode {
             return (SlaveDeviceNode) parent;
         } else {
             if (parent == null) throw new RuntimeException("Child SlavePointNode is missing a parent.");
-;            throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode, found " + parent.getClass().getName());
+            ;
+            throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode, found " + parent.getClass().getName());
         }
     }
 
