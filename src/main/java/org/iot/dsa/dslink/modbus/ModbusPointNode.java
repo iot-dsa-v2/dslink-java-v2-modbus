@@ -34,8 +34,9 @@ public class ModbusPointNode extends DFPointNode {
         parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.POINT_OFFSET, DSValueType.NUMBER, new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), null, null));
         parameterDefinitions.add(new DataTypeParameter(null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_BIT, DSLong.valueOf(0), new IntegerBounds(0, 15), "Only applies for Input/Holding Registers with Binary data type", null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), new IntegerBounds(0, Constants.UNSIGED_SHORT_MAX), "Only applies for string data types (Char and Varchar)", null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POLL_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), new DoubleBounds(0.1, Double.MAX_VALUE), "polling rate in seconds", null));
+        //NOTE: according to docs, Constants.UNSIGED_SHORT_MAX is the max register count, but this does not work in the library
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), new IntegerBounds(0, 120), "Only applies for string data types (Char and Varchar)", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POLL_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), new DoubleBounds(0.001, Double.MAX_VALUE), "polling rate in seconds", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.SCALING, DSDouble.valueOf(1), new DoubleBounds(), null, null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.SCALING_OFFSET, DSDouble.valueOf(0), new DoubleBounds(), null, null));
     }

@@ -20,7 +20,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         definitions.add(ParameterDefinition.makeParamWithBoundsAndDef(
                 Constants.PING_RATE,
                 DSDouble.valueOf(Constants.DEFAULT_PING_RATE),
-                new DoubleBounds(1d, Double.MAX_VALUE),
+                new DoubleBounds(.001, Double.MAX_VALUE),
                 "interval between pings, in seconds",
                 null)
         );

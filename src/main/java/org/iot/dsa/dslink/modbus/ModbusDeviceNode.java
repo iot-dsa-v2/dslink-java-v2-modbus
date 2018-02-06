@@ -33,7 +33,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
 
     static {
         parameterDefinitions.add(ParameterDefinition.makeParamWithBounds(Constants.SLAVE_ID, DSValueType.NUMBER, new IntegerBounds(1, 247), null, null));
-        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.PING_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), new DoubleBounds(1d, Double.MAX_VALUE),"interval between pings, in seconds", null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.PING_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), new DoubleBounds(.001, Double.MAX_VALUE),"interval between pings, in seconds", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.CONTIGUOUS_READS, DSBool.FALSE, new BooleanBounds(), null, null));
     }
     
