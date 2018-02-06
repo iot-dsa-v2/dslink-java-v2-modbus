@@ -19,8 +19,13 @@ public class ModbusFuzzTest {
 
     @Test
     public void buildModbusMockSlaveTreeTest() {
+        FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
+        FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
+        FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
         FuzzTest.UNPLUG_DEVICES = false;
-        FuzzTest.buildMockTree(200, new ModbusSlaveTestingIPConnection());
+        FuzzTest.PING_POLL_RATE = 50;
+
+        FuzzTest.buildMockTree(500, new ModbusSlaveTestingIPConnection());
         Scanner usrIn = new Scanner(System.in);
         System.out.println("Press Enter to release slaves");
         usrIn.nextLine();
@@ -28,9 +33,9 @@ public class ModbusFuzzTest {
 
     @Test
     public void buildModbusActionTree() {
-//        FuzzTest.MAX_CON = FuzzTest.MAX_CON * 2;
-//        FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 2;
-//        FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 2;
+        FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
+        FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
+        FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
 //        FuzzTest.PROB_OFF_CON_STATE = .99;
 //        FuzzTest.PROB_OFF_DEV_STATE = .99;
 //        FuzzTest.PROB_ON_CON_STATE = .1;
@@ -39,7 +44,7 @@ public class ModbusFuzzTest {
         FuzzTest.UNPLUG_DEVICES = false;
 
 
-        FuzzTest.PING_POLL_RATE = 100;
+        FuzzTest.PING_POLL_RATE = 50;
         FuzzTest.builFuzzDoubleTree(500, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
         try {
             Thread.sleep(1000000);

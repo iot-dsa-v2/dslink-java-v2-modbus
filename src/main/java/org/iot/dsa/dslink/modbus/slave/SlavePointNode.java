@@ -204,8 +204,8 @@ public class SlavePointNode extends EditableValueNode {
                         System.out.println("FOUR_BYTE_FLOAT_SWAPPED_INVERTED not implemented!!");
                     else
                         img.setNumeric(range, offset, getPointDataTypeInt(), n != null ? n : 0);
-                    //TODO: make four byte BCD work
-                    //TODO: make FOUR_BYTE_FLOAT_SWAPPED_INVERTED work
+
+                    //TODO: FOUR_BYTE_BCD_SWAPPED and FOUR_BYTE_FLOAT_SWAPPED_INVERTED not implemented in library. Build workaround or fix library.
                 }
                 break;
         }

@@ -147,7 +147,6 @@ public class Constants {
         FOUR_BYTE_INT_SIGNED_SWAPPED_SWAPPED(DataType.FOUR_BYTE_INT_SIGNED_SWAPPED_SWAPPED, Integer.MIN_VALUE, Integer.MAX_VALUE),
         FOUR_BYTE_FLOAT(DataType.FOUR_BYTE_FLOAT, null, null),
         FOUR_BYTE_FLOAT_SWAPPED(DataType.FOUR_BYTE_FLOAT_SWAPPED, null, null),
-        FOUR_BYTE_FLOAT_SWAPPED_INVERTED(DataType.FOUR_BYTE_FLOAT_SWAPPED_INVERTED, null, null),
         EIGHT_BYTE_INT_UNSIGNED(DataType.EIGHT_BYTE_INT_UNSIGNED, 0L, null),
         EIGHT_BYTE_INT_SIGNED(DataType.EIGHT_BYTE_INT_SIGNED, Long.MIN_VALUE, Long.MAX_VALUE),
         EIGHT_BYTE_INT_UNSIGNED_SWAPPED(DataType.EIGHT_BYTE_INT_UNSIGNED_SWAPPED, 0L, null),
@@ -156,9 +155,12 @@ public class Constants {
         EIGHT_BYTE_FLOAT_SWAPPED(DataType.EIGHT_BYTE_FLOAT_SWAPPED, null, null),
         TWO_BYTE_BCD(DataType.TWO_BYTE_BCD, 0, 9999),
         FOUR_BYTE_BCD(DataType.FOUR_BYTE_BCD, 0, 99999999),
-        FOUR_BYTE_BCD_SWAPPED(DataType.FOUR_BYTE_BCD_SWAPPED, 0, 99999999),
         CHAR(DataType.CHAR, null, null),
         VARCHAR(DataType.VARCHAR, null, null);
+
+        //TODO: FOUR_BYTE_BCD_SWAPPED and FOUR_BYTE_FLOAT_SWAPPED_INVERTED not implemented in library. Build workaround or fix library.
+        //FOUR_BYTE_BCD_SWAPPED(DataType.FOUR_BYTE_BCD_SWAPPED, 0, 99999999),
+        //FOUR_BYTE_FLOAT_SWAPPED_INVERTED(DataType.FOUR_BYTE_FLOAT_SWAPPED_INVERTED, null, null);
 
         //INT32M10K(-327680000, 327670000),
         //UINT32M10K(0, 655350000),
@@ -189,10 +191,19 @@ public class Constants {
                 case VARCHAR:
                 case CHAR:
                     return DSString.valueOf(str);
-                case BINARY: //TODO: verify that binary can take a str
+                case BINARY:
                     return DSBool.valueOf(str.length() % 2 == 0);
                 default:
-                    return DSLong.valueOf(str.length()); //TODO make the range wider for better testing
+                    long code = str.hashCode();
+                    if (lowerBound != null && upperBound == null) {
+                        code = Math.abs(code);
+                    } else if (lowerBound != null && upperBound != null) {
+                        if (lowerBound > code || upperBound < code) {
+                            long range = upperBound - lowerBound;
+                            code = Math.abs(code) % range + lowerBound;
+                        }
+                    }
+                    return DSLong.valueOf(code);
             }
         }
 
@@ -203,5 +214,5 @@ public class Constants {
         public int toId() {
             return id;
         }
-    }
+        }
 }

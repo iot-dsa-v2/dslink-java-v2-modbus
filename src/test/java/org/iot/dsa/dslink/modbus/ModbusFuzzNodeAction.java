@@ -43,7 +43,7 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
                 params.put(Constants.SCALING, DSLong.valueOf(1)).put(Constants.SCALING_OFFSET, DSLong.valueOf(0));
             }
             params.put(Constants.NAME, p).put(Constants.POLL_RATE, getFuzzPingRateSec());
-        } /*TODO: figure implement non DFNode creation actions or do other way.
+        } /*TODO: do we need to test salve point nodes? Implement here.
         else if (name.equals(Constants.ACTION_ADD_SLAVE_POINT)) {
             params = new ModbusMockSlavePointParameters(rand).getParamMap();
             String p = addPintHelper(parent);

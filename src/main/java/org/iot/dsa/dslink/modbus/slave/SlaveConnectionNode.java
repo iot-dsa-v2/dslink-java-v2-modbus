@@ -14,7 +14,6 @@ public abstract class SlaveConnectionNode extends EditableNode {
     protected void declareDefaults() {
         super.declareDefaults();
         declareDefault(Constants.ACTION_ADD_SLAVE, DFUtil.getAddAction(SlaveDeviceNode.class));
-        //TODO: is explicit addition of Remove action necessary?
         declareDefault("Remove", makeRemoveAction());
     }
     
