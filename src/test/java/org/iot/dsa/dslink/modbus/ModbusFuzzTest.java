@@ -40,6 +40,11 @@ public class ModbusFuzzTest {
 
 
         FuzzTest.PING_POLL_RATE = 100;
-        FuzzTest.builFuzzDoubleTree(150, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
+        FuzzTest.builFuzzDoubleTree(500, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
+        try {
+            Thread.sleep(1000000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

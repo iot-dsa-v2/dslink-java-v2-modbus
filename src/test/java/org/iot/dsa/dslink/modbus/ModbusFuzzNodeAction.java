@@ -7,6 +7,7 @@ import org.iot.dsa.dslink.modbus.slave.ModbusMockSlaveIPParameters;
 import org.iot.dsa.dslink.modbus.slave.ModbusMockSlavePointParameters;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.node.DSInfo;
+import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
 import org.iot.dsa.node.DSNode;
 
@@ -37,6 +38,10 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
         } else if (name.equals(Constants.ACTION_ADD_POINT)) {
             params = new ModbusMockPointParameters(rand).getParamMap();
             String p = addPintHelper(parent, params);
+            //Scale only half the values
+            if (rand.nextInt(2) == 1) {
+                params.put(Constants.SCALING, DSLong.valueOf(1)).put(Constants.SCALING_OFFSET, DSLong.valueOf(0));
+            }
             params.put(Constants.NAME, p).put(Constants.POLL_RATE, getFuzzPingRateSec());
         } /*TODO: figure implement non DFNode creation actions or do other way.
         else if (name.equals(Constants.ACTION_ADD_SLAVE_POINT)) {
