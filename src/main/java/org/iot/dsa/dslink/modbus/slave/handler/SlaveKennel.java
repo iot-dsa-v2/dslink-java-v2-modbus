@@ -26,7 +26,7 @@ abstract class SlaveKennel <P, K> {
         if (set != null) {
             if (set.removeProcessImage(slaveId)) {
                 if (set.getProcessImages().size() == 0)
-                    slaveSets.remove(getKeyFromPort(port));
+                    slaveSets.remove(getKeyFromPort(port)).stop();
             }
         }
     }

@@ -127,8 +127,8 @@ public class SlaveDeviceNode extends EditableNode {
 
     @Override
     public void delete() {
-        super.delete();
         stopSlave();
+        super.delete();
     }
     
     public void stopSlave() {

@@ -213,8 +213,8 @@ public class SlavePointNode extends EditableValueNode {
 
     @Override
     public void delete() {
-        super.delete();
         escapeSlaveHandler();
+        super.delete();
     }
 
     void escapeSlaveHandler() {
