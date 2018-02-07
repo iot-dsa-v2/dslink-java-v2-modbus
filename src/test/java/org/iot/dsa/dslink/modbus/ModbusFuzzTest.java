@@ -24,6 +24,8 @@ public class ModbusFuzzTest {
         FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
         FuzzTest.UNPLUG_DEVICES = false;
         FuzzTest.PING_POLL_RATE = 50;
+        FuzzTest.SEED = 42;
+
 
         FuzzTest.buildMockTree(500, new ModbusSlaveTestingIPConnection());
         Scanner usrIn = new Scanner(System.in);
@@ -41,7 +43,9 @@ public class ModbusFuzzTest {
 //        FuzzTest.PROB_ON_CON_STATE = .1;
 //        FuzzTest.PROB_ON_CON_STATE = .1;
 
-        FuzzTest.UNPLUG_DEVICES = false;
+        FuzzTest.SEED = 42;
+        FuzzTest.PROB_ACTION = .8;
+        //FuzzTest.UNPLUG_DEVICES = false;
 
 
         FuzzTest.PING_POLL_RATE = 50;
