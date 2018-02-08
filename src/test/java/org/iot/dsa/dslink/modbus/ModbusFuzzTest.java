@@ -43,7 +43,7 @@ public class ModbusFuzzTest {
      */
     @Test
     public void exactMatchTest() throws IOException {
-        FuzzTest.performDiff(OUTPUT_FILE_NAME, MASTER_FILE_NAME);
+        FuzzTest.performDiff(FuzzTest.MASTER_OUT_FILENAME, FuzzTest.TESTING_OUT_FILENAME);
     }
 
     /**
@@ -51,8 +51,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void pythonFrameworkTest() throws Exception {
-        String t_name = "helloo_world.py";
-        FuzzTest.runPythonTest(t_name);
+        new FuzzTest().pythonFrameworkTest();
+//        String t_name = "helloo_world.py";
+//        FuzzTest.runPythonTest(t_name);
     }
 
     /**
@@ -61,8 +62,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void connected_was_subbed() throws Exception {
-        String t_name = "connected_was_subbed.py";
-        FuzzTest.runPythonTest(t_name);
+        new FuzzTest().connected_was_subbed();
+//        String t_name = "connected_was_subbed.py";
+//        FuzzTest.runPythonTest(t_name);
     }
 
     /**
@@ -70,8 +72,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void parent_connected() throws Exception {
-        String t_name = "parent_connected.py";
-        FuzzTest.runPythonTest(t_name);
+        new FuzzTest().parent_connected();
+//        String t_name = "parent_connected.py";
+//        FuzzTest.runPythonTest(t_name);
     }
 
     /**
@@ -81,8 +84,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void subbed_is_connected() throws Exception {
-        String t_name = "subbed_is_connected.py";
-        FuzzTest.runPythonTest(t_name);
+        new FuzzTest().subbed_is_connected();
+//        String t_name = "subbed_is_connected.py";
+//        FuzzTest.runPythonTest(t_name);
     }
 
     /**
@@ -91,8 +95,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void subbed_is_failed() throws Exception {
-        String t_name = "subbed_is_failed.py";
-        FuzzTest.runPythonTest(t_name);
+        new FuzzTest().subbed_is_failed();
+//        String t_name = "subbed_is_failed.py";
+//        FuzzTest.runPythonTest(t_name);
     }
 
     /**
@@ -101,8 +106,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void unsubbed_is_stopped() throws Exception {
-        String t_name = "unsubbed_is_stopped.py";
-        FuzzTest.runPythonTest(t_name);
+        new FuzzTest().unsubbed_is_stopped();
+//        String t_name = "unsubbed_is_stopped.py";
+//        FuzzTest.runPythonTest(t_name);
     }
 
     /**
@@ -110,8 +116,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void value_updates() throws Exception {
-        String t_name = "value_updates.py";
-        FuzzTest.runPythonTest(t_name);
+        new FuzzTest().value_updates();
+//        String t_name = "value_updates.py";
+//        FuzzTest.runPythonTest(t_name);
     }
 
     //@Test
