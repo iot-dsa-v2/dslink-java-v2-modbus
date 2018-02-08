@@ -127,23 +127,23 @@ public class SlaveDeviceNode extends EditableNode {
 
     @Override
     public void delete() {
-        super.delete();
         stopSlave();
+        super.delete();
     }
     
     public void stopSlave() {
-        List<SlavePointNode> toStop = new ArrayList<SlavePointNode>();
-        for (SlavePointNode point : offsetToCoilNode.values()) {
-            toStop.add(point);
-        }
+        //Initialize with coil nodes
+        List<SlavePointNode> toStop = new ArrayList<SlavePointNode>(offsetToCoilNode.values());
+
+        //Add all the holding points
         for (List<SlavePointNode> pointList : offsetToHoldingList.values()) {
-            for (SlavePointNode point : pointList) {
-                toStop.add(point);
-            }
+            toStop.addAll(pointList);
         }
+
         for (SlavePointNode point: toStop) {
             point.escapeSlaveHandler();
         }
+
         getParentNode().deleteProcessImage(this);
     }
 

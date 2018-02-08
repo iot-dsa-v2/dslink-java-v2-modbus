@@ -51,7 +51,13 @@ public class ModbusSlaveTestingDevice extends TestingDevice {
 
     @Override
     protected void removePoint(String name) {
-        points.remove(name);
+        TestingPoint pnt = points.remove(name);
+
+        if (pnt instanceof ModbusSlaveTestingPoint)
+            ((ModbusSlaveTestingPoint) pnt).myNode.delete();
+        else
+            throw new RuntimeException("ModbusSlaveTestingDevice is only designed to work with ModbusSlaveTestingPoint.");
+
         myNode.remove(name);
     }
 

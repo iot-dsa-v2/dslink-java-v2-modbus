@@ -213,8 +213,8 @@ public class SlavePointNode extends EditableValueNode {
 
     @Override
     public void delete() {
-        super.delete();
         escapeSlaveHandler();
+        super.delete();
     }
 
     void escapeSlaveHandler() {
@@ -291,7 +291,7 @@ public class SlavePointNode extends EditableValueNode {
             return (SlaveDeviceNode) parent;
         } else {
             if (parent == null) throw new RuntimeException("Child SlavePointNode is missing a parent.");
-            ;
+
             throw new RuntimeException("Wrong parent class, expected SlaveDeviceNode, found " + parent.getClass().getName());
         }
     }

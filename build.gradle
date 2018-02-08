@@ -37,9 +37,16 @@ dependencies {
     compile 'commons-logging:commons-logging:+'
     compile 'org.scream3r:jssc:+'
 
-    testCompile group: 'org.python', name: 'jython-standalone', version: '2.7.0'
+    //Testing framework
     testCompile ':driver-framework-java-v2-prototype:+:tests'
+    //Python for Java for python tests
+    testCompile group: 'org.python', name: 'jython-standalone', version: '2.7.0'
+    //Diff utils and dependency for exact match test
+    testCompile 'com.github.bkromhout:java-diff-utils:+'
+    testCompile 'org.apache.commons:commons-lang3:3.4'
+    //Junit for automated build/testing
     testCompile 'junit:junit:+'
+    //For unit tests
     testCompile 'org.mockito:mockito-all:+'
 }
 

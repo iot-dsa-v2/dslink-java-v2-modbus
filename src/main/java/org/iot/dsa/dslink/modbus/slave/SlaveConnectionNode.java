@@ -23,8 +23,8 @@ public abstract class SlaveConnectionNode extends EditableNode {
     
     @Override
     public void delete() {
-        super.delete();
         stopSlaves();
+        super.delete();
     }
     
     @Override
