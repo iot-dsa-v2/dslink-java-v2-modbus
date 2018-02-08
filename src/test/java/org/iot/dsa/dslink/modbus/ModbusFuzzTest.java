@@ -62,9 +62,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void connected_was_subbed() throws Exception {
-        new FuzzTest().connected_was_subbed();
-//        String t_name = "connected_was_subbed.py";
-//        FuzzTest.runPythonTest(t_name);
+        //new FuzzTest().connected_was_subbed();
+        String t_name = "connected_was_subbed.py";
+        FuzzTest.runPythonTestFromDir(t_name);
     }
 
     /**
