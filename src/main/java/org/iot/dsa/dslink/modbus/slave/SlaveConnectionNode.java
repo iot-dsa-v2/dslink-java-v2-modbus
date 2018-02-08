@@ -6,7 +6,6 @@ import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.node.DSInfo;
 import org.iot.dsa.node.DSMap;
 import com.serotonin.modbus4j.BasicProcessImage;
-import com.serotonin.modbus4j.ModbusSlaveSet;
 
 public abstract class SlaveConnectionNode extends EditableNode {
     

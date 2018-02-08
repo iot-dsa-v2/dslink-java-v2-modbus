@@ -3,6 +3,8 @@ package org.iot.dsa.dslink.modbus;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.exception.ModbusInitException;
+import com.serotonin.modbus4j.exception.ModbusTransportException;
+import com.serotonin.modbus4j.msg.ReadHoldingRegistersRequest;
 import org.iot.dsa.dslink.dframework.DFConnectionNode;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
@@ -11,7 +13,7 @@ import org.iot.dsa.dslink.dframework.bounds.EnumBounds;
 import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.node.*;
-
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 public abstract class ModbusConnectionNode extends DFConnectionNode {
@@ -96,7 +98,17 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
 
     @Override
     public boolean ping() {
-        return master.isInitialized();
+        if (!master.isInitialized()) {
+            return false;
+        }
+        try {
+            master.send(new ReadHoldingRegistersRequest(1, 0, 1));
+        } catch (ModbusTransportException e) {
+            if (e.getCause() instanceof SocketTimeoutException) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
