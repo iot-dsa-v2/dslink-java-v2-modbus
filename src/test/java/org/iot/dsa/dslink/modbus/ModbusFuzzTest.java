@@ -46,12 +46,12 @@ public class ModbusFuzzTest {
         FuzzTest.performDiff(OUTPUT_FILE_NAME, MASTER_FILE_NAME);
     }
 
-    @Test
+    //@Test
     public void buildModbusMockTreeTest() {
         FuzzTest.buildMockTree(100, new ModbusTestingIPConnection());
     }
 
-    @Test
+    //@Test
     public void buildModbusMockSlaveTreeTest() {
         FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
         FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
@@ -66,7 +66,7 @@ public class ModbusFuzzTest {
         usrIn.nextLine();
     }
 
-    @Test
+    //@Test
     public void buildModbusActionTree() {
  //       FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
  //       FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
