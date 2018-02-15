@@ -26,6 +26,7 @@ import com.serotonin.modbus4j.ExceptionResult;
 import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.locator.BaseLocator;
+import com.serotonin.modbus4j.msg.ReportSlaveIdRequest;
 
 public class ModbusDeviceNode extends DFDeviceNode {
     
@@ -79,7 +80,17 @@ public class ModbusDeviceNode extends DFDeviceNode {
     @Override
     public boolean ping() {
         int slaveId = parameters.getInt(Constants.SLAVE_ID);
-        return getParentNode().master.testSlaveNode(slaveId);
+        
+        
+        try {
+            getParentNode().master.send(new ReportSlaveIdRequest(slaveId));
+        } catch (ModbusTransportException e) {
+            return false;
+        }
+        return true;
+        
+        
+        //return getParentNode().master.testSlaveNode(slaveId);
     }
 
     @Override
