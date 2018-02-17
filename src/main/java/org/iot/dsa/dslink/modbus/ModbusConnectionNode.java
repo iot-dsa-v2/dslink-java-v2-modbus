@@ -4,7 +4,7 @@ import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.exception.ModbusInitException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
-import com.serotonin.modbus4j.msg.ReadHoldingRegistersRequest;
+import com.serotonin.modbus4j.msg.ReportSlaveIdRequest;
 import org.iot.dsa.dslink.dframework.DFConnectionNode;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
@@ -102,7 +102,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
             return false;
         }
         try {
-            master.send(new ReadHoldingRegistersRequest(1, 0, 1));
+            master.send(new ReportSlaveIdRequest(1));
         } catch (ModbusTransportException e) {
             if (e.getCause() instanceof SocketTimeoutException) {
                 return false;
