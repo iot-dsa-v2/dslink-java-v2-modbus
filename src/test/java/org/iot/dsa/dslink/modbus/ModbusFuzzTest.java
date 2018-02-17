@@ -23,7 +23,7 @@ public class ModbusFuzzTest {
 
     private static String OUTPUT_FILE_NAME = "modbus_output.txt";
     private static String MASTER_FILE_NAME = "modbus_master.txt";
-    private static boolean REDO_FUZZ = false; //Set to false to prevent re-running the test
+    private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
     private static long TEST_LENGTH = 3000;
 
     @Before
@@ -62,9 +62,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void connected_was_subbed() throws Exception {
-        //new FuzzTest().connected_was_subbed();
-        String t_name = "connected_was_subbed.py";
-        FuzzTest.runPythonTestFromDir(t_name);
+        new FuzzTest().connected_was_subbed();
+//        String t_name = "connected_was_subbed.py";
+//        FuzzTest.runPythonTestFromDir(t_name);
     }
 
     /**
