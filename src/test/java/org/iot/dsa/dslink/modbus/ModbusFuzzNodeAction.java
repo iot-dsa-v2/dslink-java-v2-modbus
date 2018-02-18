@@ -1,5 +1,6 @@
 package org.iot.dsa.dslink.modbus;
 
+import org.iot.dsa.dslink.dframework.DFHelpers;
 import org.iot.dsa.dslink.dftest.FuzzNodeActionContainer;
 import org.iot.dsa.dslink.dftest.FuzzTest;
 import org.iot.dsa.dslink.modbus.slave.ModbusMockSlaveDeviceParameters;
@@ -25,7 +26,7 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
         DSNode parent = actionInfo.getParent();
         String path = parent.getPath();
         path = path.endsWith("/") ? path + name : path + "/" + name;
-        DSMap params = new DSMap();
+        DSMap params;
         if (name.equals(Constants.ACTION_ADD_IP)) {
             params = new ModbusMockIPConnectionParameters(rand).getParamMap();
             String c = addConnectionHelper(parent, params);
@@ -43,7 +44,11 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
                 params.put(Constants.SCALING, DSLong.valueOf(1)).put(Constants.SCALING_OFFSET, DSLong.valueOf(0));
             }
             params.put(Constants.NAME, p).put(Constants.POLL_RATE, getFuzzPingRateSec());
-        } /*TODO: do we need to test salve point nodes? Implement here.
+        } else if (name.equals(DFHelpers.REMOVE)) {
+            params = new DSMap();
+        }
+        //TODO: do we need to test salve point nodes? Implement here.
+        /*
         else if (name.equals(Constants.ACTION_ADD_SLAVE_POINT)) {
             params = new ModbusMockSlavePointParameters(rand).getParamMap();
             String p = addPintHelper(parent);

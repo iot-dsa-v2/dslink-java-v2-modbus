@@ -24,12 +24,12 @@ public class ModbusFuzzTest {
     private static String OUTPUT_FILE_NAME = "modbus_output.txt";
     private static String MASTER_FILE_NAME = "modbus_master.txt";
     private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
-    private static long TEST_LENGTH = 3000;
+    private static long TEST_LENGTH = 300;
 
     @Before
     public void setUp() {
         if (REDO_FUZZ) {
-            PrintWriter writer = FuzzTest.getNewPrintWriter(OUTPUT_FILE_NAME);
+            PrintWriter writer = FuzzTest.getNewPrintWriter(FuzzTest.TESTING_OUT_FILENAME);
             FuzzTest.builFuzzDoubleTree(TEST_LENGTH, writer, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
             writer.close();
             REDO_FUZZ = false;
@@ -119,6 +119,24 @@ public class ModbusFuzzTest {
         new FuzzTest().value_updates();
 //        String t_name = "value_updates.py";
 //        FuzzTest.runPythonTest(t_name);
+    }
+
+    /**
+     * Checks that a new node appears after the add action is called.
+     * @throws Exception
+     */
+    @Test
+    public void add_works() throws Exception {
+        new FuzzTest().add_works();
+    }
+
+    /**
+     * Checks that the right node disappears after the add action is called.
+     * @throws Exception
+     */
+    @Test
+    public void remove_works() throws Exception {
+        new FuzzTest().remove_works();
     }
 
     //@Test
