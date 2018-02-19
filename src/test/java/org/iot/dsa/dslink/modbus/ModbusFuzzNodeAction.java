@@ -44,7 +44,18 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
                 params.put(Constants.SCALING, DSLong.valueOf(1)).put(Constants.SCALING_OFFSET, DSLong.valueOf(0));
             }
             params.put(Constants.NAME, p).put(Constants.POLL_RATE, getFuzzPingRateSec());
-        } else if (name.equals(DFHelpers.REMOVE) || name.equals(DFHelpers.START) || name.equals(DFHelpers.STOP)) {
+        } else if (name.equals(DFHelpers.REMOVE)) {
+            if (parent instanceof ModbusConnectionNode) {
+                removeConnectionHelper(parent);
+            } else if (parent instanceof ModbusDeviceNode) {
+                removeDeviceHelper(parent);
+            } else if (parent instanceof ModbusPointNode) {
+                removePointHelper(parent.getInfo());
+            } else {
+                throw new RuntimeException("Trying to remove a node of the wrong class.");
+            }
+            params = new DSMap();
+        } else if (name.equals(DFHelpers.START) || name.equals(DFHelpers.STOP)) {
             params = new DSMap();
         }
         //TODO: do we need to test salve point nodes? Implement here.
