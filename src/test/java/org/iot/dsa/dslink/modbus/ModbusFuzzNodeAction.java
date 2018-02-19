@@ -44,7 +44,7 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
                 params.put(Constants.SCALING, DSLong.valueOf(1)).put(Constants.SCALING_OFFSET, DSLong.valueOf(0));
             }
             params.put(Constants.NAME, p).put(Constants.POLL_RATE, getFuzzPingRateSec());
-        } else if (name.equals(DFHelpers.REMOVE)) {
+        } else if (name.equals(DFHelpers.REMOVE) || name.equals(DFHelpers.START) || name.equals(DFHelpers.STOP)) {
             params = new DSMap();
         }
         //TODO: do we need to test salve point nodes? Implement here.
@@ -63,7 +63,7 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
             params.put(Constants.NAME, c);
         }
         */ else {
-            return "Action not implemented!";
+            return "Action not implemented: " + name;
         }
         FuzzTest.requester.invoke(path, params, new FuzzTest.InvokeHandlerImpl());
         return "Invoking " + path + " with parameters " + params;

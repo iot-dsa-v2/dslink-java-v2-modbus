@@ -24,7 +24,7 @@ public class ModbusFuzzTest {
     private static String OUTPUT_FILE_NAME = "modbus_output.txt";
     private static String MASTER_FILE_NAME = "modbus_master.txt";
     private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
-    private static long TEST_LENGTH = 300;
+    private static long TEST_LENGTH = 3000;
 
     @Before
     public void setUp() {
@@ -137,6 +137,15 @@ public class ModbusFuzzTest {
     @Test
     public void remove_works() throws Exception {
         new FuzzTest().remove_works();
+    }
+
+    /**
+     * Checks that the right node is stopped/started after the right action is called.
+     * @throws Exception
+     */
+    @Test
+    public void stop_start_works() throws Exception {
+        new FuzzTest().stop_start_works();
     }
 
     //@Test
