@@ -41,7 +41,7 @@ public class ModbusFuzzTest {
      *
      * @throws IOException Failed to find the required inputs/outputs
      */
-    //@Test
+    @Test
     public void exactMatchTest() throws IOException {
         FuzzTest.performDiff(FuzzTest.MASTER_OUT_FILENAME, FuzzTest.TESTING_OUT_FILENAME);
     }
