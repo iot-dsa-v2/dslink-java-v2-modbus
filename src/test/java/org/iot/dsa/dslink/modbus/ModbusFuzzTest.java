@@ -24,7 +24,7 @@ public class ModbusFuzzTest {
     private static String OUTPUT_FILE_NAME = "modbus_output.txt";
     private static String MASTER_FILE_NAME = "modbus_master.txt";
     private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
-    private static long TEST_LENGTH = 3000;
+    private static long TEST_LENGTH = 1000;
 
     @Before
     public void setUp() {
