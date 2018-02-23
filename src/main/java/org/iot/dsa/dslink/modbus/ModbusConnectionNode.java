@@ -36,7 +36,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         definitions.add(ParameterDefinition.makeParamWithBoundsAndDef(
                 Constants.RETRIES,
                 DSInt.valueOf(Constants.DEFAULT_RETRIES),
-                new IntegerBounds(0, Integer.MAX_VALUE),
+                new IntegerBounds(0, Integer.MAX_VALUE), //Integer.MAX_VALUE
                 null,
                 null)
         );

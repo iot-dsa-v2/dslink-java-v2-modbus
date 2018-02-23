@@ -29,7 +29,8 @@ public class ModbusFuzzTest {
     @Before
     public void setUp() {
         if (REDO_FUZZ) {
-            //FuzzTest.PING_POLL_RATE = 20;
+            FuzzTest.PROB_OFF_CON_STATE = .1;
+            FuzzTest.PROB_ON_CON_STATE = .8;
             PrintWriter writer = FuzzTest.getNewPrintWriter(FuzzTest.TESTING_OUT_FILENAME);
             FuzzTest.builFuzzDoubleTree(TEST_LENGTH, writer, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
             writer.close();
