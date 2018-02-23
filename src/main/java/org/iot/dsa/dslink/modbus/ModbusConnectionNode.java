@@ -126,5 +126,4 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         }
         return (long) (seconds * 1000);
     }
-
 }
