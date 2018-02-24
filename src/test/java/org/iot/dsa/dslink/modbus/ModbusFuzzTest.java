@@ -24,11 +24,20 @@ public class ModbusFuzzTest {
     private static String OUTPUT_FILE_NAME = "modbus_output.txt";
     private static String MASTER_FILE_NAME = "modbus_master.txt";
     private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
-    private static long TEST_LENGTH = 3000;
+    private static long TEST_LENGTH = 2000;
 
     @Before
     public void setUp() {
         if (REDO_FUZZ) {
+
+            FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
+            FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
+            FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
+            FuzzTest.MIN_CON = FuzzTest.MIN_CON * 3;
+            FuzzTest.MIN_DEV = FuzzTest.MIN_DEV * 3;
+            FuzzTest.MIN_PNT = FuzzTest.MIN_PNT * 3;
+            FuzzTest.UNPLUG_DEVICES = false;
+
             FuzzTest.SUBSCRIBE_DELAY_RETRIES = 100;
             FuzzTest.SUBSCRIBE_DELAY_WAIT_MILIS = 300;
             FuzzTest.INTERSTEP_WAIT_TIME = FuzzTest.PING_POLL_RATE * 4;
@@ -151,6 +160,11 @@ public class ModbusFuzzTest {
         new FuzzTest().stop_start_works();
     }
 
+    @Test
+    public void all_subscriptions_work() throws Exception {
+        new FuzzTest().all_subscriptions_work();
+    }
+
     //@Test
     public void buildModbusMockTreeTest() {
         FuzzTest.buildMockTree(100, new ModbusTestingIPConnection());
@@ -158,9 +172,6 @@ public class ModbusFuzzTest {
 
     //@Test
     public void buildModbusMockSlaveTreeTest() {
-        FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
-        FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
-        FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
         FuzzTest.UNPLUG_DEVICES = false;
         FuzzTest.PING_POLL_RATE = 50;
 
