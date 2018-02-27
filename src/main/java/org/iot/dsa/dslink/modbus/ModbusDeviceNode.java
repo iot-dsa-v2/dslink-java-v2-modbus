@@ -74,7 +74,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     @Override
     public boolean createConnection() {
         int slaveId = parameters.getInt(Constants.SLAVE_ID);
-        return getParentNode().master.testSlaveNode(slaveId);
+        return getParentNode().master != null && getParentNode().master.testSlaveNode(slaveId);
     }
 
     @Override

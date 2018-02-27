@@ -89,19 +89,19 @@ public class SlavePointNode extends EditableValueNode {
         return getPointDataType().toId();
     }
 
-//    @Override
-//    public DSValueType getValueType() {
-//        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
-//        switch (dataType) {
-//            case BINARY:
-//                return DSValueType.BOOL;
-//            case CHAR:
-//            case VARCHAR:
-//                return DSValueType.STRING;
-//            default:
-//                return DSValueType.NUMBER;
-//        }
-//    }
+    @Override
+    public DSValueType getValueType() {
+        DataTypeEnum dataType = DataTypeEnum.valueOf(parameters.getString(Constants.POINT_DATA_TYPE));
+        switch (dataType) {
+            case BINARY:
+                return DSValueType.BOOL;
+            case CHAR:
+            case VARCHAR:
+                return DSValueType.STRING;
+            default:
+                return DSValueType.NUMBER;
+        }
+    }
 
 
     @Override

@@ -1,6 +1,7 @@
 {
   "name": "dslink-java-v2-modbus",
   "version": "1.0.0",
+  "dsa-version": "1.0",
   "description": "Modbus Link",
   "main": "bin/dslink-java-v2-modbus",
   "configs": {

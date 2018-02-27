@@ -24,23 +24,27 @@ public class ModbusFuzzTest {
     private static String OUTPUT_FILE_NAME = "modbus_output.txt";
     private static String MASTER_FILE_NAME = "modbus_master.txt";
     private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
-    private static long TEST_LENGTH = 2000;
+    private static long TEST_LENGTH = 300;
 
     @Before
     public void setUp() {
         if (REDO_FUZZ) {
 
-            FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
-            FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
-            FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
-            FuzzTest.MIN_CON = FuzzTest.MIN_CON * 3;
-            FuzzTest.MIN_DEV = FuzzTest.MIN_DEV * 3;
-            FuzzTest.MIN_PNT = FuzzTest.MIN_PNT * 3;
+            FuzzTest.PROB_ON_CON_STATE = .8;
+            FuzzTest.PROB_OFF_CON_STATE = .2;
+
+//            FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
+//            FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
+//            FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
+//            FuzzTest.MIN_CON = FuzzTest.MIN_CON * 3;
+//            FuzzTest.MIN_DEV = FuzzTest.MIN_DEV * 3;
+//            FuzzTest.MIN_PNT = FuzzTest.MIN_PNT * 3;
             FuzzTest.UNPLUG_DEVICES = false;
 
             FuzzTest.SUBSCRIBE_DELAY_RETRIES = 100;
             FuzzTest.SUBSCRIBE_DELAY_WAIT_MILIS = 300;
-            FuzzTest.INTERSTEP_WAIT_TIME = FuzzTest.PING_POLL_RATE * 4;
+            FuzzTest.PING_POLL_RATE = 100;
+            FuzzTest.INTERSTEP_WAIT_TIME = FuzzTest.PING_POLL_RATE * 3;
             PrintWriter writer = FuzzTest.getNewPrintWriter(FuzzTest.TESTING_OUT_FILENAME);
             FuzzTest.builFuzzDoubleTree(TEST_LENGTH, writer, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
             writer.close();

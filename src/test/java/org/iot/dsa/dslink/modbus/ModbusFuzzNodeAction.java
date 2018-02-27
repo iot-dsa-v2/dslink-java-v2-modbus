@@ -55,8 +55,18 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
                 throw new RuntimeException("Trying to remove a node of the wrong class.");
             }
             params = new DSMap();
-        } else if (name.equals(DFHelpers.START) || name.equals(DFHelpers.STOP)) {
-            params = new DSMap();
+        } else if (name.equals(DFHelpers.START)) {
+            if (rand.nextDouble() < FuzzTest.PROB_ON_CON_STATE) {
+                params = new DSMap();
+            } else {
+                return "Skipping START Action";
+            }
+        } else if (name.equals(DFHelpers.STOP)) {
+            if (rand.nextDouble() < FuzzTest.PROB_OFF_CON_STATE) {
+                params = new DSMap();
+            } else {
+                return "Skipping STOP Action";
+            }
         }
         //TODO: do we need to test salve point nodes? Implement here.
         /*

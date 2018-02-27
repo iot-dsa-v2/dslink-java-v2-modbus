@@ -29,14 +29,14 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         definitions.add(ParameterDefinition.makeParamWithBoundsAndDef(
                 Constants.TIMEOUT,
                 DSInt.valueOf(Constants.DEFAULT_TIMEOUT),
-                new IntegerBounds(1, 100), //Integer.MAX_VALUE
+                new IntegerBounds(100, 10000), //Integer.MAX_VALUE
                 null,
                 null)
         );
         definitions.add(ParameterDefinition.makeParamWithBoundsAndDef(
                 Constants.RETRIES,
                 DSInt.valueOf(Constants.DEFAULT_RETRIES),
-                new IntegerBounds(0, 5), //Integer.MAX_VALUE
+                new IntegerBounds(0, 100), //Integer.MAX_VALUE
                 null,
                 null)
         );
@@ -98,23 +98,25 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
 
     @Override
     public boolean ping() {
-        if (!master.isInitialized()) {
+        if (master == null || !master.isInitialized()) {
             return false;
         }
-        try {
-            master.send(new ReportSlaveIdRequest(1));
-        } catch (ModbusTransportException e) {
-            if (e.getCause() instanceof SocketTimeoutException) {
-                return false;
-            }
-        }
+//        try {
+//            master.send(new ReportSlaveIdRequest(1));
+//        } catch (ModbusTransportException e) {
+//            if (e.getCause() instanceof SocketTimeoutException) {
+//                return false;
+//            }
+//        }
         return true;
     }
 
     @Override
     public void closeConnection() {
-        master.destroy();
-        master = null;
+        if (master != null) {
+            master.destroy();
+            master = null;
+        }
     }
 
     @Override
