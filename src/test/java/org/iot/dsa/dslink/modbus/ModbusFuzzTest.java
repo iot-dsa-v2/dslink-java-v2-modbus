@@ -1,19 +1,13 @@
 package org.iot.dsa.dslink.modbus;
 
-import org.apache.commons.lang3.StringUtils;
-import org.iot.dsa.dslink.DSMainNode;
 import org.iot.dsa.dslink.dftest.FuzzTest;
 import org.iot.dsa.dslink.modbus.slave.ModbusSlaveTestingIPConnection;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Scanner;
-
-import static org.junit.Assert.fail;
 
 /**
  * @author James (Juris) Puchin
@@ -21,17 +15,19 @@ import static org.junit.Assert.fail;
  */
 public class ModbusFuzzTest {
 
+
     private static String OUTPUT_FILE_NAME = "modbus_output.txt";
     private static String MASTER_FILE_NAME = "modbus_master.txt";
     private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
-    private static long TEST_LENGTH = 500;
+    static double PROB_SCALING = 0.0; //Set to high probability to have lots of points with scaling
+    private static long TEST_LENGTH = 800;
 
     @Before
     public void setUp() {
         if (REDO_FUZZ) {
 
-            FuzzTest.PROB_ON_CON_STATE = .8;
-            FuzzTest.PROB_OFF_CON_STATE = .2;
+//            FuzzTest.PROB_ON_CON_STATE = .8;
+//            FuzzTest.PROB_OFF_CON_STATE = .2;
 
 //            FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
 //            FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
@@ -43,7 +39,7 @@ public class ModbusFuzzTest {
 
             FuzzTest.SUBSCRIBE_DELAY_RETRIES = 100;
             FuzzTest.SUBSCRIBE_DELAY_WAIT_MILIS = 300;
-            FuzzTest.PING_POLL_RATE = 100;
+            FuzzTest.PING_POLL_RATE = 50;
             FuzzTest.INTERSTEP_WAIT_TIME = FuzzTest.PING_POLL_RATE * 3;
             PrintWriter writer = FuzzTest.getNewPrintWriter(FuzzTest.TESTING_OUT_FILENAME);
             FuzzTest.builFuzzDoubleTree(TEST_LENGTH, writer, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
@@ -139,6 +135,7 @@ public class ModbusFuzzTest {
 
     /**
      * Checks that a new node appears after the add action is called.
+     *
      * @throws Exception
      */
     @Test
@@ -148,6 +145,7 @@ public class ModbusFuzzTest {
 
     /**
      * Checks that the right node disappears after the add action is called.
+     *
      * @throws Exception
      */
     @Test
@@ -157,6 +155,7 @@ public class ModbusFuzzTest {
 
     /**
      * Checks that the right node is stopped/started after the right action is called.
+     *
      * @throws Exception
      */
     @Test
@@ -188,8 +187,8 @@ public class ModbusFuzzTest {
 
     //@Test
     public void buildModbusActionTree() {
- //       FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
- //       FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
+        //       FuzzTest.MAX_CON = FuzzTest.MAX_CON * 3;
+        //       FuzzTest.MAX_DEV = FuzzTest.MAX_DEV * 3;
 //        FuzzTest.MAX_PNT = FuzzTest.MAX_PNT * 3;
 //        FuzzTest.PROB_OFF_CON_STATE = .99;
 //        FuzzTest.PROB_OFF_DEV_STATE = .99;
