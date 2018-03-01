@@ -2,7 +2,9 @@ package org.iot.dsa.dslink.modbus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import org.iot.dsa.dslink.dframework.DFDeviceNode;
 import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.dframework.DFUtil;
@@ -113,7 +115,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
     }
 
     @Override
-    public boolean batchPoll(Set<DFPointNode> points) {
+    public Map<DFPointNode, Boolean> batchPoll(Set<DFPointNode> points) {
         int slaveId = parameters.getInt(Constants.SLAVE_ID);
         boolean contig = parameters.getBoolean(Constants.CONTIGUOUS_READS);
         BatchRead<ModbusPointNode> batch = new BatchRead<ModbusPointNode>();
@@ -127,6 +129,8 @@ public class ModbusDeviceNode extends DFDeviceNode {
             batch.addLocator(mpoint, locator);
         }
         
+        
+        Map<DFPointNode, Boolean> successes = new ConcurrentHashMap<DFPointNode, Boolean>();
         try {
             BatchResults<ModbusPointNode> results = getParentNode().master.send(batch);
             for (DFPointNode point: points) {
@@ -136,6 +140,7 @@ public class ModbusDeviceNode extends DFDeviceNode {
                 Object result = results.getValue(mpoint);
                 if (result instanceof ExceptionResult) {
                     mpoint.updateError((ExceptionResult) result);
+                    successes.put(mpoint, false);
                 } else {
                     switch(dataType) {
                         case BINARY:
@@ -152,16 +157,15 @@ public class ModbusDeviceNode extends DFDeviceNode {
                             break;
                     }
                     mpoint.updateValue(val);
+                    successes.put(mpoint, true);
                 }
             }
-            return true;
         } catch (ModbusTransportException e) {
             warn(e);
-            return false;
         } catch (ErrorResponseException e) {
             warn(e);
-            return false;
         }
+        return successes;
     }
     
     @Override
