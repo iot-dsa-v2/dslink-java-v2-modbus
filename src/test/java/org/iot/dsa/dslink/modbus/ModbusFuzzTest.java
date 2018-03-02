@@ -39,7 +39,7 @@ public class ModbusFuzzTest {
 
             FuzzTest.SUBSCRIBE_DELAY_RETRIES = 100;
             FuzzTest.SUBSCRIBE_DELAY_WAIT_MILIS = 300;
-            FuzzTest.PING_POLL_RATE = 50;
+            FuzzTest.PING_POLL_RATE = 100;
             FuzzTest.INTERSTEP_WAIT_TIME = FuzzTest.PING_POLL_RATE * 3;
             PrintWriter writer = FuzzTest.getNewPrintWriter(FuzzTest.TESTING_OUT_FILENAME);
             FuzzTest.builFuzzDoubleTree(TEST_LENGTH, writer, new MainNode(), new ModbusSlaveTestingIPConnection(), new ModbusFuzzNodeAction());
