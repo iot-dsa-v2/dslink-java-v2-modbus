@@ -27,11 +27,14 @@ public class ModbusFuzzNodeAction extends FuzzNodeActionContainer {
         if (name.equals(Constants.ACTION_ADD_IP)) {
             params = new ModbusMockIPConnectionParameters(rand).getParamMap();
             String c = addConnectionHelper(parent, params);
+            params.put(Constants.IP_TRANSPORT_TYPE, Constants.IpTransportType.TCP.name());
+            params.put(Constants.TIMEOUT, 200).put(Constants.RETRIES, 0);
             params.put(Constants.IP_HOST, "localhost");
             params.put(Constants.NAME, c).put(Constants.PING_RATE, getFuzzPingRateSec());
         } else if (name.equals(Constants.ACTION_ADD_DEVICE)) {
             params = new ModbusMockDeviceParameters(rand).getParamMap();
             String d = addDeviceHelper(parent, params);
+            params.put(Constants.CONTIGUOUS_READS, true);
             params.put(Constants.NAME, d).put(Constants.PING_RATE, getFuzzPingRateSec());
         } else if (name.equals(Constants.ACTION_ADD_POINT)) {
             params = new ModbusMockPointParameters(rand).getParamMap();

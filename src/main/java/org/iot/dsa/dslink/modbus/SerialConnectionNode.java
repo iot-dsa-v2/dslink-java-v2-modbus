@@ -8,6 +8,7 @@ import org.iot.dsa.dslink.modbus.utils.SerialPortParameter;
 import org.iot.dsa.dslink.modbus.utils.SerialPortWrapperImpl;
 import org.iot.dsa.dslink.modbus.utils.Constants.SerialParity;
 import org.iot.dsa.dslink.modbus.utils.Constants.SerialTransportType;
+import org.iot.dsa.dslink.modbus.utils.ModbusOverlord;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
@@ -50,10 +51,10 @@ public class SerialConnectionNode extends ModbusConnectionNode {
         
         switch(transportType) {
             case ASCII:
-                master = modbusFactory.createAsciiMaster(wrapper);
+                modbus = new ModbusOverlord(modbusFactory.createAsciiMaster(wrapper));
                 break;
             case RTU:
-                master = modbusFactory.createRtuMaster(wrapper);
+                modbus = new ModbusOverlord(modbusFactory.createRtuMaster(wrapper));
                 break;
         }
         

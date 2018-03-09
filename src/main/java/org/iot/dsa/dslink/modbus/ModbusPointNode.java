@@ -15,7 +15,6 @@ import org.iot.dsa.dslink.modbus.utils.Constants.DataTypeEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.MultipleWriteEnum;
 import org.iot.dsa.dslink.modbus.utils.Constants.PointType;
 import org.iot.dsa.dslink.modbus.utils.DataTypeParameter;
-import org.iot.dsa.dslink.modbus.utils.NonRandomParameter;
 import org.iot.dsa.dslink.modbus.utils.Util;
 import org.iot.dsa.node.*;
 import org.iot.dsa.util.DSException;
@@ -37,8 +36,8 @@ public class ModbusPointNode extends DFPointNode {
         //NOTE: according to docs, Constants.UNSIGED_SHORT_MAX is the max register count, but this does not work in the library
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POINT_REGISTER_COUNT, DSLong.valueOf(0), new IntegerBounds(0, 120), "Only applies for string data types (Char and Varchar)", null));
         parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.POLL_RATE, DSDouble.valueOf(Constants.DEFAULT_PING_RATE), new DoubleBounds(0.001, Double.MAX_VALUE), "polling rate in seconds", null));
-        parameterDefinitions.add(new NonRandomParameter(Constants.SCALING, DSDouble.valueOf(1), new DoubleBounds(), null, null));
-        parameterDefinitions.add(new NonRandomParameter(Constants.SCALING_OFFSET, DSDouble.valueOf(0), new DoubleBounds(), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.SCALING, DSDouble.valueOf(1), new DoubleBounds(), null, null));
+        parameterDefinitions.add(ParameterDefinition.makeParamWithBoundsAndDef(Constants.SCALING_OFFSET, DSDouble.valueOf(0), new DoubleBounds(), null, null));
     }
 
     @Override
@@ -101,13 +100,13 @@ public class ModbusPointNode extends DFPointNode {
                     for (int i = 0; i < shorts.length; i++) {
                         BaseLocator<?> tempLocator = new NumericLocator(getParentNode().parameters.getInt(Constants.SLAVE_ID),
                                 objType.toRange(), offset + i, DataType.TWO_BYTE_INT_SIGNED);
-                        getParentNode().getParentNode().master.setValue(tempLocator, shorts[i]);
+                        getParentNode().getParentNode().modbus.setValue(tempLocator, shorts[i]);
                     }
                     return;
                 }
             }
 
-            getParentNode().getParentNode().master.setValue(locator, Util.valueToObject(value, dataType));
+            getParentNode().getParentNode().modbus.setValue(locator, Util.valueToObject(value, dataType));
         } catch (ModbusTransportException e) {
             warn(e);
             DSException.throwRuntime(e);

@@ -6,6 +6,7 @@ import org.iot.dsa.dslink.dframework.bounds.IPBounds;
 import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
 import org.iot.dsa.dslink.modbus.utils.Constants.IpTransportType;
+import org.iot.dsa.dslink.modbus.utils.ModbusOverlord;
 import org.iot.dsa.node.DSJavaEnum;
 import org.iot.dsa.node.DSLong;
 import org.iot.dsa.node.DSMap;
@@ -54,11 +55,11 @@ public class IPConnectionNode extends ModbusConnectionNode {
 
         switch (ipType) {
             case TCP:
-                master = modbusFactory.createTcpMaster(params, keepAlive);
+                modbus = new ModbusOverlord(modbusFactory.createTcpMaster(params, keepAlive));
                 break;
-            case UDP:
-                master = modbusFactory.createUdpMaster(params);
-                break;
+//            case UDP:
+//                master = modbusFactory.createUdpMaster(params);
+//                break;
         }
 
         return super.createConnection();

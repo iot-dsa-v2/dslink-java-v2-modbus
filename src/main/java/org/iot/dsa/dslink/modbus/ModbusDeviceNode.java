@@ -75,20 +75,23 @@ public class ModbusDeviceNode extends DFDeviceNode {
 
     @Override
     public boolean createConnection() {
-        int slaveId = parameters.getInt(Constants.SLAVE_ID);
-        return getParentNode().master != null && getParentNode().master.testSlaveNode(slaveId);
+        return getParentNode().modbus != null && ping();
     }
 
     @Override
     public boolean ping() {
         int slaveId = parameters.getInt(Constants.SLAVE_ID);
         
+        info(Thread.currentThread().getId() + ") Ping Start: " + slaveId);
+
         
         try {
-            getParentNode().master.send(new ReportSlaveIdRequest(slaveId));
+            getParentNode().modbus.send(new ReportSlaveIdRequest(slaveId), this, slaveId);
         } catch (ModbusTransportException e) {
+            info(Thread.currentThread().getId() + ") Ping End (Fail): " + slaveId);
             return false;
         }
+        info(Thread.currentThread().getId() + ") Ping End (Success): " + slaveId);
         return true;
         
         
@@ -132,13 +135,17 @@ public class ModbusDeviceNode extends DFDeviceNode {
         
         Map<DFPointNode, Boolean> successes = new ConcurrentHashMap<DFPointNode, Boolean>();
         try {
-            BatchResults<ModbusPointNode> results = getParentNode().master.send(batch);
+            info(Thread.currentThread().getId() + ") Poll Start: " + slaveId);
+            BatchResults<ModbusPointNode> results = getParentNode().modbus.send(batch, this, slaveId);
+            info(Thread.currentThread().getId() + ") Poll End: " + slaveId);
             for (DFPointNode point: points) {
                 ModbusPointNode mpoint = (ModbusPointNode) point;
                 DataTypeEnum dataType = DataTypeEnum.valueOf(mpoint.parameters.getString(Constants.POINT_DATA_TYPE));
                 DSElement val;
                 Object result = results.getValue(mpoint);
-                if (result instanceof ExceptionResult) {
+                if (result == null) {
+                    successes.put(mpoint, false);
+                } else if (result instanceof ExceptionResult) {
                     mpoint.updateError((ExceptionResult) result);
                     successes.put(mpoint, false);
                 } else {
@@ -162,8 +169,10 @@ public class ModbusDeviceNode extends DFDeviceNode {
             }
         } catch (ModbusTransportException e) {
             warn(e);
+            info(Thread.currentThread().getId() + ") Poll End: " + slaveId);
         } catch (ErrorResponseException e) {
             warn(e);
+            info(Thread.currentThread().getId() + ") Poll End: " + slaveId);
         }
         return successes;
     }

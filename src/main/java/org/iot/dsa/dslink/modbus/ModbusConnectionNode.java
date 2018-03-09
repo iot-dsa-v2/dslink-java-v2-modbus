@@ -1,10 +1,7 @@
 package org.iot.dsa.dslink.modbus;
 
 import com.serotonin.modbus4j.ModbusFactory;
-import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.exception.ModbusInitException;
-import com.serotonin.modbus4j.exception.ModbusTransportException;
-import com.serotonin.modbus4j.msg.ReportSlaveIdRequest;
 import org.iot.dsa.dslink.dframework.DFConnectionNode;
 import org.iot.dsa.dslink.dframework.DFUtil;
 import org.iot.dsa.dslink.dframework.ParameterDefinition;
@@ -12,8 +9,8 @@ import org.iot.dsa.dslink.dframework.bounds.DoubleBounds;
 import org.iot.dsa.dslink.dframework.bounds.EnumBounds;
 import org.iot.dsa.dslink.dframework.bounds.IntegerBounds;
 import org.iot.dsa.dslink.modbus.utils.Constants;
+import org.iot.dsa.dslink.modbus.utils.ModbusOverlord;
 import org.iot.dsa.node.*;
-import java.net.SocketTimeoutException;
 import java.util.List;
 
 public abstract class ModbusConnectionNode extends DFConnectionNode {
@@ -70,7 +67,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
     }
 
     /* ==================================================================== */
-    ModbusMaster master;
+    ModbusOverlord modbus;
     ModbusFactory modbusFactory = new ModbusFactory();
 
 
@@ -80,15 +77,15 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         int timeout = parameters.get(Constants.TIMEOUT).toInt();
         int retries = parameters.get(Constants.RETRIES).toInt();
         if (parameters.get(Constants.USE_MULTIPLE_WRITE_COMMAND).toString().equals(Constants.MultipleWriteEnum.ALWAYS.toString())) {
-            master.setMultipleWritesOnly(true);
+            modbus.setMultipleWritesOnly(true);
         }
 
-        master.setTimeout(timeout);
-        master.setRetries(retries);
+        modbus.setTimeout(timeout);
+        modbus.setRetries(retries);
 
         try {
-            master.init();
-            return master.isInitialized();
+            modbus.init();
+            return modbus.isInitialized();
         } catch (ModbusInitException e) {
             warn(e);
             return false;
@@ -98,7 +95,7 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
 
     @Override
     public boolean ping() {
-        if (master == null || !master.isInitialized()) {
+        if (modbus == null || !modbus.isInitialized()) {
             return false;
         }
 //        try {
@@ -113,9 +110,9 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
 
     @Override
     public void closeConnection() {
-        if (master != null) {
-            master.destroy();
-            master = null;
+        if (modbus != null) {
+            modbus.destroy();
+            modbus = null;
         }
     }
 

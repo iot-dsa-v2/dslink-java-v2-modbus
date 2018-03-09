@@ -49,8 +49,8 @@ public class IpSlaveConnectionNode extends SlaveConnectionNode {
         switch (type) {
             case TCP:
                 return ModbusSlaveHandler.getTcpProcessImage(port, slaveId, slave);
-            case UDP:
-                return ModbusSlaveHandler.getUdpProcessImage(port, slaveId, slave);
+//            case UDP:
+//                return ModbusSlaveHandler.getUdpProcessImage(port, slaveId, slave);
             default:
                 throw new RuntimeException("Only TCP and UDP transports supported for IP Connections");
         }
@@ -65,9 +65,9 @@ public class IpSlaveConnectionNode extends SlaveConnectionNode {
             case TCP:
                 ModbusSlaveHandler.deleteTcpProcessImage(port, slaveId);
                 break;
-            case UDP:
-                ModbusSlaveHandler.deleteUdpProcessImage(port, slaveId);
-                break;
+//            case UDP:
+//                ModbusSlaveHandler.deleteUdpProcessImage(port, slaveId);
+//                break;
         }
     }
 

@@ -51,8 +51,8 @@ public class Constants {
 
 
     public static enum IpTransportType {
-        TCP,
-        UDP
+        TCP
+        //,UDP
     }
 
     public static enum SerialTransportType {
