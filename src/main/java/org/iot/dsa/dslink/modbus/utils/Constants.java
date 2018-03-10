@@ -2,10 +2,10 @@ package org.iot.dsa.dslink.modbus.utils;
 
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.code.RegisterRange;
-import org.iot.dsa.node.DSBool;
-import org.iot.dsa.node.DSElement;
-import org.iot.dsa.node.DSLong;
-import org.iot.dsa.node.DSString;
+import org.iot.dsa.node.*;
+
+import java.nio.ByteBuffer;
+import java.util.Random;
 
 public class Constants {
     public static final String PARAMETERS = "parameters";
@@ -186,6 +186,24 @@ public class Constants {
             return (lowerBound == null || n.longValue() >= lowerBound) && (upperBound == null || n.longValue() <= upperBound);
         }
 
+        private static byte[] makeBytes(String seed, int len) {
+            Random rand = new Random(seed.hashCode());
+            byte[] raw = new byte[len];
+            rand.nextBytes(raw);
+            return raw;
+        }
+
+        private static Float makeFloat(String seed) {
+            byte[] raw = makeBytes(seed, 4);
+            return ByteBuffer.wrap(raw).getFloat();
+        }
+
+        private static Double makeDouble(String seed) {
+            byte[] raw = makeBytes(seed, 8);
+            return ByteBuffer.wrap(raw).getDouble();
+        }
+
+
         public DSElement createValidValue(String str) {
             switch (this) {
                 case VARCHAR:
@@ -193,6 +211,12 @@ public class Constants {
                     return DSString.valueOf(str);
                 case BINARY:
                     return DSBool.valueOf(str.length() % 2 == 0);
+                case FOUR_BYTE_FLOAT:
+                case FOUR_BYTE_FLOAT_SWAPPED:
+                    return DSDouble.valueOf(makeFloat(str));
+                case EIGHT_BYTE_FLOAT:
+                case EIGHT_BYTE_FLOAT_SWAPPED:
+                    return DSDouble.valueOf(makeDouble(str));
                 default:
                     long code = str.hashCode();
                     if (lowerBound != null && upperBound == null) {
