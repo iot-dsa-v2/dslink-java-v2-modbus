@@ -1,8 +1,11 @@
 package org.iot.dsa.dslink.modbus.utils;
 
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import org.iot.dsa.dslink.dframework.DFPointNode;
 import org.iot.dsa.dslink.modbus.ModbusDeviceNode;
+import org.iot.dsa.dslink.modbus.ModbusPointNode;
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
 import com.serotonin.modbus4j.ModbusMaster;
@@ -34,9 +37,10 @@ public class ModbusOverlord {
         }
     }
     
-    public <K> BatchResults<K> send(BatchRead<K> batch, ModbusDeviceNode dev, int slaveid) throws ModbusTransportException, ErrorResponseException {
+    public BatchResults<ModbusPointNode> sendBatchRead(Set<DFPointNode> points, ModbusDeviceNode dev, int slaveid) throws ModbusTransportException, ErrorResponseException {
        lock.lock();
        dev.info(Thread.currentThread().getId() + ") Poll Middle: " + slaveid);
+       BatchRead<ModbusPointNode> batch = dev.makeBatch(points);
        try {
            return master.send(batch);
        } finally {

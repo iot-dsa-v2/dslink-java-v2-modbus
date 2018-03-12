@@ -116,9 +116,8 @@ public class ModbusDeviceNode extends DFDeviceNode {
         int registerCount = point.parameters.getInt(Constants.POINT_REGISTER_COUNT);
         return BaseLocator.createLocator(slaveId, objType.toRange(), offset, dataType.toId(), bit, registerCount);
     }
-
-    @Override
-    public Map<DFPointNode, Boolean> batchPoll(Set<DFPointNode> points) {
+    
+    public BatchRead<ModbusPointNode> makeBatch(Set<DFPointNode> points) {
         int slaveId = parameters.getInt(Constants.SLAVE_ID);
         boolean contig = parameters.getBoolean(Constants.CONTIGUOUS_READS);
         BatchRead<ModbusPointNode> batch = new BatchRead<ModbusPointNode>();
@@ -132,11 +131,17 @@ public class ModbusDeviceNode extends DFDeviceNode {
             batch.addLocator(mpoint, locator);
         }
         
+        return batch;
+    }
+
+    @Override
+    public Map<DFPointNode, Boolean> batchPoll(Set<DFPointNode> points) {
+        int slaveId = parameters.getInt(Constants.SLAVE_ID);
         
         Map<DFPointNode, Boolean> successes = new ConcurrentHashMap<DFPointNode, Boolean>();
         try {
             info(Thread.currentThread().getId() + ") Poll Start: " + slaveId);
-            BatchResults<ModbusPointNode> results = getParentNode().modbus.send(batch, this, slaveId);
+            BatchResults<ModbusPointNode> results = getParentNode().modbus.sendBatchRead(points, this, slaveId);
             info(Thread.currentThread().getId() + ") Poll End: " + slaveId);
             for (DFPointNode point: points) {
                 ModbusPointNode mpoint = (ModbusPointNode) point;
