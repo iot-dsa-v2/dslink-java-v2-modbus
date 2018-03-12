@@ -105,7 +105,8 @@ public class ModbusFuzzTest {
      * After a point node is subscribed to, checks that if its parent is "Connected" and the
      * corresponding point doesn't exist on the device, then the node's status is "Failed"
      */
-    @Test
+    //@Test
+    //TODO: REMOVE or REWRITE this test
     public void subbed_is_failed() throws Exception {
         new FuzzTest().subbed_is_failed();
 //        String t_name = "subbed_is_failed.py";
