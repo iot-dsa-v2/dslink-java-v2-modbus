@@ -200,4 +200,9 @@ public class ModbusDeviceNode extends DFDeviceNode {
             throw new RuntimeException("Wrong parent class, expected ModbusConnectionNode");
         }
     }
+    
+    @Override
+    public double getReconnectDelayMultiplier() {
+        return getMainNode().getLink().getConfig().getConfig(Constants.CONFIG_RECONNECT_DELAY_MULTIPLIER, super.getReconnectDelayMultiplier());
+    }
 }

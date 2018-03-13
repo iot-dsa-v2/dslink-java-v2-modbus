@@ -9,6 +9,8 @@ import java.util.Random;
 
 public class Constants {
     public static final String PARAMETERS = "parameters";
+    
+    public static final String CONFIG_RECONNECT_DELAY_MULTIPLIER = "reconnectDelayMultiplier";
 
     public static final String ACTION_EDIT = "Edit";
     public static final String ACTION_ADD_IP = "Add IP Connection";
@@ -227,7 +229,7 @@ public class Constants {
                             code = Math.abs(code) % range + lowerBound;
                         }
                     }
-                    return DSLong.valueOf(code);
+                    return DSDouble.valueOf(code);
             }
         }
 

@@ -125,4 +125,9 @@ public abstract class ModbusConnectionNode extends DFConnectionNode {
         }
         return (long) (seconds * 1000);
     }
+    
+    @Override
+    public double getReconnectDelayMultiplier() {
+        return getMainNode().getLink().getConfig().getConfig(Constants.CONFIG_RECONNECT_DELAY_MULTIPLIER, super.getReconnectDelayMultiplier());
+    }
 }

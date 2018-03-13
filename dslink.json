@@ -76,6 +76,12 @@
       "desc": "Can be specified to override the default standalone transport.",
       "type": "string",
       "value": null
+    },
+    
+    "reconnectDelayMultiplier": {
+      "desc": "Factor by which to multiply the reconnect delay every time modbus fails to connect to a connection or device.",
+      "type": "number",
+      "value": 1.25
     }
   }
 }
