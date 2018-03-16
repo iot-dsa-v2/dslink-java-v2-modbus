@@ -196,13 +196,15 @@ public class Constants {
         }
 
         private static Float makeFloat(String seed) {
-            byte[] raw = makeBytes(seed, 4);
-            return ByteBuffer.wrap(raw).getFloat();
+            //byte[] raw = makeBytes(seed, 4);
+            Random rand = new Random(seed.hashCode());
+            return rand.nextFloat();
         }
 
         private static Double makeDouble(String seed) {
-            byte[] raw = makeBytes(seed, 8);
-            return ByteBuffer.wrap(raw).getDouble();
+            //byte[] raw = makeBytes(seed, 8);
+            Random rand = new Random(seed.hashCode());
+            return rand.nextDouble();
         }
 
 

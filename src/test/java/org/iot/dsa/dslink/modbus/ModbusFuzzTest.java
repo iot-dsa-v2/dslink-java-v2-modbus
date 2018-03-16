@@ -15,11 +15,8 @@ import java.util.Scanner;
  */
 public class ModbusFuzzTest {
 
-
-    private static String OUTPUT_FILE_NAME = "modbus_output.txt";
-    private static String MASTER_FILE_NAME = "modbus_master.txt";
-    private static boolean REDO_FUZZ = true; //Set to false to prevent re-running the test
-    static double PROB_SCALING = 0.0; //Set to high probability to have lots of points with scaling
+    private static boolean REDO_FUZZ = false; //Set to false to prevent re-running the test
+    static double PROB_SCALING = 0.5; //Set to high probability to have lots of points with scaling
     private static long TEST_LENGTH = 800;
 
     @Before
@@ -96,9 +93,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void subbed_is_connected() throws Exception {
-        new FuzzTest().subbed_is_connected();
-//        String t_name = "subbed_is_connected.py";
-//        FuzzTest.runPythonTest(t_name);
+//        new FuzzTest().subbed_is_connected();
+        String t_name = "subbed_is_connected_scaling.py";
+        FuzzTest.runPythonTestFromDir(t_name);
     }
 
     /**
@@ -129,9 +126,9 @@ public class ModbusFuzzTest {
      */
     @Test
     public void value_updates() throws Exception {
-        new FuzzTest().value_updates();
-//        String t_name = "value_updates.py";
-//        FuzzTest.runPythonTest(t_name);
+//        new FuzzTest().value_updates();
+        String t_name = "value_updates_scaling.py";
+        FuzzTest.runPythonTestFromDir(t_name);
     }
 
     /**
