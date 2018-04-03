@@ -64,11 +64,11 @@ public class ModbusDeviceNode extends DFDeviceNode {
         super.onStable();
     }
 
-    void addPoint(DSMap pointParameters) {
-        String name = pointParameters.getString(Constants.NAME);
-        ModbusPointNode point = new ModbusPointNode(pointParameters);
-        put(name, point);
-    }
+//    void addPoint(DSMap pointParameters) {
+//        String name = pointParameters.getString(Constants.NAME);
+//        ModbusPointNode point = new ModbusPointNode(pointParameters);
+//        put(name, point);
+//    }
     
     /* ================================================================== */
     
